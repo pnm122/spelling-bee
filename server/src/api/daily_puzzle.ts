@@ -1,5 +1,5 @@
 import express from 'express';
-import Puzzle from '../interfaces/Puzzle';
+import Puzzle from '../db/interfaces/Puzzle';
 import getDb from '../db/conn';
 import getTodaysDate from '../utils/getTodaysDate';
 import { ErrorResponse } from '../interfaces/Response';

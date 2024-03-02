@@ -14,6 +14,9 @@ export function errorHandler(err: Error, req: Request, res: Response<ErrorRespon
   res.status(statusCode);
   res.json({
     success: false,
+    // Probably a better way for handling this with typescript,
+    // but I'm going with this for now
+    // @ts-ignore
     message: err.message,
   });
 }

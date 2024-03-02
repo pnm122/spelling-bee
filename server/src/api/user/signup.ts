@@ -2,10 +2,11 @@ import express from 'express';
 import getDb from '../../db/conn';
 import { ErrorResponse, SuccessResponse } from '../../interfaces/Response';
 import bcrypt from 'bcrypt'
+import { SignupRequest } from '../../interfaces/User';
 
 const router = express.Router();
 
-router.post<{ username: string, password: string }, ErrorResponse | SuccessResponse>('/', async (req, res) => {
+router.post<SignupRequest, ErrorResponse | SuccessResponse>('/', async (req, res) => {
   const username = req.body.username
   const password = req.body.password
   if(!username || !password) {

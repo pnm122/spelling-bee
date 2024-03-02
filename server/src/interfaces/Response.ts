@@ -10,5 +10,7 @@ export interface SuccessResponse extends Response {
 
 export interface ErrorResponse extends Response {
   success: false,
-  message: 'no-puzzle' | 'user-info-not-provided' | 'unknown-error' | string
+  message: ErrorTypes
 }
+
+export type ErrorTypes = 'no-puzzle' | 'user-info-not-provided' | 'unknown-error' | 'user-info-incorrect'
