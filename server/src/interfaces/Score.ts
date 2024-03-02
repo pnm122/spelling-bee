@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb"
 import Puzzle from "./Puzzle"
 import User from "./User"
 
@@ -6,6 +7,6 @@ export default interface Score {
   maxPossibleScore: number
   wordsFound: string[]
   date: string
-  puzzle: Puzzle
-  user: User
+  puzzleId: ObjectId
+  userId: ObjectId
 }
