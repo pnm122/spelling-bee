@@ -4,6 +4,8 @@ import { LoginRequest } from "../../interfaces/User";
 import { ErrorResponse, SuccessResponse } from "../../interfaces/Response";
 import getDb from "../../db/conn";
 import User from "../../db/interfaces/User";
+import { validateUserCredentials } from "../../db/utils/users";
+import { createSession } from "../../db/utils/sessions";
 
 const router = express.Router()
 
@@ -11,46 +13,31 @@ router.post<LoginRequest, ErrorResponse | SuccessResponse | User>('/', async (re
   const username = req.body.username
   const password = req.body.password
   if(!username || !password) {
-    res.json({
+    res.status(400).json({
       success: false,
       message: 'user-info-not-provided'
     })
     return
   }
 
-  try {
-    const db = await getDb()
-    const user = await db.collection('Users').findOne({
-      username: username
-    }) as unknown as User | undefined
+  const validCredentials = await validateUserCredentials({ username, password })
 
-    if(!user) {
-      res.json({
-        success: false,
-        message: 'user-info-incorrect'
-      })
-      return
-    }
+  if(!validCredentials.success) return res.status(401).json(validCredentials)
 
-    const match = await bcrypt.compare(password, user.password)
+  const sessionRes = await createSession()
 
-    if(match) {
-      res.json({
-        success: true,
-        message: 'Logged in successfully!'
-      })
-    } else {
-      res.json({
-        success: false,
-        message: 'user-info-incorrect'
-      })
-    }
-  } catch(e) {
-    res.json({
-      success: false,
-      message: 'unknown-error'
+  if(typeof sessionRes == "string") {
+    res.cookie('session', sessionRes)
+    return res.json({
+      success: true,
+      message: sessionRes
     })
   }
+
+  res.status(500).json({
+    success: false,
+    message: 'failed-to-create-session'
+  })
 })
 
 export default router

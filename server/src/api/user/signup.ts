@@ -1,43 +1,24 @@
 import express from 'express';
-import getDb from '../../db/conn';
 import { ErrorResponse, SuccessResponse } from '../../interfaces/Response';
-import bcrypt from 'bcrypt'
 import { SignupRequest } from '../../interfaces/User';
+import { createUser } from '../../db/utils/users';
 
 const router = express.Router();
 
 router.post<SignupRequest, ErrorResponse | SuccessResponse>('/', async (req, res) => {
-  const username = req.body.username
-  const password = req.body.password
+  const { username, password } = req.body
   if(!username || !password) {
-    res.json({
+    return res.status(400).json({
       success: false,
       message: 'user-info-not-provided'
     })
-    return
   }
 
-  // Create encrypted password for database
-  const saltRounds = parseInt(process.env.SALT_ROUNDS!)
-  const hashedPassword = await bcrypt.hash(password, saltRounds)
+  const createUserRes = await createUser({ username, password })
 
-  try {
-    const db = await getDb()
-    await db.collection('Users').insertOne({
-      username: username,
-      password: hashedPassword
-    })
-
-    res.json({
-      success: true,
-      message: "User successfully added to database"
-    })
-  } catch(e) {
-    res.json({
-      success: false,
-      message: 'unknown-error'
-    })
-  }
+  if(createUserRes.success) return res.json(createUserRes)
+  else if(createUserRes.message == 'user-exists') return res.status(400).json(createUserRes)
+  else return res.status(500).json(createUserRes)
 });
 
 export default router;
