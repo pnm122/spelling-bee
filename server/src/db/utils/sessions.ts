@@ -1,9 +1,9 @@
 // Utility functions for the Sessions collection
 
-import { ObjectId, WithoutId } from "mongodb";
-import { ErrorResponse, SuccessResponse } from "../../interfaces/Response";
+import { WithoutId } from "mongodb";
+import { ErrorResponse } from "../../interfaces/Response";
 import getDb from "../conn";
-import Session from "../interfaces/Session";
+import Session, { SessionInsert } from "../interfaces/Session";
 import { v4 as uuidv4 } from 'uuid'
 
 /** 
@@ -14,10 +14,9 @@ export async function createSession(): Promise<string | ErrorResponse> {
   try {
     const db = await getDb()
 
-    const sessionDetails: WithoutId<Session> = {
+    const sessionDetails: SessionInsert = {
       sessionId: uuidv4(),
-      lastUpdate: new Date(Date.now()).toISOString(),
-      expiresAfterSeconds: parseInt(process.env.SESSION_EXPIRE_TIME!)
+      lastUpdate: new Date(Date.now())
     }
 
     const res = await db.collection('Sessions').insertOne(sessionDetails)

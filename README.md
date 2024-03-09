@@ -12,3 +12,5 @@ Tools used:
 *By Pierce Martin*
 
 ---
+
+TODO: Explain processes
