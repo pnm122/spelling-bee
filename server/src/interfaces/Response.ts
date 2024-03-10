@@ -22,4 +22,4 @@ export type ErrorTypes =
   | 'user-exists' // A user tried to sign up, but the username already exists
   | 'failed-to-create-session' // When logging in, a user is created but creating a session failed
   | 'invalid-session' // Requested session doesn't exist (most likely session expired)
-  | 'no-session' // Client requested a resource that requires authentication without a session
+  | 'no-session' // Client requested a resource that requires a session without having one

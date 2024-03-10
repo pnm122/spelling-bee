@@ -81,11 +81,35 @@ export async function updateSession(sessionId: string): Promise<SuccessResponse 
   }
 }
 
-// /** 
-// * Delete a given session
-// * @param {string} sessionId - ID of the session to delete
-// * @return {Promise<SuccessResponse | ErrorResponse>} Details whether the function was successful or not
-// */
-// export async function deleteSession(sessionId: string): Promise<SuccessResponse | ErrorResponse> {
+/** 
+* Delete a given session if it exists. Fails if the session doesn't exist
+* @param {string} sessionId - ID of the session to delete
+* @return {Promise<SuccessResponse | ErrorResponse>} Details whether the function was successful or not
+*/
+export async function deleteSession(sessionId: string): Promise<SuccessResponse | ErrorResponse> {
+  try {
+    const db = await getDb()
 
-// }
+    const res = await db.collection<Session>('Sessions').deleteOne({
+      sessionId: sessionId
+    })
+  
+    if(res.acknowledged && res.deletedCount) {
+      debug(`Session ${sessionId} successfully removed from database.`)
+  
+      return {
+        success: true
+      }
+    }
+
+    return {
+      success: false,
+      message: 'invalid-session'
+    }
+  } catch(e) {
+    return {
+      success: false,
+      message: 'unknown-error'
+    }
+  }
+}

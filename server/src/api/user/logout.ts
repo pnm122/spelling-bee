@@ -1,21 +1,39 @@
 import express from "express";
 import { ErrorResponse, SuccessResponse } from "../../interfaces/Response";
-import { authenticated } from "../../middlewares";
+import { deleteSession } from "../../db/utils/sessions";
 
 const router = express.Router()
 
-router.use(authenticated)
-
 router.post<{}, ErrorResponse | SuccessResponse>('/', async (req, res) => {
-  res.json({
-    success: true,
-    message: 'Session updated'
-  })
+  const sessionId: string | undefined = req.cookies['session']
 
-  // res.status(500).json({
-  //   success: false,
-  //   message: 'unknown-error'
-  // })
+  if(!sessionId) {
+    return res.status(400).json({
+      success: false,
+      message: 'no-session'
+    })
+  }
+
+  const deleteRes = await deleteSession(sessionId)
+
+  if(deleteRes.success) {
+    // Delete client's session cookie since the session was successfully removed from the database
+    res.clearCookie('session')
+
+    return res.json({
+      success: true,
+      message: 'Logged out'
+    })
+  }
+
+  if(deleteRes.message == 'invalid-session') {
+    return res.status(401).json(deleteRes)
+  }
+
+  res.status(500).json({
+    success: false,
+    message: 'unknown-error'
+  })
 })
 
 export default router
