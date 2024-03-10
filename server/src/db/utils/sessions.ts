@@ -32,7 +32,7 @@ export async function createSession(): Promise<string | ErrorResponse> {
 }
 
 /** 
-* Updates a given session with the current time, causing it to expire later. Fails if the session doesn't exist
+* Updates a given session with the current time, causing it to expire later. Fails if the session doesn't exist or if the session has expired
 * @param {string} sessionId - ID of the session to update
 * @return {Promise<SuccessResponse | ErrorResponse>} Details whether the function was successful or not
 */
@@ -42,21 +42,32 @@ export async function updateSession(sessionId: string): Promise<SuccessResponse 
 
     const updateTime = new Date(Date.now())
 
-    const res = await db.collection('Sessions')
-      .updateOne({
+    const res = await db.collection<Session>('Sessions')
+      .findOneAndUpdate({
         sessionId: sessionId
       }, {
+        // @ts-ignore I know what I'm doing, the types for inserting sessions are different than the sessions received from the DB
         $set: {
           lastUpdate: updateTime
         } as Partial<SessionInsert>
       })
 
-    if(!res.acknowledged || res.matchedCount == 0) {
+    if(!res) {
       return {
         success: false,
         message: 'invalid-session'
       }
     }
+
+    // BELOW DOESNT WORK because the session has already been updated if it exists
+    // For now, I'm just going to rely on MongoDB automatically deleting my sessions at roughly the right time
+    // Getting the exact expiration time isn't really a big deal for this app anyways
+    // session has expired if the session doesn't exist anymore or if it does exist but its expiration date has passed (just hasn't been deleted by MongoDB yet)
+    // const expirationDate = new Date(res.lastUpdate).getTime() + (parseInt(process.env.SESSION_EXPIRE_TIME!) * 1000)
+    // const sessionExpired = Date.now() > expirationDate
+
+    // if(sessionExpired) debug(`EXPIRED SESSION\nSession expiration date: ${new Date(expirationDate).toString()}\n`)
+    
 
     return {
       success: true

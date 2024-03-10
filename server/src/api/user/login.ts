@@ -23,8 +23,9 @@ router.post<LoginRequest, ErrorResponse | SuccessResponse>('/', async (req, res)
 
   const sessionRes = await createSession()
 
-  if(typeof sessionRes == "string") {
-    res.cookie('session', sessionRes)
+  if(typeof sessionRes == 'string') {
+    // * 1000 because maxAge is in ms, but SESSION_EXPIRE_TIME is in seconds
+    res.cookie('session', sessionRes, { maxAge: parseInt(process.env.SESSION_EXPIRE_TIME!) * 1000 })
     return res.json({
       success: true,
       message: sessionRes
