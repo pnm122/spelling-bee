@@ -21,3 +21,5 @@ export type ErrorTypes =
   | 'user-info-incorrect' // A user tried to log in, but the username or password was incorrect
   | 'user-exists' // A user tried to sign up, but the username already exists
   | 'failed-to-create-session' // When logging in, a user is created but creating a session failed
+  | 'invalid-session' // Requested session doesn't exist (most likely session expired)
+  | 'no-session' // Client requested a resource that requires authentication without a session

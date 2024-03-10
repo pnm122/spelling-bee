@@ -1,15 +1,12 @@
 import express from "express";
-import bcrypt from 'bcrypt'
 import { LoginRequest } from "../../interfaces/User";
 import { ErrorResponse, SuccessResponse } from "../../interfaces/Response";
-import getDb from "../../db/conn";
-import User from "../../db/interfaces/User";
 import { validateUserCredentials } from "../../db/utils/users";
 import { createSession } from "../../db/utils/sessions";
 
 const router = express.Router()
 
-router.post<LoginRequest, ErrorResponse | SuccessResponse | User>('/', async (req, res) => {
+router.post<LoginRequest, ErrorResponse | SuccessResponse>('/', async (req, res) => {
   const username = req.body.username
   const password = req.body.password
   if(!username || !password) {

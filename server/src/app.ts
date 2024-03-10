@@ -4,6 +4,7 @@ import express from 'express';
 import morgan from 'morgan';
 import helmet from 'helmet';
 import cors from 'cors';
+import cookieParser from 'cookie-parser'
 
 import * as middlewares from './middlewares';
 import api from './api';
@@ -13,6 +14,7 @@ const app = express();
 app.use(morgan('dev'));
 app.use(helmet());
 app.use(cors());
+app.use(cookieParser())
 app.use(express.json());
 
 // Use /api/index.ts, which imports all the other api endpoints in /api
