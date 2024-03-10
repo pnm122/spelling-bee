@@ -13,4 +13,6 @@ Tools used:
 
 ---
 
-TODO: Explain processes
+Solutions:
+
+- Use package svelte-preprocess for `<style global>` syntax, allowing global styles

@@ -32,6 +32,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"browserslist": "^4.23.0"
+		"browserslist": "^4.23.0",
+		"svelte-preprocess": "^5.1.3"
 	}
 }
