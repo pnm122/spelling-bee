@@ -47,5 +47,6 @@
   h1 {
     font-family: sans-serif;
     text-decoration: underline;
+    color: oklch(45% 0.26 264);
   }
 </style>
