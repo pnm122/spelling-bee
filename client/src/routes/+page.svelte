@@ -1,5 +1,14 @@
 <script lang='ts'>
 	import Nested from "$lib/components/Nested.svelte";
+	import { onMount } from "svelte";
+
+  // useEffect equivalent
+  onMount(() => {
+
+    return () => {
+
+    }
+  })
 
   let name: string = 'Pierce'
   let h = '<span>Testing</span>'
