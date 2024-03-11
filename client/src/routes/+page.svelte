@@ -1,6 +1,7 @@
 <script lang='ts'>
 	import Nested from "$lib/components/Nested.svelte";
 	import { onMount } from "svelte";
+  import theme from "$lib/stores/theme";
 
   // useEffect equivalent
   onMount(() => {
@@ -29,6 +30,7 @@
   let arr: string[] = ['a', 'b', 'c']
 </script>
 
+<button on:click={() => { $theme == 'dark' ? $theme = 'light' : $theme = 'dark' }}>Switch Theme</button>
 <h1>Hello {name}</h1>
 <p>{@html h}</p>
 <form on:submit={handleSubmit}>
