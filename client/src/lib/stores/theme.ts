@@ -19,7 +19,6 @@ if(browser) {
 // Update local storage on initialization + every time theme changes
 theme.subscribe(t => {
   if(browser) {
-    console.log(`Theme set to ${t}`)
     document.body.setAttribute('data-theme', t)
     window.localStorage.setItem('theme', t)
   }
