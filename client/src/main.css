@@ -168,6 +168,11 @@ button, select {
 a {
   text-decoration: none;
   color: inherit;
+  cursor: pointer;
+}
+
+img, svg {
+  vertical-align: middle;
 }
 
 .btn {
@@ -182,6 +187,7 @@ a {
   justify-content: center;
   transition: transform var(--transition-1);
   position: relative;
+  z-index: 1;
   font: var(--label);
 }
 
@@ -259,4 +265,21 @@ body[data-theme="dark"] .btn.btn.accent {
 
 .error {
   color: var(--error);
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  position: relative;
+}
+
+.input-group label {
+  font: var(--label-sm);
+}
+
+.input-group .error {
+  font: var(--body-xs);
+  position: absolute;
+  top: 100%;
 }

@@ -13,6 +13,8 @@
 	},
 	"devDependencies": {
 		"@iconify-json/mdi": "^1.1.64",
+		"@iconify-json/ph": "^1.1.11",
+		"@iconify-json/tabler": "^1.1.107",
 		"@sveltejs/adapter-auto": "^3.0.0",
 		"@sveltejs/kit": "^2.0.0",
 		"@sveltejs/vite-plugin-svelte": "^3.0.0",
