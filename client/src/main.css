@@ -5,3 +5,11 @@
 body {
   margin: 0;
 }
+
+body[data-theme="light"] {
+  
+}
+
+body[data-theme="dark"] {
+
+}

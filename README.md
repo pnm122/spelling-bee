@@ -15,4 +15,4 @@ Tools used:
 
 Solutions:
 
-- Use package svelte-preprocess for `<style global>` syntax, allowing global styles
+- Use package [svelte-preprocess](https://www.npmjs.com/package/svelte-preprocess) for `<style global>` syntax, allowing global styles
