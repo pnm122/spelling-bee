@@ -120,6 +120,7 @@
     background-color: var(--gray);
     display: flex;
     justify-content: space-between;
+    overflow: hidden;
   }
 
   #card-inner :global(.input:focus-within) {
@@ -148,7 +149,12 @@
   }
 
   #card-inner :global(.input button) {
-    padding: 0.5rem 1.125rem;
+    padding: 0 1.125rem;
+    border-radius: 999px;
+  }
+
+  #card-inner :global(.input button:focus) {
+    background-color: color-mix(in oklch, var(--heading) 20%, transparent);
   }
 
   #card-inner :global(button[type="submit"]) {
