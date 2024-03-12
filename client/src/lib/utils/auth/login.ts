@@ -16,5 +16,5 @@ export default async function login(
     }
   )
 
-  console.log(res)
+  return res
 }

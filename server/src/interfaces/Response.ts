@@ -1,12 +1,16 @@
+import { WithoutId } from "mongodb"
+import Session from "../db/interfaces/Session"
+
 // Interface for success and error responses
 export interface Response {
   success: boolean,
   message?: string
 }
 
-export interface SuccessResponse extends Response {
+export interface SuccessResponse<T = any> extends Response {
   success: true
   message?: string
+  data?: T
 }
 
 export interface ErrorResponse extends Response {
@@ -23,3 +27,10 @@ export type ErrorTypes =
   | 'failed-to-create-session' // When logging in, a user is created but creating a session failed
   | 'invalid-session' // Requested session doesn't exist (most likely session expired)
   | 'no-session' // Client requested a resource that requires a session without having one
+
+export interface ValidateResponseData {
+  user: {
+    id: string,
+    username: string
+  }
+}

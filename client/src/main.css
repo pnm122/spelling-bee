@@ -222,6 +222,15 @@ img, svg {
   opacity: 1;
 }
 
+.btn:disabled {
+  pointer-events: none;
+}
+
+.btn:disabled::before,
+.btn:disabled::after {
+  opacity: 0.333;
+}
+
 .btn.primary {
   --btn-color: var(--primary);
   --btn-shadow-color: color-mix(in oklch, var(--primary) 45%, black);

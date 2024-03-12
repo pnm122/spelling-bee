@@ -21,7 +21,7 @@ router.post<LoginRequest, ErrorResponse | SuccessResponse>('/', async (req, res)
 
   if(!validCredentials.success) return res.status(401).json(validCredentials)
 
-  const sessionRes = await createSession()
+  const sessionRes = await createSession(validCredentials.data!.user.id, username)
 
   if(typeof sessionRes == 'string') {
     // * 1000 because maxAge is in ms, but SESSION_EXPIRE_TIME is in seconds

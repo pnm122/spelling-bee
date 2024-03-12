@@ -5,7 +5,7 @@ const mode = process.env.NODE_ENV as Mode
 
 // Log to the console if in development mode
 export default function debug(
-  message: string,
+  message: any,
   logMode: LogMode = 'log'
 ) {
   if(!mode || mode != 'development') return

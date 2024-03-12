@@ -1,5 +1,11 @@
-<!-- A +layout.svelte file applies to every child route, including the sibling +page.svelte (if it exists). You can nest layouts to arbitrary depth. -->
-<!-- https://learn.svelte.dev/tutorial/layouts -->
+<script lang="ts">
+  import user from '$lib/stores/user'
+  import { goto } from '$app/navigation'
+
+  if($user) {
+    goto('/app')
+  }
+</script>
 
 <main>
 	<div id="card">

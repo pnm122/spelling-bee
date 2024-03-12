@@ -9,14 +9,20 @@ import debug from "../../utils/debug";
 
 /** 
 * Create a session in the Sessions collection
+* @param {string} userId - ID of the user to associate with the session
+* @param {string} username - User's username
 * @return {Promise<string | ErrorResponse>} session ID if successful, ErrorResponse if not
 */
-export async function createSession(): Promise<string | ErrorResponse> {
+export async function createSession(userId: string, username: string): Promise<string | ErrorResponse> {
   try {
     const db = await getDb()
 
     const sessionDetails: SessionInsert = {
       sessionId: uuidv4(),
+      user: {
+        id: userId,
+        username: username
+      },
       lastUpdate: new Date(Date.now())
     }
 
@@ -70,7 +76,8 @@ export async function updateSession(sessionId: string): Promise<SuccessResponse 
     
 
     return {
-      success: true
+      success: true,
+      data: res
     }
   } catch(e) {
     debug(e as string)
@@ -99,6 +106,38 @@ export async function deleteSession(sessionId: string): Promise<SuccessResponse 
   
       return {
         success: true
+      }
+    }
+
+    return {
+      success: false,
+      message: 'invalid-session'
+    }
+  } catch(e) {
+    return {
+      success: false,
+      message: 'unknown-error'
+    }
+  }
+}
+
+/** 
+* Get a given session if it exists. Fails if the session doesn't exist
+* @param {string} sessionId - ID of the session to get
+* @return {Promise<SuccessResponse | ErrorResponse>} Details whether the function was successful or not; SuccessResponse data contains session information
+*/
+export async function getSession(sessionId: string): Promise<SuccessResponse | ErrorResponse> {
+  try {
+    const db = await getDb()
+
+    const res = await db.collection<Session>('Sessions').findOne({
+      sessionId: sessionId
+    })
+  
+    if(res) {
+      return {
+        success: true,
+        data: res
       }
     }
 

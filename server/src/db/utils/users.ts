@@ -4,7 +4,8 @@ import { LoginRequest, SignupRequest } from "../../interfaces/User";
 import bcrypt from 'bcrypt'
 import getDb from "../conn";
 import User from "../interfaces/User";
-import { ErrorResponse, SuccessResponse } from "../../interfaces/Response";
+import { ErrorResponse, SuccessResponse, ValidateResponseData } from "../../interfaces/Response";
+import debug from "../../utils/debug";
 
 /** 
 * Create a user in the Users collection, hashing and salting the given password
@@ -57,12 +58,12 @@ export async function createUser({
 * @param {Object} params
 * @param {string} params.username - User's username
 * @param {string} params.password - Raw password string
-* @return {Promise<SuccessResponse | ErrorResponse>} Details whether the function was successful or not
+* @return {Promise<SuccessResponse | ErrorResponse>} Details whether the function was successful or not; SuccessResponse data contains user ID
 */
 export async function validateUserCredentials({
   username,
   password
-}: LoginRequest): Promise<SuccessResponse | ErrorResponse> {
+}: LoginRequest): Promise<SuccessResponse<ValidateResponseData> | ErrorResponse> {
   try {
     const db = await getDb()
     const user = await db.collection('Users').findOne({
@@ -80,7 +81,13 @@ export async function validateUserCredentials({
 
     if(match) {
       return {
-        success: true
+        success: true,
+        data: {
+          user: {
+            id: user._id.toString(),
+            username: user.username
+          }
+        }
       }
     } else {
       return {
