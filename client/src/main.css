@@ -64,8 +64,15 @@ body {
   /* Focus outline color */
   --focus: var(--heading);
 
+  --pangram-gradient: radial-gradient(var(--accent-light), var(--bg) 75%);
+
   --font-default: "Averia Serif Libre", Georgia, Times, 'Times New Roman', Cambria, serif, system-ui;
   --font-heading: var(--font-default);
+
+  --rounding: 0.25rem;
+  --rounding-sm: 0.125rem;
+
+  --shadow: 4px 4px 16px rgba(0, 0, 0, 0.15);
 
   /* Heading text styles */
   --h: 700 1rem/1 var(--font-heading);
@@ -73,11 +80,14 @@ body {
   --h-xl: 700 1.25rem/1 var(--font-heading);
   --h-2xl: 700 1.5rem/1 var(--font-heading);
   --h-3xl: 700 2rem/1 var(--font-heading);
-  --h-4xl: 700 3rem/1 var(--font-heading);
+  --h-4xl: 700 2.5rem/1 var(--font-heading);
+  --h-5xl: 700 3rem/1 var(--font-heading);
+  --h-6xl: 700 3.5rem/1 var(--font-heading);
   /* Label and button text styles */
   --label: 400 1rem/1 var(--font-default);
   --label-sm: 400 0.875rem/1 var(--font-default);
   --label-xs: 400 0.75rem/1 var(--font-default);
+  --label-xxs: 400 0.625rem/1 var(--font-default);
   /* Body text styles */
   --body: 300 1rem/1.5 var(--font-default);
   --body-sm: 300 0.875rem/1.5 var(--font-default);
@@ -99,14 +109,18 @@ body {
 
 body[data-theme="light"] {
   --gray: oklch(95.12% 0.02 94.53);
+  --mediumgray: oklch(86.62% 0.015 94.22);
+  --darkgray: oklch(73.31% 0.026 96.68);
   --heading: oklch(25.89% 0.042 92.08);
   --text: var(--heading);
+  /* Used for levels 4, 5, and 6 */
+  --level-middle: oklch(66.93% 0.126 237.95);
   --bg: oklch(99.01% 0.012 96.42);
   --bg-secondary: oklch(98.12% 0.02 94.52);
   --primary: oklch(88.72% 0.16 92.49);
   --primary-light: oklch(94.58% 0.082 94.05);
-  --secondary: oklch(69.92% 0.171 155.08);
-  --secondary-light: oklch(93.47% 0.079 165.67);
+  --secondary: oklch(90.65% 0.059 226.63);
+  --secondary-light: oklch(96.23% 0.016 201.7);
   --accent: oklch(55.95% 0.2859 308);
   --accent-light: oklch(88.51% 0.079 314.64);
   --error: oklch(70.36% 0.185 37.97);
@@ -116,15 +130,18 @@ body[data-theme="light"] {
 
 body[data-theme="dark"] {
   --gray: oklch(34.11% 0.014 89.88);
+  --mediumgray: oklch(42.43% 0.018 90.38);
+  --darkgray: oklch(52.52% 0.019 88.06);
   --heading: oklch(99.01% 0.012 96.42);
   --text: var(--heading);
+  --level-middle: oklch(60.37% 0.119 238.59);
   --bg: oklch(27.99% 0.011 99.28);
   --bg-secondary: oklch(25.01% 0.009 107.04);
   --primary: oklch(88.72% 0.16 92.49);
   --primary-light: oklch(37.88% 0.036 94.68);
-  --secondary: oklch(80.77% 0.198 155.02);
-  --secondary-light: oklch(37.69% 0.037 166.12);
-  --accent: oklch(61.1% 0.262 311.92);
+  --secondary: oklch(50.12% 0.085 230.65);
+  --secondary-light: oklch(41.14% 0.035 224.79);
+  --accent: oklch(66.1% 0.247 312.8);
   --accent-light: oklch(35.72% 0.077 314.41);
   --error: oklch(74.75% 0.157 38.87);
   --error-light: oklch(33.22% 0.052 37.63);
