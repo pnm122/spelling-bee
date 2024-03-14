@@ -1,10 +1,22 @@
 <script lang="ts">
-  import user from '$lib/stores/user'
   import { goto } from '$app/navigation'
+	import { onMount } from 'svelte';
+  import Cookies from 'js-cookie'
 
-  if($user) {
-    goto('/app')
-  }
+  // Use the session cookie to determine if the user should be able to see the login/signup pages
+  // This is fine for now even if the session has been invalidated on the server,
+  // because everyone has access to the main app. They'll just be asked to login again later
+  // if the session expires
+  // onMount(() => {
+  //   const session = Cookies.get('session')
+  //   console.log(session)
+
+  //   if(session) {
+  //     goto('/app')
+  //   }
+  // })
+
+  
 </script>
 
 <main>

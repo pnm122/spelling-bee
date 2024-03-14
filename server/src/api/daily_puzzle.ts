@@ -6,7 +6,7 @@ import { ErrorResponse } from '../interfaces/Response';
 
 const router = express.Router();
 
-router.get<{}, Puzzle | ErrorResponse>('/', async (req, res) => {
+router.get<{}, Puzzle | {}>('/', async (req, res) => {
   const db = await getDb()
 
   const dateString = getTodaysDate()

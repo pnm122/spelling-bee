@@ -1,12 +1,12 @@
 import express from "express";
 import { LoginRequest } from "../../interfaces/User";
-import { ErrorResponse, SuccessResponse } from "../../interfaces/Response";
+import { ErrorResponse, LoginErrors, SuccessResponse } from "../../interfaces/Response";
 import { validateUserCredentials } from "../../db/utils/users";
 import { createSession } from "../../db/utils/sessions";
 
 const router = express.Router()
 
-router.post<LoginRequest, ErrorResponse | SuccessResponse>('/', async (req, res) => {
+router.post<LoginRequest, ErrorResponse<LoginErrors> | SuccessResponse>('/', async (req, res) => {
   const username = req.body.username
   const password = req.body.password
   if(!username || !password) {
@@ -23,18 +23,17 @@ router.post<LoginRequest, ErrorResponse | SuccessResponse>('/', async (req, res)
 
   const sessionRes = await createSession(validCredentials.data!.user.id, username)
 
-  if(typeof sessionRes == 'string') {
+  if(sessionRes.success) {
     // * 1000 because maxAge is in ms, but SESSION_EXPIRE_TIME is in seconds
     res.cookie('session', sessionRes, { maxAge: parseInt(process.env.SESSION_EXPIRE_TIME!) * 1000 })
     return res.json({
-      success: true,
-      message: sessionRes
+      success: true
     })
   }
 
   res.status(500).json({
     success: false,
-    message: 'failed-to-create-session'
+    message: sessionRes.message
   })
 })
 

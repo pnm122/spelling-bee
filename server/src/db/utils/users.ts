@@ -4,20 +4,21 @@ import { LoginRequest, SignupRequest } from "../../interfaces/User";
 import bcrypt from 'bcrypt'
 import getDb from "../conn";
 import User from "../interfaces/User";
-import { ErrorResponse, SuccessResponse, ValidateResponseData } from "../../interfaces/Response";
-import debug from "../../utils/debug";
+import { CreateUserErrors, ErrorResponse, SuccessResponse, ValidateResponseData, ValidateUserCredentialsErrors } from "../../interfaces/Response";
 
 /** 
 * Create a user in the Users collection, hashing and salting the given password
 * @param {Object} params
 * @param {string} params.username - User's username
 * @param {string} params.password - Raw password string
-* @return {Promise<SuccessResponse | ErrorResponse>} Details whether the function was successful or not
+* @return {Promise<SuccessResponse<{insertedId: string}> | ErrorResponse<CreateUserErrors>>} Details whether the function was successful or not. Fails if username already exists
 */
 export async function createUser({
   username,
   password
-}: SignupRequest): Promise<SuccessResponse | ErrorResponse> {
+}: SignupRequest): Promise<
+  SuccessResponse<{insertedId: string}> | 
+  ErrorResponse<CreateUserErrors>> {
   // Create encrypted password for database
   const saltRounds = parseInt(process.env.SALT_ROUNDS!)
   const hashedPassword = await bcrypt.hash(password, saltRounds)
@@ -36,14 +37,17 @@ export async function createUser({
       }
     }
 
-    await db.collection('Users').insertOne({
+    const insertedUser = await db.collection('Users').insertOne({
       username: username,
       password: hashedPassword
     })
 
     return {
       success: true,
-      message: "User successfully added to database"
+      message: "User successfully added to database",
+      data: {
+        insertedId: insertedUser.insertedId.toString()
+      }
     }
   } catch(e) {
     return {
@@ -58,12 +62,12 @@ export async function createUser({
 * @param {Object} params
 * @param {string} params.username - User's username
 * @param {string} params.password - Raw password string
-* @return {Promise<SuccessResponse | ErrorResponse>} Details whether the function was successful or not; SuccessResponse data contains user ID
+* @return {Promise<SuccessResponse<ValidateResponseData> | ErrorResponse<ValidateUserCredentialsErrors>>} Details whether the function was successful or not; SuccessResponse data contains user ID
 */
 export async function validateUserCredentials({
   username,
   password
-}: LoginRequest): Promise<SuccessResponse<ValidateResponseData> | ErrorResponse> {
+}: LoginRequest): Promise<SuccessResponse<ValidateResponseData> | ErrorResponse<ValidateUserCredentialsErrors>> {
   try {
     const db = await getDb()
     const user = await db.collection('Users').findOne({

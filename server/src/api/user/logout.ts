@@ -1,10 +1,10 @@
 import express from "express";
-import { ErrorResponse, SuccessResponse } from "../../interfaces/Response";
+import { ErrorResponse, LogoutErrors, SuccessResponse } from "../../interfaces/Response";
 import { deleteSession } from "../../db/utils/sessions";
 
 const router = express.Router()
 
-router.post<{}, ErrorResponse | SuccessResponse>('/', async (req, res) => {
+router.post<{}, ErrorResponse<LogoutErrors> | SuccessResponse>('/', async (req, res) => {
   const sessionId: string | undefined = req.cookies['session']
 
   if(!sessionId) {

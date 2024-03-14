@@ -1,7 +1,6 @@
 // Utility functions for the Sessions collection
 
-import { WithoutId } from "mongodb";
-import { ErrorResponse, SuccessResponse } from "../../interfaces/Response";
+import { CreateSessionErrors, DeleteSessionErrors, ErrorResponse, GetSessionErrors, SuccessResponse, UpdateSessionErrors } from "../../interfaces/Response";
 import getDb from "../conn";
 import Session, { SessionInsert } from "../interfaces/Session";
 import { v4 as uuidv4 } from 'uuid'
@@ -11,9 +10,9 @@ import debug from "../../utils/debug";
 * Create a session in the Sessions collection
 * @param {string} userId - ID of the user to associate with the session
 * @param {string} username - User's username
-* @return {Promise<string | ErrorResponse>} session ID if successful, ErrorResponse if not
+* @return {Promise<string | ErrorResponse<CreateSessionErrors>>} session ID if successful, ErrorResponse if not
 */
-export async function createSession(userId: string, username: string): Promise<string | ErrorResponse> {
+export async function createSession(userId: string, username: string): Promise<SuccessResponse<{ sessionId: string }> | ErrorResponse<CreateSessionErrors>> {
   try {
     const db = await getDb()
 
@@ -28,11 +27,14 @@ export async function createSession(userId: string, username: string): Promise<s
 
     const res = await db.collection('Sessions').insertOne(sessionDetails)
 
-    return sessionDetails.sessionId
+    return {
+      success: true,
+      data: { sessionId: sessionDetails.sessionId }
+    }
   } catch(e) {
     return {
       success: false,
-      message: 'unknown-error'
+      message: 'failed-to-create-session'
     }
   }
 }
@@ -40,9 +42,9 @@ export async function createSession(userId: string, username: string): Promise<s
 /** 
 * Updates a given session with the current time, causing it to expire later. Fails if the session doesn't exist or if the session has expired
 * @param {string} sessionId - ID of the session to update
-* @return {Promise<SuccessResponse | ErrorResponse>} Details whether the function was successful or not
+* @return {Promise<SuccessResponse | ErrorResponse<UpdateSessionErrors>>} Details whether the function was successful or not
 */
-export async function updateSession(sessionId: string): Promise<SuccessResponse | ErrorResponse> {
+export async function updateSession(sessionId: string): Promise<SuccessResponse | ErrorResponse<UpdateSessionErrors>> {
   try {
     const db = await getDb()
 
@@ -93,7 +95,7 @@ export async function updateSession(sessionId: string): Promise<SuccessResponse 
 * @param {string} sessionId - ID of the session to delete
 * @return {Promise<SuccessResponse | ErrorResponse>} Details whether the function was successful or not
 */
-export async function deleteSession(sessionId: string): Promise<SuccessResponse | ErrorResponse> {
+export async function deleteSession(sessionId: string): Promise<SuccessResponse | ErrorResponse<DeleteSessionErrors>> {
   try {
     const db = await getDb()
 
@@ -126,7 +128,7 @@ export async function deleteSession(sessionId: string): Promise<SuccessResponse 
 * @param {string} sessionId - ID of the session to get
 * @return {Promise<SuccessResponse | ErrorResponse>} Details whether the function was successful or not; SuccessResponse data contains session information
 */
-export async function getSession(sessionId: string): Promise<SuccessResponse | ErrorResponse> {
+export async function getSession(sessionId: string): Promise<SuccessResponse | ErrorResponse<GetSessionErrors>> {
   try {
     const db = await getDb()
 
