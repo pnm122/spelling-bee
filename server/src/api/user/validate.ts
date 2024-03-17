@@ -1,5 +1,5 @@
 import express from 'express';
-import { ErrorResponse, SuccessResponse, ValidateErrors, ValidateResponseData } from '../../interfaces/Response';
+import { ErrorResponse, SuccessResponse, ValidateErrors, ValidateData } from '../../interfaces/Response';
 import { authenticated } from '../../middlewares';
 import Session from '../../db/interfaces/Session';
 
@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.use(authenticated)
 
-router.get<{ session: Session }, SuccessResponse<ValidateResponseData> | ErrorResponse<ValidateErrors>>('/', async (req, res) => {
+router.get<{ session: Session }, SuccessResponse<ValidateData> | ErrorResponse<ValidateErrors>>('/', async (req, res) => {
   // session obtained from authenticated middleware
   const session = req.body.session as Session
 

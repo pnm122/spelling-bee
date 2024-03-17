@@ -24,11 +24,7 @@
     
     if(res.success) {
       // Update the user store on successful login
-      user.set({
-        id: res.message!,
-        username: username
-      })
-      goto('/app')
+      user.set(res.data.user)
     } else {
       loading = false
       switch(res.message) {

@@ -73,18 +73,16 @@ export type AuthenticatedErrors = AsErrorType<'no-session'> | UpdateSessionError
 // ============================================================
 
 export type GetUserUtilityData = { user: UserResponse }
+export type ValidateUtilityData = { user: UserResponse }
 
 export type GetUserData = GetUserUtilityData
 export type CreateUserData = { user: UserResponse }
 
 export type SignUpData = { user: UserResponse }
 export type LogInData = { user: UserResponse }
+export type ValidateData = { userId: string }
 
 export type UpdateSessionData = { session: Session }
 export type GetSessionData = { session: Session }
 
 // ============================================================
-
-export interface ValidateResponseData {
-  userId: string
-}

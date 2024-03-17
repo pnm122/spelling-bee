@@ -4,7 +4,7 @@ import { LoginRequest, SignupRequest } from "../../interfaces/User";
 import bcrypt from 'bcrypt'
 import getDb from "../conn";
 import User from "../interfaces/User";
-import { CreateUserData, CreateUserErrors, ErrorResponse, GetUserErrors, GetUserUtilityData, GetUserUtilityErrors, SuccessResponse, ValidateResponseData, ValidateUserCredentialsErrors } from "../../interfaces/Response";
+import { CreateUserData, CreateUserErrors, ErrorResponse, GetUserErrors, GetUserUtilityData, GetUserUtilityErrors, SuccessResponse, ValidateUtilityData, ValidateUserCredentialsErrors } from "../../interfaces/Response";
 import { ObjectId, WithoutId } from "mongodb";
 
 /** 
@@ -130,17 +130,17 @@ export async function getUser(
 * @param {Object} params
 * @param {string} params.username - User's username
 * @param {string} params.password - Raw password string
-* @return {Promise<SuccessResponse<ValidateResponseData> | ErrorResponse<ValidateUserCredentialsErrors>>} Details whether the function was successful or not; SuccessResponse data contains user ID
+* @return {Promise<SuccessResponse<ValidateUtilityData> | ErrorResponse<ValidateUserCredentialsErrors>>} Details whether the function was successful or not; SuccessResponse data contains user ID
 */
 export async function validateUserCredentials({
   username,
   password
-}: LoginRequest): Promise<SuccessResponse<ValidateResponseData> | ErrorResponse<ValidateUserCredentialsErrors>> {
+}: LoginRequest): Promise<SuccessResponse<ValidateUtilityData> | ErrorResponse<ValidateUserCredentialsErrors>> {
   try {
     const db = await getDb()
-    const user = await db.collection('Users').findOne({
+    const user = await db.collection<User>('Users').findOne({
       username: username
-    }) as unknown as User | undefined
+    })
 
     if(!user) {
       return {
@@ -152,10 +152,15 @@ export async function validateUserCredentials({
     const match = await bcrypt.compare(password, user.password)
 
     if(match) {
+      const { _id, password, ...userRes } = user
+
       return {
         success: true,
         data: {
-          userId: user._id.toString()
+          user: {
+            ...userRes,
+            id: _id.toString()
+          }
         }
       }
     } else {
