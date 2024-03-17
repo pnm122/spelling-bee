@@ -6,7 +6,7 @@
   import signup from '$lib/utils/auth/signup'
 	import Loader from '$lib/components/Loader.svelte';
   import { notifyServerError } from '$lib/stores/notification';
-  import user from '$lib/stores/user'
+  import { setUser } from '$lib/stores/user'
   
   export let type: 'login' | 'signup'
   let username = ""
@@ -30,17 +30,8 @@
   const handleLogin = async () => {
     const res = await login(username, password)
     
-    if(res && res.success) {
-      // Update the user store on successful login
-      // This will automatically redirect them from the page
-      user.set(res.data.user)
-    } else {
+    if(!res.success) {
       loading = false
-
-      if(!res) {
-        notifyServerError()
-        return
-      }
 
       switch(res.message) {
         case 'user-info-not-provided':
@@ -64,19 +55,9 @@
 
   const handleSignup = async () => {
     const res = await signup(username, password)
+    loading = false
     
-    if(res && res.success) {
-      // Update the user store on successful login
-      // This will automatically redirect them from the page
-      user.set(res.data.user)
-    } else {
-      loading = false
-
-      if(!res) {
-        notifyServerError()
-        return
-      }
-
+    if(!res.success){
       switch(res.message) {
         case 'user-info-not-provided':
           // Shouldn't happen because inputs are required

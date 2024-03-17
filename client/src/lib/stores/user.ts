@@ -14,6 +14,14 @@ const init = async () => {
   user.set({ loading: false, data: userRes?.user })
 }
 
+export const setUser = (u: User) => {
+  user.set({ loading: false, data: u })
+}
+
+export const removeUser = () => {
+  user.set({ loading: false, data: undefined })
+}
+
 init()
 
 export default user

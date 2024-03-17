@@ -8,7 +8,7 @@ export default async function getUser(): Promise<GetUserData | undefined> {
 
   const res = await request<SuccessResponse<GetUserData> | ErrorResponse<GetUserErrors>>('user/get_user')
 
-  if(!res || !res.success) return undefined
+  if(!res.success) return undefined
 
   return res.data
 }

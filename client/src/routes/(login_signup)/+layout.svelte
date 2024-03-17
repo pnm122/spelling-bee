@@ -1,10 +1,10 @@
 <script lang="ts">
   import { goto } from '$app/navigation'
-	import { onDestroy, onMount } from 'svelte';
+	import { onDestroy } from 'svelte';
 	import user from '$lib/stores/user';
 
   const unsubscribe = user.subscribe(u => {
-    if(u) goto('/')
+    if(!u.loading && u.data) goto('/')
   })
 
   onDestroy(() => unsubscribe())

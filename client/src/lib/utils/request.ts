@@ -1,6 +1,7 @@
+import type { WithUnknown } from "$backend_interfaces/Response";
 import type Method from "$lib/types/method";
 
-export default async function request<ExpectedResponseType>(route = "", method: Method = 'GET', data?: {}): Promise<ExpectedResponseType | false> {
+export default async function request<ExpectedResponseType>(route = "", method: Method = 'GET', data?: {}): Promise<ExpectedResponseType | { success: false, message: 'unknown-error' }> {
   try {
     const baseUrl = import.meta.env.VITE_BACKEND_URL
   
@@ -15,6 +16,9 @@ export default async function request<ExpectedResponseType>(route = "", method: 
 
     return await res.json() as ExpectedResponseType
   } catch {
-    return false
+    return {
+      success: false,
+      message: 'unknown-error'
+    }
   }
 }
