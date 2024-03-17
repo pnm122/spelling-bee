@@ -305,7 +305,13 @@ body[data-theme="dark"] .btn.btn.accent {
 }
 
 .input-group .error {
-  font: var(--body-xs);
+  font: var(--label-xs);
+  margin-top: 0.125rem;
   position: absolute;
   top: 100%;
+}
+
+.input[data-input-invalid="true"] {
+  background-color: var(--error-light) !important;
+  color: var(--error) !important;
 }

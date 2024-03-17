@@ -1,9 +1,7 @@
 <script lang="ts">
   import { goto } from '$app/navigation'
 	import { onDestroy, onMount } from 'svelte';
-  import Cookies from 'js-cookie'
 	import user from '$lib/stores/user';
-  import type User from '$backend_interfaces/User'
 
   const unsubscribe = user.subscribe(u => {
     if(u) goto('/')

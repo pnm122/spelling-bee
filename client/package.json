@@ -12,6 +12,7 @@
 		"format": "prettier --write ."
 	},
 	"devDependencies": {
+		"@iconify-json/bi": "^1.1.23",
 		"@iconify-json/mdi": "^1.1.64",
 		"@iconify-json/ph": "^1.1.11",
 		"@iconify-json/tabler": "^1.1.107",

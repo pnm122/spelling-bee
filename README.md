@@ -29,3 +29,4 @@ Solutions:
     /// <reference types="unplugin-icons/types/svelte" />
   ```
   to app.d.ts.
+- Fetch user in user store file using the session cookie, then subscribe to changes in the user in the login/signup store to redirect if the user exists
