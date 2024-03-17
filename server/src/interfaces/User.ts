@@ -1,10 +1,7 @@
-import Score from "../db/interfaces/Score"
+import User from "../db/interfaces/User"
 
-export default interface UserResponse {
-  username: string
-  email: string
-  pastScores: Score[]
-}
+// Remove password, replace _id ObjectId with id string
+type UserResponse = Omit<User, 'password'|'_id'> & { id: string }
 
 export interface LoginRequest {
   username: string,
@@ -15,3 +12,5 @@ export interface SignupRequest {
   username: string,
   password: string
 }
+
+export {UserResponse as default}

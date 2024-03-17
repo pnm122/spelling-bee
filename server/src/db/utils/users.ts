@@ -4,7 +4,8 @@ import { LoginRequest, SignupRequest } from "../../interfaces/User";
 import bcrypt from 'bcrypt'
 import getDb from "../conn";
 import User from "../interfaces/User";
-import { CreateUserErrors, ErrorResponse, SuccessResponse, ValidateResponseData, ValidateUserCredentialsErrors } from "../../interfaces/Response";
+import { CreateUserData, CreateUserErrors, ErrorResponse, GetUserErrors, GetUserUtilityData, GetUserUtilityErrors, SuccessResponse, ValidateResponseData, ValidateUserCredentialsErrors } from "../../interfaces/Response";
+import { ObjectId, WithoutId } from "mongodb";
 
 /** 
 * Create a user in the Users collection, hashing and salting the given password
@@ -17,7 +18,7 @@ export async function createUser({
   username,
   password
 }: SignupRequest): Promise<
-  SuccessResponse<{insertedId: string}> | 
+  SuccessResponse<CreateUserData> | 
   ErrorResponse<CreateUserErrors>> {
   // Create encrypted password for database
   const saltRounds = parseInt(process.env.SALT_ROUNDS!)
@@ -37,16 +38,83 @@ export async function createUser({
       }
     }
 
-    const insertedUser = await db.collection('Users').insertOne({
+    const newUserWithoutId: WithoutId<User> = {
       username: username,
-      password: hashedPassword
-    })
+      password: hashedPassword,
+      stats: {
+        points: 0,
+        words_found: 0,
+        pangrams: 0,
+        puzzles_played: 0,
+        puzzles_solved: 0,
+        longest_word: {
+          word: '',
+          length: 0
+        }
+      }
+    }
+
+    const insertedUser = await db.collection<WithoutId<User>>('Users')
+                                 .insertOne(newUserWithoutId)
+
+    // MongoDB automatically adds _id field apparently
+    let newUserWithId = newUserWithoutId as User
+
+    const { password, _id, ...userResponse } = newUserWithId
 
     return {
       success: true,
       message: "User successfully added to database",
       data: {
-        insertedId: insertedUser.insertedId.toString()
+        user: {
+          ...userResponse,
+          id: insertedUser.insertedId.toString()
+        }
+      }
+    }
+  } catch(e) {
+    return {
+      success: false,
+      message: 'unknown-error'
+    }
+  }
+}
+
+/** 
+* Get a user from the Users collection, given their ID. Returns all fields except their password
+* @param {Object} params
+* @param {string} params.userId
+* @return {Promise<SuccessResponse<GetUserUtilityData> | ErrorResponse<GetUserUtilityErrors>>} Details whether the function was successful or not. Fails if userId isn't found
+*/
+export async function getUser(
+  userId: string
+): Promise<
+  SuccessResponse<GetUserUtilityData> | 
+  ErrorResponse<GetUserUtilityErrors>> {
+  try {
+    const db = await getDb()
+
+    const u = await db.collection<User>('Users').findOne({
+      _id: new ObjectId(userId)
+    })
+
+    if(u == null) {
+      return {
+        success: false,
+        message: 'invalid-user-id'
+      }
+    }
+
+    // Omit password from return
+    const { password, _id, ...user } = u
+
+    return {
+      success: true,
+      data: {
+        user: {
+          ...user,
+          id: _id.toString()
+        }
       }
     }
   } catch(e) {
@@ -87,10 +155,7 @@ export async function validateUserCredentials({
       return {
         success: true,
         data: {
-          user: {
-            id: user._id.toString(),
-            username: user.username
-          }
+          userId: user._id.toString()
         }
       }
     } else {

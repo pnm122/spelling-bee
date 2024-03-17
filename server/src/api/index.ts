@@ -1,7 +1,7 @@
 import express from 'express';
 
 
-import user from './user'
+import user from './user/_index'
 import daily_puzzle from './daily_puzzle'
 import getDb from '../db/conn';
 import { SuccessResponse } from '../interfaces/Response';

@@ -1,14 +1,13 @@
-import type { SuccessResponse, ErrorResponse } from '$backend_interfaces/Response'
+import type { SuccessResponse, ErrorResponse, LoginErrors } from '$backend_interfaces/Response'
 import request from '../request'
 
 export default async function login(
   username: string, 
   password: string
 ) {
-  const baseUrl = import.meta.env.VITE_BACKEND_URL
   
-  const res = await request<SuccessResponse | ErrorResponse>(
-    `${baseUrl}/api/user/login`,
+  const res = await request<SuccessResponse | ErrorResponse<LoginErrors>>(
+    'user/login',
     'POST',
     {
       username: username,

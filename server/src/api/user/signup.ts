@@ -1,12 +1,12 @@
 import express from 'express';
-import { ErrorResponse, SignUpErrors, SuccessResponse } from '../../interfaces/Response';
+import { ErrorResponse, SignUpData, SignUpErrors, SuccessResponse } from '../../interfaces/Response';
 import { SignupRequest } from '../../interfaces/User';
 import { createUser } from '../../db/utils/users';
 import { createSession } from '../../db/utils/sessions';
 
 const router = express.Router();
 
-router.post<SignupRequest, ErrorResponse<SignUpErrors> | SuccessResponse>('/', async (req, res) => {
+router.post<SignupRequest, ErrorResponse<SignUpErrors> | SuccessResponse<SignUpData>>('/', async (req, res) => {
   const { username, password } = req.body
   if(!username || !password) {
     return res.status(400).json({
@@ -16,14 +16,20 @@ router.post<SignupRequest, ErrorResponse<SignUpErrors> | SuccessResponse>('/', a
   }
 
   const createUserRes = await createUser({ username, password })
-  if(createUserRes.message == 'user-exists') return res.status(400).json(createUserRes)
-  if(!createUserRes.success) return res.status(500).json(createUserRes)
+  if(!createUserRes.success) {
+    if(createUserRes.message == 'user-exists') return res.status(400).json(createUserRes)
+    return res.status(500).json(createUserRes)
+  }
 
-  const sessionRes = await createSession(createUserRes.data!.insertedId, username)
+  const sessionRes = await createSession(createUserRes.data!.user.id)
   if(!sessionRes.success) return res.status(500).json(sessionRes)
-  
+
+  res.cookie('session', sessionRes.data!.sessionId, { maxAge: parseInt(process.env.SESSION_EXPIRE_TIME!) * 1000 })
   return res.json({
-    success: true
+    success: true,
+    data: {
+      user: createUserRes.data.user
+    }
   })
 });
 

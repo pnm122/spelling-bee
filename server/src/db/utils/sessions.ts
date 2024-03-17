@@ -1,6 +1,6 @@
 // Utility functions for the Sessions collection
 
-import { CreateSessionErrors, DeleteSessionErrors, ErrorResponse, GetSessionErrors, SuccessResponse, UpdateSessionErrors } from "../../interfaces/Response";
+import { CreateSessionErrors, DeleteSessionErrors, ErrorResponse, GetSessionData, GetSessionErrors, SuccessResponse, UpdateSessionData, UpdateSessionErrors } from "../../interfaces/Response";
 import getDb from "../conn";
 import Session, { SessionInsert } from "../interfaces/Session";
 import { v4 as uuidv4 } from 'uuid'
@@ -9,19 +9,15 @@ import debug from "../../utils/debug";
 /** 
 * Create a session in the Sessions collection
 * @param {string} userId - ID of the user to associate with the session
-* @param {string} username - User's username
-* @return {Promise<string | ErrorResponse<CreateSessionErrors>>} session ID if successful, ErrorResponse if not
+* @return {Promise<SuccessResponse<{ sessionId: string }> | ErrorResponse<CreateSessionErrors>>} session ID if successful, ErrorResponse if not
 */
-export async function createSession(userId: string, username: string): Promise<SuccessResponse<{ sessionId: string }> | ErrorResponse<CreateSessionErrors>> {
+export async function createSession(userId: string): Promise<SuccessResponse<{ sessionId: string }> | ErrorResponse<CreateSessionErrors>> {
   try {
     const db = await getDb()
 
     const sessionDetails: SessionInsert = {
       sessionId: uuidv4(),
-      user: {
-        id: userId,
-        username: username
-      },
+      userId,
       lastUpdate: new Date(Date.now())
     }
 
@@ -42,9 +38,9 @@ export async function createSession(userId: string, username: string): Promise<S
 /** 
 * Updates a given session with the current time, causing it to expire later. Fails if the session doesn't exist or if the session has expired
 * @param {string} sessionId - ID of the session to update
-* @return {Promise<SuccessResponse | ErrorResponse<UpdateSessionErrors>>} Details whether the function was successful or not
+* @return {Promise<SuccessResponse<UpdateSessionData> | ErrorResponse<UpdateSessionErrors>>} Details whether the function was successful or not
 */
-export async function updateSession(sessionId: string): Promise<SuccessResponse | ErrorResponse<UpdateSessionErrors>> {
+export async function updateSession(sessionId: string): Promise<SuccessResponse<UpdateSessionData> | ErrorResponse<UpdateSessionErrors>> {
   try {
     const db = await getDb()
 
@@ -79,7 +75,7 @@ export async function updateSession(sessionId: string): Promise<SuccessResponse 
 
     return {
       success: true,
-      data: res
+      data: { session: res }
     }
   } catch(e) {
     debug(e as string)
@@ -128,7 +124,7 @@ export async function deleteSession(sessionId: string): Promise<SuccessResponse 
 * @param {string} sessionId - ID of the session to get
 * @return {Promise<SuccessResponse | ErrorResponse>} Details whether the function was successful or not; SuccessResponse data contains session information
 */
-export async function getSession(sessionId: string): Promise<SuccessResponse | ErrorResponse<GetSessionErrors>> {
+export async function getSession(sessionId: string): Promise<SuccessResponse<GetSessionData> | ErrorResponse<GetSessionErrors>> {
   try {
     const db = await getDb()
 
@@ -139,7 +135,7 @@ export async function getSession(sessionId: string): Promise<SuccessResponse | E
     if(res) {
       return {
         success: true,
-        data: res
+        data: { session: res }
       }
     }
 

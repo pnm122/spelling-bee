@@ -101,7 +101,7 @@
     <a
       href="/signup"
       id="switch">
-      I already have an account
+      I need an account
       <TablerArrowNarrowRight />
     </a>
   </div>

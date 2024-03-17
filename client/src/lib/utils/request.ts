@@ -1,7 +1,9 @@
 import type Method from "$lib/types/method";
 
-export default async function request<ExpectedResponseType>(url = "", method: Method = 'GET', data?: {}) {
-  const res = await fetch(url, {
+export default async function request<ExpectedResponseType>(route = "", method: Method = 'GET', data?: {}) {
+  const baseUrl = import.meta.env.VITE_BACKEND_URL
+  
+  const res = await fetch(`${baseUrl}/${route}`, {
     method: method,
     credentials: "include",
     headers: data ? {

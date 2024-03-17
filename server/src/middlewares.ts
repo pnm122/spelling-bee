@@ -46,6 +46,6 @@ export async function authenticated(req: Request, res: Response<ErrorResponse<Au
   // * 1000 because maxAge is in ms, but SESSION_EXPIRE_TIME is in seconds
   res.cookie('session', sessionId, { maxAge: parseInt(process.env.SESSION_EXPIRE_TIME!) * 1000 })
   // Store session information for later use
-  req.body.session = updateRes.data as Session
+  req.body.session = updateRes.data.session as Session
   next()
 }

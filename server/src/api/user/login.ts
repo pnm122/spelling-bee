@@ -21,11 +21,11 @@ router.post<LoginRequest, ErrorResponse<LoginErrors> | SuccessResponse>('/', asy
 
   if(!validCredentials.success) return res.status(401).json(validCredentials)
 
-  const sessionRes = await createSession(validCredentials.data!.user.id, username)
+  const sessionRes = await createSession(validCredentials.data!.userId)
 
   if(sessionRes.success) {
     // * 1000 because maxAge is in ms, but SESSION_EXPIRE_TIME is in seconds
-    res.cookie('session', sessionRes, { maxAge: parseInt(process.env.SESSION_EXPIRE_TIME!) * 1000 })
+    res.cookie('session', sessionRes.data!.sessionId, { maxAge: parseInt(process.env.SESSION_EXPIRE_TIME!) * 1000 })
     return res.json({
       success: true
     })
