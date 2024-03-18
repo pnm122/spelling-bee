@@ -1,6 +1,7 @@
 <script lang="ts">
   import user from "$lib/stores/user";
 	import logout from "$lib/utils/auth/logout";
+	import LevelIndicator from "./LevelIndicator.svelte";
 	import NavLink from "./NavLink.svelte";
 	import Skeleton from "./Skeleton.svelte";
 	import ThemeSwitcher from "./ThemeSwitcher.svelte";
@@ -18,6 +19,7 @@
   {:else}
     <button id="player-info">
       <h1>{$user.data.username}</h1>
+      <LevelIndicator />
     </button>
   {/if}
   <button
@@ -184,5 +186,18 @@
     #toggle-nav {
       display: none;
     }
+  }
+
+  #player-info {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    padding: 0.5rem;
+    transform: translateX(-0.5rem);
+    border-radius: 0.25rem;
+  }
+
+  #player-info:hover {
+    background-color: var(--gray);
   }
 </style>

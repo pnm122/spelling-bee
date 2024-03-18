@@ -75,6 +75,7 @@ body {
   --shadow: 4px 4px 16px rgba(0, 0, 0, 0.15);
 
   /* Heading text styles */
+  --h-sm: 700 0.875rem/1 var(--font-heading);
   --h: 700 1rem/1 var(--font-heading);
   --h-lg: 700 1.125rem/1 var(--font-heading);
   --h-xl: 700 1.25rem/1 var(--font-heading);
