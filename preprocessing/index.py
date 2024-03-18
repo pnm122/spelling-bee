@@ -63,8 +63,9 @@ def filterWords(inputFile: str, outputFile: str, ngram_counts: dict, filterThres
 if __name__ == '__main__':
   matches = getMatchingWords(
     'output.txt',
-    'R',
-    'UWIPNG'
+    'N',
+    'MADOLI'
+    # MANDOLIN
   )
 
   print(matches)

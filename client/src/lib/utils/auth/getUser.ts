@@ -1,5 +1,5 @@
 import type { ErrorResponse, GetUserData, GetUserErrors, SuccessResponse } from "$backend_interfaces/Response";
-import request from "./request";
+import request from "../request";
 import Cookies from "js-cookie";
 
 export default async function getUser(): Promise<GetUserData | undefined> {

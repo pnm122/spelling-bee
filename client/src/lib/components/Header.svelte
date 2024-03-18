@@ -61,7 +61,7 @@
         </li>
       {:else}
         <li>
-          <NavLink href="/stats">My Stats</NavLink>
+          <NavLink href="/past-puzzles">Past Puzzles</NavLink>
         </li>
         <li>
           <NavLink href="/leaderboard">Leaderboard</NavLink>

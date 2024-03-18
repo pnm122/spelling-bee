@@ -1,0 +1,242 @@
+<script lang="ts">
+  import user from "$lib/stores/user";
+  import todaysPuzzle from "$lib/stores/todaysPuzzle"
+  import Skeleton from "$lib/components/Skeleton.svelte"
+  import convertDate from "$lib/utils/convertDate"
+
+  let points = 40
+  let maxPoints = 100
+  $: puzzleProgressPct = points * 100 / maxPoints
+</script>
+
+<div id="puzzle-header">
+  {#if $todaysPuzzle.loading}
+    <Skeleton --width="10rem" --height="1.5rem" />
+    <Skeleton --width="9rem" --height="1rem" />
+  {:else if $todaysPuzzle.data}
+    <h1>Today's Puzzle</h1>
+    <h2>{convertDate($todaysPuzzle.data.date)}</h2>
+  {:else}
+    <span class="error">Error getting today's puzzle</span>
+  {/if}
+  <!-- <button on:click={() => points += 10}>+</button>
+  <button on:click={() => points -= 10}>-</button> -->
+</div>
+<div id="main">
+  <div id="progress-outer-wrapper">
+    <div 
+      id="progress-inner-wrapper"
+      style="transform: translate(-{Math.min(Math.floor(puzzleProgressPct / 20)*20, 60)}%)"
+      data-puzzle-solved={puzzleProgressPct == 100}>
+      <!-- ^ Moves the progress bar on mobile depending on which skill level the user has achieved -->
+      <!-- Using this idea since the whole bar can't fit on mobile -->
+      <!-- TODO: Accessibility? -->
+      <div id="skill-levels">
+        <span 
+          class="skill-level"
+          data-passed="{puzzleProgressPct >= 0}">
+          Novice
+        </span>
+        <span 
+          class="skill-level"
+          data-passed="{puzzleProgressPct >= 20}">
+          Savvy
+        </span>
+        <span 
+          class="skill-level"
+          data-passed="{puzzleProgressPct >= 40}">
+          Wordsmith
+        </span>
+        <span 
+          class="skill-level"
+          data-passed="{puzzleProgressPct >= 60}">
+          Expert
+        </span>
+        <span 
+          class="skill-level"
+          data-passed="{puzzleProgressPct >= 80}">
+          Genius
+        </span>
+        <span 
+          class="skill-level"
+          data-passed="{puzzleProgressPct >= 100}">
+          Spelling Bee
+        </span>
+      </div>
+      <div 
+        id="progress"
+        role="progressbar"
+        aria-valuenow={puzzleProgressPct}
+        aria-valuemin={points}
+        aria-valuemax={maxPoints}
+        aria-label="Points earned from today's puzzle">
+        <div 
+          id="progress-bar"
+          style="width: {puzzleProgressPct}%"
+        />
+      <div
+        id="points"
+        style="left: {puzzleProgressPct}%;">
+        {points} points
+      </div>
+    </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  #puzzle-header {
+    padding: 1rem;
+    border-bottom: 1px solid var(--gray);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  #puzzle-header h1 {
+    font: var(--h-2xl);
+  }
+
+  #puzzle-header h2 {
+    font: var(--h);
+    color: var(--darkgray);
+  }
+
+  #main {
+    width: 100%;
+    max-width: 600px;
+    margin: auto;
+  }
+
+  #progress-outer-wrapper {
+    --bar-height: 0.125rem;
+    padding: 2rem 3rem 3rem 3rem;
+    overflow: hidden;
+  }
+
+  #progress-inner-wrapper {
+    --highlight-color: var(--primary);
+    --on-highlight: var(--dark);
+
+    position: relative;
+    min-width: 450px;
+    transition: transform var(--transition-2);
+  }
+
+  #progress-inner-wrapper[data-puzzle-solved="true"] {
+    --highlight-color: var(--accent);
+    --on-highlight: var(--light);
+  }
+
+  @media screen and (width > 550px) {
+    #progress-inner-wrapper {
+      transform: none !important;
+    }
+  }
+
+  #progress {
+    width: 100%;
+    height: var(--bar-height);
+    background-color: var(--gray);
+  }
+
+  #progress-bar {
+    height: 100%;
+    background-color: var(--highlight-color);
+    transition: width var(--transition-2),
+                background-color var(--transition-2);
+  }
+
+  #skill-levels {
+    --dot-gap: 0.25rem;
+    --dot-size: 0.625rem;
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: 0;
+  }
+
+  .skill-level {
+    width: fit-content;
+    color: var(--mediumgray);
+    position: absolute;
+    transform: translateX(-50%);
+    font: var(--label-xs);
+    white-space: nowrap;
+    /* gap between text and dot + half of dot size, then subtract half of bar height to center vertically on the bar */
+    bottom: calc(var(--dot-gap) + (var(--dot-size) / 2) - (var(--bar-height) / 2));
+    transition: color var(--transition-2);
+  }
+
+  .skill-level::after {
+    content: "";
+    position: absolute;
+    top: calc(100% + var(--dot-gap));
+    left: 50%;
+    transform: translateX(-50%);
+    width: var(--dot-size);
+    aspect-ratio: 1;
+    border-radius: 999px;
+    background-color: var(--gray);
+    transition: background-color var(--transition-2);
+  }
+
+  .skill-level[data-passed="true"] {
+    color: var(--heading);
+  }
+
+  .skill-level[data-passed="true"]::after {
+    background-color: var(--highlight-color);
+  }
+
+  .skill-level:nth-of-type(2) {
+    left: 20%;
+  }
+
+  .skill-level:nth-of-type(3) {
+    left: 40%;
+  }
+
+  .skill-level:nth-of-type(4) {
+    left: 60%;
+  }
+
+  .skill-level:nth-of-type(5) {
+    left: 80%;
+  }
+
+  .skill-level:nth-of-type(6) {
+    left: 100%;
+  }
+
+  #points {
+    font: var(--label-sm);
+    padding: 0.375rem;
+    border-radius: 0.25rem;
+    background-color: var(--highlight-color);
+    color: var(--on-highlight);
+    width: fit-content;
+    margin-top: 0.75rem;
+    position: relative;
+    transform: translateX(-50%);
+    transition: left var(--transition-2),
+                color var(--transition-2),
+                background-color var(--transition-2);
+  }
+
+  #points::before {
+    content: "";
+    position: absolute;
+    display: block;
+    left: 50%;
+    bottom: 100%;
+    border-width: 0 4px 4px 4px;
+    border-bottom-color: var(--highlight-color);
+    border-left-color: transparent;
+    border-right-color: transparent;
+    border-style: solid;
+    transform: translateX(-50%);
+    transition: border-color var(--transition-2);
+  }
+</style>
