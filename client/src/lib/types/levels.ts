@@ -6,3 +6,10 @@ export interface LevelColors {
 export interface LevelColorsWithMinLevel extends LevelColors {
   minLevel: number
 }
+
+export interface LevelProgress {
+  level: number
+  pointsEarnedInLevel: number
+  pointsToNextLevel: number
+  totalPointsInLevel: number
+}

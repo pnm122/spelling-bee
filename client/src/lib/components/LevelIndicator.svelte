@@ -1,11 +1,10 @@
 <script lang="ts">
   import user from "$lib/stores/user";
-	import levelToColors from "$lib/utils/levelToColors";
-	import pointsToLevel from "$lib/utils/pointsToLevel";
+	import { pointsToLevel, levelToColors } from "$lib/utils/levels";
 	import Hexagon from "./Hexagon.svelte";
 
-  $: level = $user.loading || !$user.data ? -1 : pointsToLevel($user.data.stats.points)
-  $: colors = levelToColors(level ?? -1)
+  $: level = $user.loading || !$user.data ? undefined : pointsToLevel($user.data.stats.points)
+  $: colors = levelToColors(level ? level.level : -1)
 </script>
 
 {#if !$user.loading && $user.data}
@@ -15,7 +14,7 @@
     width={24} 
     fill={colors.bgColor}
   />
-  <span style="color: {colors.textColor}">{level}</span>
+  <span style="color: {colors.textColor}">{level?.level}</span>
 </div>
 
 {/if}

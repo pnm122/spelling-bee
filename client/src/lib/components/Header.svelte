@@ -4,11 +4,13 @@
 	import LevelIndicator from "./LevelIndicator.svelte";
 	import NavLink from "./NavLink.svelte";
 	import Skeleton from "./Skeleton.svelte";
+	import StatsPopup from "./StatsPopup.svelte";
 	import ThemeSwitcher from "./ThemeSwitcher.svelte";
   import PhDotsThreeOutlineFill from '~icons/ph/dots-three-outline-fill'
   import PhXBold from '~icons/ph/x-bold'
 
   let expanded = false
+  let isStatsOpen = false
 </script>
 
 <header>
@@ -17,10 +19,15 @@
   {:else if !$user.data}
     <h1>Spelling Bee</h1>
   {:else}
-    <button id="player-info">
+    <button 
+      aria-label="View your stats"
+      title="View your stats"
+      on:click={() => isStatsOpen = true}
+      id="player-info">
       <h1>{$user.data.username}</h1>
       <LevelIndicator />
     </button>
+    <StatsPopup bind:open={isStatsOpen} />
   {/if}
   <button
     on:click={() => expanded = !expanded}
@@ -28,7 +35,7 @@
     aria-label={expanded ? "Close navigation" : "Open navigation"}
     title={expanded ? "Close navigation" : "Open navigation"}
     role="switch"
-    id="toggle-nav">
+    id="toggle-nav" class="icon-button">
     {#if expanded}
       <PhXBold />
     {:else}
@@ -96,7 +103,7 @@
     border-bottom: 1px solid var(--gray);
   }
 
-  header > * {
+  header > :global(*) {
     position: relative;
     z-index: 2;
   }
@@ -141,6 +148,10 @@
     display: block;
   }
 
+  button {
+    white-space: nowrap;
+  }
+
   #divider {
     height: 1.5rem;
     width: 1px;
@@ -151,30 +162,16 @@
     font: var(--label-sm);
   }
 
-  #toggle-nav {
-    width: 2.5rem;
-    height: 2.5rem;
-    gap: 3px;
-    border-radius: 999px;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  #toggle-nav:hover {
-    background-color: var(--gray);
-  }
-
   @media screen and (width > 768px) {
     nav {
       background-color: transparent;
       position: static;
       visibility: visible;
-      transform: none;
+      transform: none !important;
       height: unset;
       padding: 0;
       z-index: inherit;
+      transition: none;
     }
 
     nav ul {
