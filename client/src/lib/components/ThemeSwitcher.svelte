@@ -1,6 +1,6 @@
 <script lang="ts">
   import theme from "$lib/stores/theme";
-  import PhSun from '~icons/ph/sun'
+  import PhSunBold from '~icons/ph/sun-bold'
   import PhMoonFill from '~icons/ph/moon-fill'
 
   const switchTheme = () => {
@@ -17,7 +17,7 @@
   <div 
     id="theme-icon">
     {#if $theme == 'light'}
-      <PhSun class='icon light' />
+      <PhSunBold class='icon light' />
     {:else}
       <PhMoonFill class='icon' />
     {/if}
@@ -62,7 +62,7 @@
   }
 
   #theme-icon :global(.icon.light) {
-    width: 0.8rem;
-    height: 0.8rem;
+    width: 0.75rem;
+    height: 0.75rem;
   }
 </style>
