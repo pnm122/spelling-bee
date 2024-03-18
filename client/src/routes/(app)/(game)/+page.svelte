@@ -6,7 +6,13 @@
 
   let points = 40
   let maxPoints = 100
+  let pointsFromLastWord = 10
   $: puzzleProgressPct = points * 100 / maxPoints
+
+  const addPoints = (p: number) => {
+    points += p
+    pointsFromLastWord = p
+  }
 </script>
 
 <div id="puzzle-header">
@@ -19,8 +25,8 @@
   {:else}
     <span class="error">Error getting today's puzzle</span>
   {/if}
-  <!-- <button on:click={() => points += 10}>+</button>
-  <button on:click={() => points -= 10}>-</button> -->
+  <button on:click={() => addPoints(10)}>+</button>
+  <button on:click={() => addPoints(-10)}>-</button>
 </div>
 <div id="main">
   <div id="progress-outer-wrapper">
@@ -77,7 +83,13 @@
       <div
         id="points"
         style="left: {puzzleProgressPct}%;">
-        {points} points
+        <span>{points} points</span>
+        <!-- Force points from last word to rerender every time points changes, causing the animation -->
+        {#key points}
+          {#if pointsFromLastWord > 0}
+            <span id="points-from-last-word">+{pointsFromLastWord}</span>
+          {/if}
+        {/key}
       </div>
     </div>
     </div>
@@ -238,5 +250,33 @@
     border-style: solid;
     transform: translateX(-50%);
     transition: border-color var(--transition-2);
+  }
+
+  #points-from-last-word {
+    position: absolute;
+    left: 100%;
+    top: 50%;
+    
+    margin-left: 0.5rem;
+    color: var(--darkgray);
+    white-space: nowrap;
+    font: var(--label-xs);
+    animation: appear 4s var(--timing-function) forwards;
+  }
+
+  @keyframes appear {
+    from {
+      transform: translateY(50%);
+      opacity: 0;
+      visibility: hidden;
+    } 25%, 75% {
+      transform: translateY(-50%);
+      opacity: 1;
+      visibility: visible;
+    } to {
+      transform: translateY(-150%);
+      opacity: 0;
+      visibility: hidden;
+    }
   }
 </style>
