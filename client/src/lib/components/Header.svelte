@@ -1,6 +1,6 @@
 <script lang="ts">
   import user from "$lib/stores/user";
-	import logout from "$lib/utils/auth/logout";
+	import logout from "$lib/utils/requests/auth/logout";
 	import LevelIndicator from "./LevelIndicator.svelte";
 	import NavLink from "./NavLink.svelte";
 	import Skeleton from "./Skeleton.svelte";

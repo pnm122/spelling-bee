@@ -18,7 +18,7 @@ const todaysPuzzle = readable<Loadable<Puzzle>>(
         id: 'abcdef',
         centerLetter: 'N',
         outsideLetters: ['M', 'A', 'D', 'O', 'L', 'I'],
-        wordList: ['ADMIN', 'AMINO', 'AMMONIA', 'ANAL', 'ANIMA', 'ANIMAL', 'DAMN', 'DINO', 'INLAID', 'LAIN', 'LAMINA', 'LAMINAL', 'LIMINA', 'LIMINAL', 'LOAN', 'LOIN', 'MADMAN', 'MAILMAN', 'MAMMALIAN', 'MANIA', 'MANDOLIN', 'MILLION', 'MINIMA', 'MINIMAL', 'MOAN', 'MONOMIAL', 'NAIL', 'NOMAD', 'OILMAN'],
+        wordList: ['ADMIN', 'AMINO', 'AMMONIA', 'ANAL', 'ANNAL', 'ANIMA', 'ANIMAL', 'DAMN', 'DINO', 'DOMAIN', 'INLAID', 'LAIN', 'LAND', 'LAMINA', 'LAMINAL', 'LIMINA', 'LIMINAL', 'LOAN', 'LOIN', 'MADMAN', 'MAILMAN', 'MAIN', 'MAMMALIAN', 'MANIA', 'MANDOLIN', 'MILLION', 'MINIMA', 'MINIMAL', 'MOAN', 'MONOMIAL', 'MOON', 'NAIL', 'NOMAD', 'OILMAN'],
         date: '03/18/2024'
       }
     })

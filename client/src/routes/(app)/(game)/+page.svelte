@@ -3,10 +3,14 @@
   import todaysPuzzle from "$lib/stores/todaysPuzzle"
   import Skeleton from "$lib/components/Skeleton.svelte"
   import convertDate from "$lib/utils/convertDate"
+  import Game from "$lib/components/Game.svelte"
+	import { getTotalPoints } from "$lib/utils/points";
 
-  let points = 40
-  let maxPoints = 100
-  let pointsFromLastWord = 10
+  let maxPoints = $todaysPuzzle.loading || !$todaysPuzzle.data ? 0 : getTotalPoints($todaysPuzzle.data.wordList)
+  let pointsFromLastWord = 0
+  let wordsFound: string[] = []
+  $: console.log(wordsFound)
+  $: points = getTotalPoints(wordsFound)
   $: puzzleProgressPct = points * 100 / maxPoints
 
   const addPoints = (p: number) => {
@@ -25,8 +29,6 @@
   {:else}
     <span class="error">Error getting today's puzzle</span>
   {/if}
-  <button on:click={() => addPoints(10)}>+</button>
-  <button on:click={() => addPoints(-10)}>-</button>
 </div>
 <div id="main">
   <div id="progress-outer-wrapper">
@@ -80,20 +82,27 @@
           id="progress-bar"
           style="width: {puzzleProgressPct}%"
         />
-      <div
-        id="points"
-        style="left: {puzzleProgressPct}%;">
-        <span>{points} points</span>
-        <!-- Force points from last word to rerender every time points changes, causing the animation -->
-        {#key points}
-          {#if pointsFromLastWord > 0}
-            <span id="points-from-last-word">+{pointsFromLastWord}</span>
-          {/if}
-        {/key}
+        <div
+          id="points"
+          style="left: {puzzleProgressPct}%;">
+          <span>{points} points</span>
+          <!-- Force points from last word to rerender every time points changes, causing the animation -->
+          {#key points}
+            {#if pointsFromLastWord > 0}
+              <span id="points-from-last-word">+{pointsFromLastWord}</span>
+            {/if}
+          {/key}
+        </div>
       </div>
     </div>
-    </div>
   </div>
+  {#if $todaysPuzzle.loading}
+    <Skeleton />
+  {:else if !$todaysPuzzle.data}
+    <h2>Today's puzzle not found.</h2>
+  {:else}
+    <Game bind:wordsFound bind:pointsFromLastWord puzzle={$todaysPuzzle.data} />
+  {/if}
 </div>
 
 <style>

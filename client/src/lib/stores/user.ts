@@ -1,6 +1,6 @@
 import { writable } from "svelte/store";
 import type User from "$backend_interfaces/User";
-import getUser from "$lib/utils/auth/getUser";
+import getUser from "$lib/utils/requests/auth/getUser";
 import type Loadable from "$lib/types/loadable";
 
 let user = writable<Loadable<User>>({ loading: true })

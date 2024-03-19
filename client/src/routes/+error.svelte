@@ -1,3 +1,7 @@
+<script lang="ts">
+  import { page } from '$app/stores'
+</script>
+
 <div>
-  <p>Error page</p>
+  <p>{$page.error?.message}</p>
 </div>
