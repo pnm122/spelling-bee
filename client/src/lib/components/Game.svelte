@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type Puzzle from "$backend_interfaces/Puzzle";
-	import { onMount } from "svelte";
+	import { onDestroy, onMount } from "svelte";
   import Hexagon from "./Hexagon.svelte";
 
   export let pointsFromLastWord: number
@@ -9,6 +9,8 @@
 
   let outsideLetters = puzzle.outsideLetters
   let word = ""
+  let pressedKeys: string[] = []
+  let isComponentDestroyed = false
 
   const addLetter = (letter: string) => {
     word = word + letter.toUpperCase()
@@ -45,13 +47,33 @@
     }
   }
 
+  const handleKeyPress = (e: KeyboardEvent) => {
+    const key = e.key.toUpperCase()
+    if(!pressedKeys.includes(key)) pressedKeys = [...pressedKeys, key]
+  }
+
+  const handleKeyUp = (e: KeyboardEvent) => {
+    const key = e.key.toUpperCase()
+    if(pressedKeys.includes(key)) {
+      setTimeout(() => {
+        if(!isComponentDestroyed) pressedKeys = pressedKeys.filter(k => k != key)
+      }, 100)
+    }
+  }
+
   onMount(() => {
     document.addEventListener('keydown', addLetterFromKey)
+    document.addEventListener('keypress', handleKeyPress)
+    document.addEventListener('keyup', handleKeyUp)
 
     return () => {
       document.removeEventListener('keydown', addLetterFromKey)
+      document.removeEventListener('keypress', handleKeyPress)
+      document.removeEventListener('keyup', handleKeyUp)
     }
   })
+
+  onDestroy(() => isComponentDestroyed = true)
 </script>
 
 <div id="wrapper">
@@ -73,6 +95,7 @@
       textColor='var(--dark)'
       class="letter-button"
       id="center"
+      pressed={pressedKeys.includes(puzzle.centerLetter)}
       clickHandler={() => addLetter(puzzle.centerLetter)}
       letter="{puzzle.centerLetter}"
     />
@@ -81,6 +104,7 @@
       fill='var(--gray)' 
       class="letter-button"
       id="top-middle"
+      pressed={pressedKeys.includes(outsideLetters[0])}
       clickHandler={() => addLetter(outsideLetters[0])}
       letter="{outsideLetters[0]}"
     />
@@ -89,6 +113,7 @@
       fill='var(--gray)' 
       class="letter-button"
       id="top-left"
+      pressed={pressedKeys.includes(outsideLetters[1])}
       clickHandler={() => addLetter(outsideLetters[1])}
       letter="{outsideLetters[1]}"
     />
@@ -97,6 +122,7 @@
       fill='var(--gray)' 
       class="letter-button"
       id="top-right"
+      pressed={pressedKeys.includes(outsideLetters[2])}
       clickHandler={() => addLetter(outsideLetters[2])}
       letter="{outsideLetters[2]}"
     />
@@ -105,6 +131,7 @@
       fill='var(--gray)' 
       class="letter-button"
       id="bottom-middle"
+      pressed={pressedKeys.includes(outsideLetters[3])}
       clickHandler={() => addLetter(outsideLetters[3])}
       letter="{outsideLetters[3]}"
     />
@@ -113,6 +140,7 @@
       fill='var(--gray)' 
       class="letter-button"
       id="bottom-left"
+      pressed={pressedKeys.includes(outsideLetters[4])}
       clickHandler={() => addLetter(outsideLetters[4])}
       letter="{outsideLetters[4]}"
     />
@@ -121,6 +149,7 @@
       fill='var(--gray)' 
       class="letter-button"
       id="bottom-right"
+      pressed={pressedKeys.includes(outsideLetters[5])}
       clickHandler={() => addLetter(outsideLetters[5])}
       letter="{outsideLetters[5]}"
     />

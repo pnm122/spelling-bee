@@ -5,6 +5,7 @@
   export let clickHandler: (() => void) | undefined = undefined
   export let letter: string | undefined = undefined
   export let id = ""
+  export let pressed = false
   let classes: string = ""
 
   export {classes as class}
@@ -12,6 +13,7 @@
 
 <svg class={classes} id={id} width="{width}" viewBox="-5 -5 130 113.92304845413263">
   <polygon
+    data-pressed={pressed}
     data-clickable={clickHandler != undefined}
     role={clickHandler == undefined ? undefined : "button"}
     tabindex={clickHandler == undefined ? undefined : 0}
@@ -39,7 +41,8 @@
     cursor: pointer;
   }
 
-  polygon[data-clickable="true"]:active {
+  polygon[data-clickable="true"]:active,
+  polygon[data-pressed="true"] {
     transform: scale(0.85);
   }
 
