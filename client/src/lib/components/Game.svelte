@@ -14,6 +14,7 @@
   let word = ""
   let pressedKeys: string[] = []
   let isComponentDestroyed = false
+  let hintWord = ""
 
   const addLetter = (letter: string) => {
     word = word + letter.toUpperCase()
@@ -27,7 +28,10 @@
     const validWord = puzzle.wordList.includes(word)
     const alreadyFoundWord = wordsFound.includes(word)
     if(validWord) {
-      if(!alreadyFoundWord) wordsFound = [...wordsFound, word]
+      if(!alreadyFoundWord) {
+        wordsFound = [...wordsFound, word]
+        if(word == hintWord) hintWord = ''
+      }
       else console.log("You've already found this word.")
     } else {
       if(word.length < 4) console.log('Must be at least 4 letters long.')
@@ -38,7 +42,7 @@
     word = ""
   }
 
-  const addLetterFromKey = (e: KeyboardEvent) => {
+  const handleKeyDown = (e: KeyboardEvent) => {
     const key = e.key.toUpperCase()
 
     if(key == puzzle.centerLetter || outsideLetters.includes(key)) {
@@ -46,6 +50,9 @@
     } else if(key == 'BACKSPACE') {
       removeLetter()
     } else if(key == 'ENTER') {
+      console.log(document.activeElement)
+      // Don't override functionality of other buttons
+      if(document.activeElement != document.body) return
       submitWord()
     }
   }
@@ -90,13 +97,33 @@
     outsideLetters[startIndex] = currLetter
   }
 
+  // Pick an unfound word as the user's hint
+  // Hint is first 3 letters of the word
+  // If they've already asked for a hint and not found that word, just give them the same hint again
+  const getHint = () => {
+    (document.activeElement as HTMLElement).blur()
+
+    if(hintWord != '') word = hintWord.slice(0, 3)
+    else {
+      let availableIndexes: number[] = []
+      puzzle.wordList.forEach((w, index) => {
+        if(!wordsFound.includes(w)) availableIndexes.push(index)
+      })
+
+      const hintIndex = availableIndexes[Math.floor(Math.random() * availableIndexes.length)]
+      hintWord = puzzle.wordList[availableIndexes[hintIndex]]
+
+      word = hintWord.slice(0, 3)
+    }
+  }
+
   onMount(() => {
-    document.addEventListener('keydown', addLetterFromKey)
+    document.addEventListener('keydown', handleKeyDown)
     document.addEventListener('keypress', handleKeyPress)
     document.addEventListener('keyup', handleKeyUp)
 
     return () => {
-      document.removeEventListener('keydown', addLetterFromKey)
+      document.removeEventListener('keydown', handleKeyDown)
       document.removeEventListener('keypress', handleKeyPress)
       document.removeEventListener('keyup', handleKeyUp)
     }
@@ -202,7 +229,7 @@
         Delete
       </button>
       <button
-        on:click={() => {}}
+        on:click={getHint}
         class="btn secondary"
         title="Hint"
         aria-label="Hint">

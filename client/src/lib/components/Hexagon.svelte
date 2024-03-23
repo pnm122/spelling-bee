@@ -51,5 +51,6 @@
     text-transform: uppercase;
     pointer-events: none;
     font: var(--h-3xl);
+    user-select: none;
   }
 </style>
