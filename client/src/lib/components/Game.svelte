@@ -2,6 +2,9 @@
 	import type Puzzle from "$backend_interfaces/Puzzle";
 	import { onDestroy, onMount } from "svelte";
   import Hexagon from "./Hexagon.svelte";
+  import MaterialSymbolsUndoRounded from '~icons/material-symbols/undo-rounded'
+  import PhLightbulb from '~icons/ph/lightbulb'
+  import PhShuffle from '~icons/ph/shuffle'
 
   export let pointsFromLastWord: number
   export let wordsFound: string[]
@@ -59,6 +62,32 @@
         if(!isComponentDestroyed) pressedKeys = pressedKeys.filter(k => k != key)
       }, 100)
     }
+  }
+
+  // Shuffle letters by moving them in a closed loop
+  // Guarantees that no letter will be in the same spot after shuffling
+  // i.e. given A, B, C, D, E, F, the shuffle might look like:
+  // A -> C -> F -> B -> E -> D -> A
+  const shuffleLetters = () => {
+    let openIndexes = [0, 1, 2, 3, 4, 5]
+    let currIndex = openIndexes[Math.floor(Math.random() * openIndexes.length)]
+    let currLetter = outsideLetters[currIndex]
+    let startIndex = currIndex
+    openIndexes = openIndexes.filter(i => i != startIndex)
+    let i = 0
+    while(openIndexes.length > 0) {
+      let otherIndex = openIndexes[Math.floor(Math.random() * openIndexes.length)]
+      openIndexes = openIndexes.filter(i => i != otherIndex)
+
+      let temp = outsideLetters[otherIndex]
+      outsideLetters[otherIndex] = currLetter
+
+      currLetter = temp
+      currIndex = otherIndex
+      i++
+    } 
+
+    outsideLetters[startIndex] = currLetter
   }
 
   onMount(() => {
@@ -154,6 +183,42 @@
       letter="{outsideLetters[5]}"
     />
   </div>
+  <div id="game-controls">
+    <button 
+      disabled={word==''}
+      on:click={submitWord}
+      id="enter"
+      class="btn primary">
+      Enter
+    </button>
+    <div id="game-sub-controls">
+      <button
+        disabled={word==''}
+        on:click={removeLetter}
+        class="btn gray"
+        title="Delete letter"
+        aria-label="Delete letter">
+        <MaterialSymbolsUndoRounded />
+        Delete
+      </button>
+      <button
+        on:click={() => {}}
+        class="btn secondary"
+        title="Hint"
+        aria-label="Hint">
+        <PhLightbulb />
+        Hint
+      </button>
+      <button
+        on:click={shuffleLetters}
+        class="btn gray"
+        title="Shuffle letters"
+        aria-label="Shuffle letters">
+        <PhShuffle />
+        Shuffle
+      </button>
+    </div>
+  </div>
 </div>
 
 <style>
@@ -202,7 +267,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 1.5rem 0;
+    margin: 1rem 0;
     height: 2.75rem;
   }
 
@@ -229,5 +294,22 @@
     50%, 100% {
       opacity: 0;
     }
+  }
+
+  #game-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: fit-content;
+    margin: 1rem auto 0 auto;
+  }
+
+  #enter {
+    width: 100%;
+  }
+
+  #game-sub-controls {
+    display: flex;
+    gap: 0.5rem;
   }
 </style>

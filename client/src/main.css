@@ -210,18 +210,21 @@ hr {
   gap: 0.25rem;
   align-items: center;
   justify-content: center;
-  transition: transform var(--transition-1);
+  transition: transform var(--transition-1),
+              background-color var(--transition-1),
+              opacity var(--transition-1),
+              filter var(--transition-1);
   position: relative;
   z-index: 1;
   width: fit-content;
   font: var(--label);
 }
 
-.btn:hover {
+.btn.primary:hover {
   transform: translateY(calc(-1 * var(--hover-offset)));
 }
 
-.btn::before, .btn::after {
+.btn.primary::before, .btn.primary::after {
   content: "";
   position: absolute;
   z-index: -1;
@@ -234,16 +237,16 @@ hr {
               opacity var(--transition-1);
 }
 
-.btn::before {
+.btn.primary::before {
   background-color: var(--btn-shadow-color);
   opacity: 0;
 }
 
-.btn::after {
+.btn.primary::after {
   background-color: var(--btn-color);
 }
 
-.btn:hover::before {
+.btn.primary:hover::before {
   transform: translateY(var(--hover-offset));
   opacity: 1;
 }
@@ -252,9 +255,8 @@ hr {
   pointer-events: none;
 }
 
-.btn:disabled::before,
-.btn:disabled::after {
-  opacity: 0.333;
+.btn:disabled {
+  opacity: 0.3333;
 }
 
 .btn.primary {
@@ -268,9 +270,8 @@ body[data-theme="dark"] .btn.btn.primary {
 }
 
 .btn.secondary {
-  --btn-color: var(--secondary);
-  --btn-shadow-color: color-mix(in oklch, var(--secondary) 45%, black);
-  color: var(--dark);
+  background-color: var(--secondary);
+  color: var(--heading);
 }
 
 body[data-theme="dark"] .btn.btn.secondary {
@@ -278,13 +279,32 @@ body[data-theme="dark"] .btn.btn.secondary {
 }
 
 .btn.accent {
-  --btn-color: var(--accent);
-  --btn-shadow-color: color-mix(in oklch, var(--accent) 45%, black);
+  background-color: var(--accent);
   color: var(--light);
 }
 
 body[data-theme="dark"] .btn.btn.accent {
   --btn-shadow-color: color-mix(in oklch, var(--accent) 65%, black);
+}
+
+.btn.secondary:hover,
+.btn.accent:hover {
+  filter: brightness(1.2)
+}
+
+.btn.gray {
+  background-color: var(--gray);
+  color: var(--heading);
+}
+
+.btn.gray:hover {
+  transform: none;
+  background-color: var(--mediumgray);
+}
+
+.btn.gray::after,
+.btn.gray::before {
+  content: none;
 }
 
 .btn.small {
