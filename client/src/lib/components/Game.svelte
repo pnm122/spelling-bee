@@ -15,6 +15,13 @@
   let pressedKeys: string[] = []
   let isComponentDestroyed = false
   let hintWord = ""
+  let notification = ""
+  let notificationKey = 0
+  
+  const setNotification = (n: string) => {
+    notification = n
+    notificationKey++
+  }
 
   const addLetter = (letter: string) => {
     word = word + letter.toUpperCase()
@@ -32,11 +39,11 @@
         wordsFound = [...wordsFound, word]
         if(word == hintWord) hintWord = ''
       }
-      else console.log("You've already found this word.")
+      else setNotification("You've already found this word.")
     } else {
-      if(word.length < 4) console.log('Must be at least 4 letters long.')
-      else if(!word.includes(puzzle.centerLetter)) console.log("Must contain center letter.")
-      else console.log("We don't have that word in our dictionary.")
+      if(word.length < 4) setNotification('Must be at least 4 letters long.')
+      else if(!word.includes(puzzle.centerLetter)) setNotification("Must contain center letter.")
+      else setNotification("We don't have that word in our dictionary.")
     }
 
     word = ""
@@ -50,7 +57,6 @@
     } else if(key == 'BACKSPACE') {
       removeLetter()
     } else if(key == 'ENTER') {
-      console.log(document.activeElement)
       // Don't override functionality of other buttons
       if(document.activeElement != document.body) return
       submitWord()
@@ -133,6 +139,11 @@
 </script>
 
 <div id="wrapper">
+  {#key notificationKey}
+    {#if notification != ""}
+      <p id="notification">{notification}</p>
+    {/if}
+  {/key}
   <div id="word-wrapper">
     <h2 id="word">
       {#each word as char}
@@ -249,6 +260,10 @@
 </div>
 
 <style>
+  #wrapper {
+    position: relative;
+  }
+
   #main-game {
     position: relative;
     width: 250px;
@@ -338,5 +353,34 @@
   #game-sub-controls {
     display: flex;
     gap: 0.5rem;
+  }
+
+  #notification {
+    position: absolute;
+    top: -1.75rem;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    width: fit-content;
+    background-color: var(--gray);
+    color: var(--heading);
+    padding: 0.125rem 0.375rem;
+    animation: appear 4s var(--timing-function) forwards;
+  }
+
+  @keyframes appear {
+    from {
+      transform: translate(-50%, 50%);
+      opacity: 0;
+      visibility: hidden;
+    } 25%, 75% {
+      transform: translate(-50%, -50%);
+      opacity: 1;
+      visibility: visible;
+    } to {
+      transform: translate(-50%, -150%);
+      opacity: 0;
+      visibility: hidden;
+    }
   }
 </style>
