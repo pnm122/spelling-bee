@@ -26,7 +26,7 @@ def getMatchingWords(file: str, centerLetter: str, outsideLetters: str) -> list[
       match = re.match(fr'[{outsideLetters}]*[{centerLetter}][{outsideLetters}]*\s', line)
 
       if not(match is None):
-        matches.append(line.strip())
+        matches.append(line.strip().upper())
   
     return matches
 
@@ -63,8 +63,8 @@ def filterWords(inputFile: str, outputFile: str, ngram_counts: dict, filterThres
 if __name__ == '__main__':
   matches = getMatchingWords(
     'output.txt',
-    'N',
-    'MADOLI'
+    'E',
+    'ASTHRI'
     # MANDOLIN
   )
 

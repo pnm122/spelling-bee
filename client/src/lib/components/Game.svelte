@@ -5,6 +5,7 @@
   import MaterialSymbolsUndoRounded from '~icons/material-symbols/undo-rounded'
   import PhLightbulb from '~icons/ph/lightbulb'
   import PhShuffle from '~icons/ph/shuffle'
+  import { isPangram } from '$lib/utils/points'
 
   export let pointsFromLastWord: number
   export let wordsFound: string[]
@@ -17,6 +18,7 @@
   let hintWord = ""
   let notification = ""
   let notificationKey = 0
+  let wordIsPangram = false
   
   const setNotification = (n: string) => {
     notification = n
@@ -31,6 +33,30 @@
     if(word.length > 0) word = word.slice(0, -1)
   }
 
+  const showPangramAnimation = () => {
+    const DELAY_MS = 150
+    const ANIMATION_LENGTH = 4500
+    let index = 0
+    for(let elem of document.getElementById('word')!.getElementsByTagName('span')) {
+      elem.style.animationDelay = `${DELAY_MS * index}ms`
+      index++
+    }
+
+    setTimeout(() => {
+      if(isComponentDestroyed) return
+      const star = document.getElementById('pangram-star')!
+        star.style.opacity = '0'
+        star.style.visibility = 'hidden'
+      setTimeout(() => {
+        if(isComponentDestroyed) return
+        word = ''
+        wordIsPangram = false
+      }, 1000)
+    }, (DELAY_MS * index) + ANIMATION_LENGTH)
+
+    wordIsPangram = true
+  }
+
   const submitWord = () => {
     const validWord = puzzle.wordList.includes(word)
     const alreadyFoundWord = wordsFound.includes(word)
@@ -38,6 +64,7 @@
       if(!alreadyFoundWord) {
         wordsFound = [...wordsFound, word]
         if(word == hintWord) hintWord = ''
+        if(isPangram(word)) return showPangramAnimation()
       }
       else setNotification("You've already found this word.")
     } else {
@@ -50,6 +77,8 @@
   }
 
   const handleKeyDown = (e: KeyboardEvent) => {
+    if(wordIsPangram) return
+
     const key = e.key.toUpperCase()
 
     if(key == puzzle.centerLetter || outsideLetters.includes(key)) {
@@ -145,7 +174,9 @@
     {/if}
   {/key}
   <div id="word-wrapper">
-    <h2 id="word">
+    <h2 
+      data-is-pangram={wordIsPangram}
+      id="word">
       {#each word as char}
         <span
           data-center-letter={char.toUpperCase() == puzzle.centerLetter.toUpperCase()}>
@@ -154,6 +185,18 @@
       {/each}
       <div id="cursor" />
     </h2>
+    <div id="pangram-star">
+      <svg width="118" height="116" viewBox="0 0 118 116" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M73.7884 1.14091L69.9369 36.2869L96.8063 13.3062L78.087 43.3006L112.266 34.2539L82.3868 53.1559L117.107 59.835L81.9847 63.9008L110.368 84.9828L76.9605 73.4072L93.386 104.717L68.3091 79.7922L69.5233 115.128L57.7441 81.7912L43.5066 114.154L47.358 79.0082L20.4887 101.989L39.208 71.9946L5.02859 81.0413L34.9082 62.1393L0.188394 55.4602L35.3102 51.3944L6.92673 30.3124L40.3345 41.888L23.909 10.5786L48.9859 35.503L47.7717 0.167435L59.5509 33.504L73.7884 1.14091Z" fill="url(#paint0_radial_260_62)"/>
+        <defs>
+        <radialGradient id="paint0_radial_260_62" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(58.6475 57.6476) rotate(105) scale(50)">
+        <stop stop-color="var(--accent-light)"/>
+        <stop offset="1" stop-color="var(--bg)"/>
+        </radialGradient>
+        </defs>
+      </svg>
+      <span>Pangram!</span>
+    </div>
   </div>
   <div id="main-game">
     <Hexagon 
@@ -223,7 +266,7 @@
   </div>
   <div id="game-controls">
     <button 
-      disabled={word==''}
+      disabled={word=='' || wordIsPangram}
       on:click={submitWord}
       id="enter"
       class="btn primary">
@@ -231,7 +274,7 @@
     </button>
     <div id="game-sub-controls">
       <button
-        disabled={word==''}
+        disabled={word=='' || wordIsPangram}
         on:click={removeLetter}
         class="btn gray"
         title="Delete letter"
@@ -240,7 +283,7 @@
         Delete
       </button>
       <button
-        on:click={getHint}
+        on:click={getHint || wordIsPangram}
         class="btn secondary"
         title="Hint"
         aria-label="Hint">
@@ -302,6 +345,12 @@
     transform: translate(25%, 0%);
   }
 
+  #word-wrapper {
+    position: relative;
+    width: fit-content;
+    margin: auto;
+  }
+
   #word {
     text-transform: uppercase;
     font: var(--h-5xl);
@@ -321,12 +370,35 @@
     color: var(--primary);
   }
 
+  #word[data-is-pangram="true"] span {
+    animation: pangram 4.5s cubic-bezier(.85,.06,.55,.99) forwards;
+  }
+
+  @keyframes pangram {
+    10% {
+      transform: translateY(-25%);
+    } 20%, 90% {
+      transform: none;
+      color: var(--accent);
+      opacity: 1;
+    } 100% {
+      transform: translateY(25%);
+      color: var(--accent);
+      opacity: 0;
+    }
+  }
+
   #cursor {
     background-color: var(--primary);
     width: 0.125rem;
     height: 2.75rem;
     margin: 0 0.25rem;
     animation: blink 1.25s infinite;
+  }
+
+  #word[data-is-pangram="true"] #cursor {
+    animation: none;
+    opacity: 0 !important;
   }
 
   @keyframes blink {
@@ -381,6 +453,44 @@
       transform: translate(-50%, -150%);
       opacity: 0;
       visibility: hidden;
+    }
+  }
+
+  #word[data-is-pangram="true"] + #pangram-star {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  #pangram-star {
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    top: -1rem;
+    left: 100%;
+    transform: translate(-50%, -50%) rotate(15deg);
+    z-index: -1;
+    transition: opacity var(--transition-1),
+                visibility var(--transition-1);
+  }
+
+  #pangram-star span {
+    background-color: var(--accent);
+    width: fit-content;
+    padding: 0.125rem 0.5rem;
+    border-radius: 0.25rem;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  #pangram-star svg {
+    animation: rotate 12s linear infinite;
+  }
+
+  @keyframes rotate {
+    to {
+      transform: rotate(360deg);
     }
   }
 </style>
