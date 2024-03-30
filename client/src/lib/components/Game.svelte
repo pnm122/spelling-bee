@@ -34,8 +34,8 @@
   }
 
   const showPangramAnimation = () => {
-    const DELAY_MS = 150
-    const ANIMATION_LENGTH = 4500
+    const DELAY_MS = 100
+    const ANIMATION_LENGTH = 3500
     let index = 0
     for(let elem of document.getElementById('word')!.getElementsByTagName('span')) {
       elem.style.animationDelay = `${DELAY_MS * index}ms`
@@ -371,18 +371,14 @@
   }
 
   #word[data-is-pangram="true"] span {
-    animation: pangram 4.5s cubic-bezier(.85,.06,.55,.99) forwards;
+    animation: pangram 3.5s cubic-bezier(0.455, 0.03, 0.515, 0.955) forwards;
   }
 
   @keyframes pangram {
-    10% {
-      transform: translateY(-25%);
-    } 20%, 90% {
-      transform: none;
+    20%, 80% {
       color: var(--accent);
       opacity: 1;
     } 100% {
-      transform: translateY(25%);
       color: var(--accent);
       opacity: 0;
     }
@@ -475,6 +471,7 @@
 
   #pangram-star span {
     background-color: var(--accent);
+    color: var(--light);
     width: fit-content;
     padding: 0.125rem 0.5rem;
     border-radius: 0.25rem;
