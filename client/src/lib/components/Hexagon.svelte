@@ -6,6 +6,7 @@
   export let letter: string | undefined = undefined
   export let id = ""
   export let pressed = false
+  export let disabled = false
   let classes: string = ""
 
   export {classes as class}
@@ -13,6 +14,7 @@
 
 <svg class={classes} id={id} width="{width}" viewBox="-5 -5 130 113.92304845413263">
   <polygon
+    aria-disabled={clickHandler ? disabled : undefined}
     data-pressed={pressed}
     data-clickable={clickHandler != undefined}
     role={clickHandler == undefined ? undefined : "button"}
@@ -41,8 +43,8 @@
     cursor: pointer;
   }
 
-  polygon[data-clickable="true"]:active,
-  polygon[data-pressed="true"] {
+  polygon:not([aria-disabled="true"])[data-clickable="true"]:active,
+  polygon:not([aria-disabled="true"])[data-pressed="true"] {
     transform: scale(0.85);
   }
 

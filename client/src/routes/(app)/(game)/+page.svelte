@@ -7,22 +7,12 @@
 	import { getTotalPoints } from "$lib/utils/points";
   import { onMount } from 'svelte'
   import { loadDailyPuzzle } from "$lib/stores/currentPuzzle"
+	import PuzzlePoints from "$lib/components/PuzzlePoints.svelte";
 
   onMount(() => {
     loadDailyPuzzle()
   })
 
-  let maxPoints = $currentPuzzle.loading || !$currentPuzzle.data ? 0 : getTotalPoints($currentPuzzle.data.wordList)
-  let pointsFromLastWord = 0
-  let wordsFound: string[] = []
-  $: console.log(wordsFound)
-  $: points = getTotalPoints(wordsFound)
-  $: puzzleProgressPct = points * 100 / maxPoints
-
-  const addPoints = (p: number) => {
-    points += p
-    pointsFromLastWord = p
-  }
 </script>
 
 <div id="puzzle-header">
@@ -37,77 +27,13 @@
   {/if}
 </div>
 <div id="main">
-  <div id="progress-outer-wrapper">
-    <div 
-      id="progress-inner-wrapper"
-      style="transform: translate(-{Math.min(Math.floor(puzzleProgressPct / 20)*20, 60)}%)"
-      data-puzzle-solved={puzzleProgressPct == 100}>
-      <!-- ^ Moves the progress bar on mobile depending on which skill level the user has achieved -->
-      <!-- Using this idea since the whole bar can't fit on mobile -->
-      <!-- TODO: Accessibility? -->
-      <div id="skill-levels">
-        <span 
-          class="skill-level"
-          data-passed="{puzzleProgressPct >= 0}">
-          Novice
-        </span>
-        <span 
-          class="skill-level"
-          data-passed="{puzzleProgressPct >= 20}">
-          Savvy
-        </span>
-        <span 
-          class="skill-level"
-          data-passed="{puzzleProgressPct >= 40}">
-          Wordsmith
-        </span>
-        <span 
-          class="skill-level"
-          data-passed="{puzzleProgressPct >= 60}">
-          Expert
-        </span>
-        <span 
-          class="skill-level"
-          data-passed="{puzzleProgressPct >= 80}">
-          Genius
-        </span>
-        <span 
-          class="skill-level"
-          data-passed="{puzzleProgressPct >= 100}">
-          Spelling Bee
-        </span>
-      </div>
-      <div 
-        id="progress"
-        role="progressbar"
-        aria-valuenow={puzzleProgressPct}
-        aria-valuemin={points}
-        aria-valuemax={maxPoints}
-        aria-label="Points earned from today's puzzle">
-        <div 
-          id="progress-bar"
-          style="width: {puzzleProgressPct}%"
-        />
-        <div
-          id="points"
-          style="left: {puzzleProgressPct}%;">
-          <span>{points} points</span>
-          <!-- Force points from last word to rerender every time points changes, causing the animation -->
-          {#key points}
-            {#if pointsFromLastWord > 0}
-              <span id="points-from-last-word">+{pointsFromLastWord}</span>
-            {/if}
-          {/key}
-        </div>
-      </div>
-    </div>
-  </div>
+  <PuzzlePoints />
   {#if $currentPuzzle.loading}
     <Skeleton />
   {:else if !$currentPuzzle.data}
     <h2>Today's puzzle not found.</h2>
   {:else}
-    <Game bind:wordsFound bind:pointsFromLastWord puzzle={$currentPuzzle.data} />
+    <Game />
   {/if}
 </div>
 

@@ -1,24 +1,18 @@
 <script lang="ts">
 	import { getTotalPoints } from "$lib/utils/points";
-	import type Puzzle from "$backend_interfaces/Puzzle";
-  import currentPuzzle from "$lib/stores/currentPuzzle";
+  import currentProgress from "$lib/stores/currentProgress";
 
-  export let puzzle: Puzzle
+  $: puzzleProgressPct = $currentProgress.data ? $currentProgress.data!.points * 100 / $currentProgress.data!.maxPoints : 0
 
-  let maxPoints = $currentPuzzle.loading || !$currentPuzzle.data ? 0 : getTotalPoints($currentPuzzle.data.wordList)
-  let pointsFromLastWord = 0
-  let wordsFound: string[] = []
-  $: console.log(wordsFound)
-  $: points = getTotalPoints(wordsFound)
-  $: puzzleProgressPct = points * 100 / maxPoints
-
-  const addPoints = (p: number) => {
-    points += p
-    pointsFromLastWord = p
-  }
+  // TODO: Map skill levels to UI for ease of editing later
+  const skillLevels = {}
 </script>
 
-<div id="main">
+{#if $currentProgress.loading}
+  <div></div>
+{:else if $currentProgress.data == undefined}
+  <div></div>
+{:else}
   <div id="progress-outer-wrapper">
     <div 
       id="progress-inner-wrapper"
@@ -63,8 +57,8 @@
         id="progress"
         role="progressbar"
         aria-valuenow={puzzleProgressPct}
-        aria-valuemin={points}
-        aria-valuemax={maxPoints}
+        aria-valuemin={$currentProgress.data.points}
+        aria-valuemax={$currentProgress.data.maxPoints}
         aria-label="Points earned from today's puzzle">
         <div 
           id="progress-bar"
@@ -73,26 +67,20 @@
         <div
           id="points"
           style="left: {puzzleProgressPct}%;">
-          <span>{points} points</span>
+          <span>{$currentProgress.data.points} points</span>
           <!-- Force points from last word to rerender every time points changes, causing the animation -->
-          {#key points}
-            {#if pointsFromLastWord > 0}
-              <span id="points-from-last-word">+{pointsFromLastWord}</span>
+          {#key $currentProgress.data.points}
+            {#if $currentProgress.data.pointsFromLastWord > 0}
+              <span id="points-from-last-word">+{$currentProgress.data.pointsFromLastWord}</span>
             {/if}
           {/key}
         </div>
       </div>
     </div>
   </div>
-</div>
+{/if}
 
 <style>
-
-  #main {
-    width: 100%;
-    max-width: 600px;
-    margin: auto;
-  }
 
   #progress-outer-wrapper {
     --bar-height: 0.125rem;
