@@ -9,6 +9,15 @@ const notificationState = writable<NotificationState>({
   message: ''
 })
 
+export function setNotification(title: string, message: string) {
+  notificationState.set({
+    open: true,
+    type: 'error',
+    title,
+    message
+  })
+}
+
 export function notifyServerError() {
   notificationState.set({
     open: true,

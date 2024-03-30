@@ -2,6 +2,7 @@ import { WithoutId } from "mongodb"
 import Session from "../db/interfaces/Session"
 import UserResponse from "./User"
 import User from "../db/interfaces/User"
+import Puzzle from "./Puzzle"
 
 // Interface for success and error responses
 export interface Response {
@@ -67,6 +68,9 @@ export type GetUserErrors = AuthenticatedErrors | GetUserUtilityErrors
 
 export type AuthenticatedErrors = AsErrorType<'no-session'> | UpdateSessionErrors
 
+export type GetPuzzleErrors = WithUnknown<'no-puzzle'>
+export type DailyPuzzleErrors = WithUnknown<'no-puzzle'>
+
 // ============================================================
 
 // SUCCESS DATA TYPES
@@ -84,5 +88,8 @@ export type ValidateData = { userId: string }
 
 export type UpdateSessionData = { session: Session }
 export type GetSessionData = { session: Session }
+
+export type GetPuzzleData = { puzzle: Puzzle }
+export type DailyPuzzleData = { puzzle: Puzzle }
 
 // ============================================================
