@@ -57,12 +57,13 @@
 
   const addLetter = (letter: string | undefined) => {
     if(!letter || animating) return
+    (document.activeElement as HTMLElement)?.blur()
     word = word + letter.toUpperCase()
   }
 
   const removeLetter = () => {
     if(animating) return
-
+    (document.activeElement as HTMLElement)?.blur()
     if(word.length > 0) word = word.slice(0, -1)
   }
 
