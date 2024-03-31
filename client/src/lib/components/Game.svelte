@@ -22,14 +22,36 @@
   let pressedKeys: string[] = []
   let isComponentDestroyed = false
   let hintWord = ""
-  let notification = ""
-  let notificationKey = 0
   let wordIsPangram = false
   let wordIsClearing = false
   let animating = false
+
+  type NotificationType = "default" | "congrats"
+  type Notification = { type: NotificationType, message: string }
+  let notification: Notification = {
+    type: "default",
+    message: ""
+  }
+  let notificationKey = 0
+
+  const generateRandomCongratsMessage = () => {
+    const messages = [
+      'Nice!',
+      'Well done!',
+      'Great word!',
+      'Perfect!',
+      'Bravo!',
+      'Outstanding!',
+      'Impressive!',
+      'Brilliant!',
+      'Fantastic!'
+    ]
+
+    return messages[Math.round(Math.random() * (messages.length - 1))]
+  }
   
-  const setNotification = (n: string) => {
-    notification = n
+  const setNotification = (type: NotificationType, message: string) => {
+    notification = { type, message }
     notificationKey++
   }
 
@@ -45,8 +67,8 @@
   }
 
   const showPangramAnimation = () => {
-    const LETTER_ANIMATION_DELAY_MS = 100
-    const ANIMATION_LENGTH = 3500
+    const LETTER_ANIMATION_DELAY_MS = 50
+    const ANIMATION_LENGTH = 2500
     let index = 0
     for(let elem of document.getElementById('word')!.getElementsByTagName('span')) {
       elem.style.animationDelay = `${LETTER_ANIMATION_DELAY_MS * index}ms`
@@ -71,12 +93,13 @@
   }
 
   const showClearWordAnimation = () => {
-    const LETTER_ANIMATION_DELAY_MS = 100
-    const ANIMATION_LENGTH = 1000
+    const START_ANIMATION_DELAY_MS = 750
+    const LETTER_ANIMATION_DELAY_MS = 50
+    const ANIMATION_LENGTH = 500
 
     let index = 0
     for(let elem of document.getElementById('word')!.getElementsByTagName('span')) {
-      elem.style.animationDelay = `${LETTER_ANIMATION_DELAY_MS * index}ms`
+      elem.style.animationDelay = `${START_ANIMATION_DELAY_MS + (LETTER_ANIMATION_DELAY_MS * index)}ms`
       index++
     }
 
@@ -89,21 +112,25 @@
       word = ''
       wordIsClearing = false
       animating = false
-    }, (LETTER_ANIMATION_DELAY_MS * index) + ANIMATION_LENGTH)
+    }, START_ANIMATION_DELAY_MS + (LETTER_ANIMATION_DELAY_MS * index) + ANIMATION_LENGTH)
   }
 
   const submitWord = () => {
-    if(animating) return
+    if(animating || word == '') return
 
     const res = tryWord(word)
     if(!res.success) {
       showClearWordAnimation()
-      return setNotification(res.message)
+      return setNotification("default", res.message)
     }
 
-    showClearWordAnimation()
     if(word == hintWord) hintWord = ''
+
     if(isPangram(word)) return showPangramAnimation()
+    else {
+      setNotification("congrats", generateRandomCongratsMessage())
+      showClearWordAnimation()
+    }
   }
 
   const handleKeyDown = (e: KeyboardEvent) => {
@@ -117,6 +144,7 @@
     } else if(key == 'BACKSPACE') {
       removeLetter()
     } else if(key == 'ENTER') {
+      console.log('ENTER')
       // Don't override functionality of other buttons
       if(document.activeElement != document.body) return
       submitWord()
@@ -209,8 +237,12 @@
 {:else}
   <div id="wrapper">
     {#key notificationKey}
-      {#if notification != ""}
-        <p id="notification">{notification}</p>
+      {#if notification.message != ""}
+        <p 
+          id="notification" 
+          data-notification-type={notification.type}>
+          {notification.message}
+        </p>
       {/if}
     {/key}
     <div id="word-wrapper">
@@ -420,7 +452,7 @@
   }
 
   #word[data-is-pangram="true"] span {
-    animation: pangram 3.5s cubic-bezier(0.455, 0.03, 0.515, 0.955) forwards;
+    animation: pangram 2.5s cubic-bezier(0.455, 0.03, 0.515, 0.955) forwards;
   }
 
   @keyframes pangram {
@@ -434,7 +466,7 @@
   }
 
   #word[data-is-clearing="true"] span {
-    animation: clearLetter 1s cubic-bezier(0.455, 0.03, 0.515, 0.955) forwards;
+    animation: clearLetter var(--transition-2) forwards;
   }
 
   @keyframes clearLetter {
@@ -493,20 +525,31 @@
     background-color: var(--gray);
     color: var(--heading);
     padding: 0.125rem 0.375rem;
-    animation: appear 4s var(--timing-function) forwards;
+    border-radius: 0.25rem;
+    animation: appear 3s var(--timing-function) forwards;
+  }
+
+  :global(body[data-theme="dark"]) #notification[data-notification-type="congrats"] {
+    background-color: var(--primary-light);
+    color: var(--primary);
+  }
+
+  :global(body[data-theme="light"]) #notification[data-notification-type="congrats"] {
+    background-color: var(--primary-light);
+    color: color-mix(in oklch, var(--primary) 67%, var(--dark));
   }
 
   @keyframes appear {
     from {
-      transform: translate(-50%, 50%);
+      transform: translate(-50%, 0%);
       opacity: 0;
       visibility: hidden;
-    } 25%, 75% {
+    } 20%, 80% {
       transform: translate(-50%, -50%);
       opacity: 1;
       visibility: visible;
     } to {
-      transform: translate(-50%, -150%);
+      transform: translate(-50%, -100%);
       opacity: 0;
       visibility: hidden;
     }

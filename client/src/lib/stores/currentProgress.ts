@@ -42,13 +42,15 @@ export const tryWord = (word: string): TryWordResponse => {
   const alreadyFoundWord = wordsFound.includes(word)
   if(validWord) {
     if(!alreadyFoundWord) {
+      const pointsFromWord = getPointsFromWord(word)
       // Add word to wordsFound
       currentProgress.set({
         ...progress,
         data: {
           ...progress.data,
           wordsFound: [...wordsFound, word],
-          points: points + getPointsFromWord(word)
+          points: points + pointsFromWord,
+          pointsFromLastWord: pointsFromWord
         }
       })
       return { success: true }
