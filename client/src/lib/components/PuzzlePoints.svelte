@@ -2,8 +2,6 @@
 	import { getTotalPoints } from "$lib/utils/points";
   import currentProgress from "$lib/stores/currentProgress";
 
-  $: puzzleProgressPct = $currentProgress.data ? $currentProgress.data!.points * 100 / $currentProgress.data!.maxPoints : 0
-
   interface SkillLevel {
     name: string,
     percent: number
@@ -30,6 +28,9 @@
     name: "Spelling Bee",
     percent: 100
   }]
+
+  $: puzzleProgressPct = $currentProgress.data ? $currentProgress.data!.points * 100 / $currentProgress.data!.maxPoints : 0
+  $: currentLevel = skillLevels.findLast(s => puzzleProgressPct >= s.percent)!
 </script>
 
 {#if $currentProgress.loading}
@@ -40,7 +41,7 @@
   <div id="progress-outer-wrapper">
     <div 
       id="progress-inner-wrapper"
-      style="transform: translate(-{Math.min(Math.floor(puzzleProgressPct / 20)*20, 60)}%)"
+      style="transform: translate(-{Math.min(currentLevel.percent, skillLevels[skillLevels.length - 3].percent)}%)"
       data-puzzle-solved={puzzleProgressPct == 100}>
       <!-- ^ Moves the progress bar on mobile depending on which skill level the user has achieved -->
       <!-- Using this idea since the whole bar can't fit on mobile -->
