@@ -240,9 +240,10 @@
   afterUpdate(() => {
     const PSEUDO_PADDING = 16
     const wordElem = document.getElementById('word')
-    if(!wordElem) return
+    const gameWrapperElem = document.getElementById('main')
+    if(!wordElem || !gameWrapperElem) return
     const wordScreenWidth = wordElem.clientWidth + (2 * PSEUDO_PADDING)
-    const wordsWidthScreenRatio = wordScreenWidth / screenWidth
+    const wordsWidthScreenRatio = wordScreenWidth / gameWrapperElem.clientWidth
     if(wordsWidthScreenRatio > 1) {
       wordElem.style.scale = `${1 / wordsWidthScreenRatio}`
     }

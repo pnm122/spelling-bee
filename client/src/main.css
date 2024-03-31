@@ -56,6 +56,14 @@
   box-sizing: border-box;
 }
 
+/* html {
+  font-size: 87.5%;
+
+  @media screen and (width > 768px) {
+    font-size: 100%;
+  }
+} */
+
 body {
   /* For items that always need to be dark (i.e. text on a primary button) */
   --dark: oklch(25.89% 0.042 92.08);
