@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onDestroy, onMount } from "svelte";
+	import { afterUpdate, onDestroy, onMount } from "svelte";
   import Hexagon from "./Hexagon.svelte";
   import MaterialSymbolsUndoRounded from '~icons/material-symbols/undo-rounded'
   import PhLightbulb from '~icons/ph/lightbulb'
@@ -25,6 +25,8 @@
   let wordIsPangram = false
   let wordIsClearing = false
   let animating = false
+  let screenWidth = innerWidth
+  $: hexagonSize = screenWidth >= 768 ? 100 : 80
 
   type NotificationType = "default" | "congrats"
   type Notification = { type: NotificationType, message: string }
@@ -70,6 +72,7 @@
   const showPangramAnimation = () => {
     const LETTER_ANIMATION_DELAY_MS = 50
     const ANIMATION_LENGTH = 2500
+    const STAR_ANIMATION_LENGTH = 300
     let index = 0
     for(let elem of document.getElementById('word')!.getElementsByTagName('span')) {
       elem.style.animationDelay = `${LETTER_ANIMATION_DELAY_MS * index}ms`
@@ -89,7 +92,7 @@
         word = ''
         wordIsPangram = false
         animating = false
-      }, 1000)
+      }, STAR_ANIMATION_LENGTH)
     }, (LETTER_ANIMATION_DELAY_MS * index) + ANIMATION_LENGTH)
   }
 
@@ -166,6 +169,10 @@
     }
   }
 
+  const handleResize = () => {
+    screenWidth = innerWidth
+  }
+
   // Shuffle letters by moving them in a closed loop
   // Guarantees that no letter will be in the same spot after shuffling
   // i.e. given A, B, C, D, E, F, the shuffle might look like:
@@ -220,11 +227,24 @@
     document.addEventListener('keydown', handleKeyDown)
     document.addEventListener('keypress', handleKeyPress)
     document.addEventListener('keyup', handleKeyUp)
+    window.addEventListener('resize', handleResize)
 
     return () => {
       document.removeEventListener('keydown', handleKeyDown)
       document.removeEventListener('keypress', handleKeyPress)
       document.removeEventListener('keyup', handleKeyUp)
+      window.removeEventListener('resize', handleResize)
+    }
+  })
+
+  afterUpdate(() => {
+    const PSEUDO_PADDING = 16
+    const wordElem = document.getElementById('word')
+    if(!wordElem) return
+    const wordScreenWidth = wordElem.clientWidth + (2 * PSEUDO_PADDING)
+    const wordsWidthScreenRatio = wordScreenWidth / screenWidth
+    if(wordsWidthScreenRatio > 1) {
+      wordElem.style.scale = `${1 / wordsWidthScreenRatio}`
     }
   })
 
@@ -274,7 +294,7 @@
     </div>
     <div id="main-game">
       <Hexagon 
-        width={100} 
+        width={hexagonSize} 
         fill='var(--primary)' 
         textColor='var(--dark)'
         class="letter-button"
@@ -285,7 +305,7 @@
         letter="{puzzle.centerLetter}"
       />
       <Hexagon 
-        width={100} 
+        width={hexagonSize} 
         fill='var(--gray)' 
         class="letter-button"
         id="top-middle"
@@ -295,7 +315,7 @@
         letter="{outsideLetters[0]}"
       />
       <Hexagon 
-        width={100} 
+        width={hexagonSize} 
         fill='var(--gray)' 
         class="letter-button"
         id="top-left"
@@ -305,7 +325,7 @@
         letter="{outsideLetters[1]}"
       />
       <Hexagon 
-        width={100} 
+        width={hexagonSize} 
         fill='var(--gray)' 
         class="letter-button"
         id="top-right"
@@ -315,7 +335,7 @@
         letter="{outsideLetters[2]}"
       />
       <Hexagon 
-        width={100} 
+        width={hexagonSize} 
         fill='var(--gray)' 
         class="letter-button"
         id="bottom-middle"
@@ -325,7 +345,7 @@
         letter="{outsideLetters[3]}"
       />
       <Hexagon 
-        width={100} 
+        width={hexagonSize} 
         fill='var(--gray)' 
         class="letter-button"
         id="bottom-left"
@@ -335,7 +355,7 @@
         letter="{outsideLetters[4]}"
       />
       <Hexagon 
-        width={100} 
+        width={hexagonSize} 
         fill='var(--gray)' 
         class="letter-button"
         id="bottom-right"
@@ -391,9 +411,12 @@
 
   #main-game {
     position: relative;
-    width: 250px;
-    height: 275px;
+    height: 240px;
     margin: auto;
+
+    @media screen and (width > 768px) {
+      height: 275px;
+    }
   }
 
   :global(.letter-button) {
@@ -430,18 +453,28 @@
   #word-wrapper {
     position: relative;
     width: fit-content;
-    margin: auto;
+    /* Forces the word wrapper to be in the center of the wrapper */
+    /* Without this, #word overflows to the right of the screen, and scaling
+       it to fit the word on-screen will not work properly */
+    left: 50%;
+    transform: translate(-50%);
   }
 
   #word {
     text-transform: uppercase;
-    font: var(--h-5xl);
+    font: var(--h-4xl);
     text-align: center;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 1rem 0;
-    height: 2.75rem;
+    height: 2.25rem;
+    transform-origin: center;
+
+    @media screen and (width > 768px) {
+      font: var(--h-5xl);
+      height: 2.75rem;
+    }
   }
 
   #word span {
@@ -481,6 +514,10 @@
     width: 0.125rem;
     height: 2.75rem;
     margin: 0 0.25rem;
+    position: absolute;
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%);
     animation: blink 1.25s infinite;
   }
 

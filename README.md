@@ -30,3 +30,9 @@ Solutions:
   ```
   to app.d.ts.
 - Fetch user in user store file using the session cookie, then subscribe to changes in the user in the login/signup store to redirect if the user exists
+
+## Ideas
+
+* Hint button gives an additional letter every time you click it until it gives you the full word
+  * Has a warning if it's about to give you the last letter
+  * Points you earn = number of words you come up with

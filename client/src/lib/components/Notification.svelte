@@ -67,6 +67,7 @@
 
   #notification[aria-hidden="true"] {
     transform: translateY(calc(100% + 2rem));
+    visibility: hidden;
   }
 
   #notification[data-type="error"] {
