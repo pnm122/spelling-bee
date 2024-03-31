@@ -4,8 +4,32 @@
 
   $: puzzleProgressPct = $currentProgress.data ? $currentProgress.data!.points * 100 / $currentProgress.data!.maxPoints : 0
 
-  // TODO: Map skill levels to UI for ease of editing later
-  const skillLevels = {}
+  interface SkillLevel {
+    name: string,
+    percent: number
+  }
+  const skillLevels: SkillLevel[] = [{
+    name: "Novice",
+    percent: 0
+  }, {
+    name: "Savvy",
+    percent: 12.5
+  }, {
+    name: "Wordsmith",
+    percent: 25
+  }, {
+    name: "Prodigy",
+    percent: 40
+  }, {
+    name: "Expert",
+    percent: 60
+  }, {
+    name: "Genius",
+    percent: 80
+  }, {
+    name: "Spelling Bee",
+    percent: 100
+  }]
 </script>
 
 {#if $currentProgress.loading}
@@ -22,36 +46,14 @@
       <!-- Using this idea since the whole bar can't fit on mobile -->
       <!-- TODO: Accessibility? -->
       <div id="skill-levels">
-        <span 
-          class="skill-level"
-          data-passed="{puzzleProgressPct >= 0}">
-          Novice
-        </span>
-        <span 
-          class="skill-level"
-          data-passed="{puzzleProgressPct >= 20}">
-          Savvy
-        </span>
-        <span 
-          class="skill-level"
-          data-passed="{puzzleProgressPct >= 40}">
-          Wordsmith
-        </span>
-        <span 
-          class="skill-level"
-          data-passed="{puzzleProgressPct >= 60}">
-          Expert
-        </span>
-        <span 
-          class="skill-level"
-          data-passed="{puzzleProgressPct >= 80}">
-          Genius
-        </span>
-        <span 
-          class="skill-level"
-          data-passed="{puzzleProgressPct >= 100}">
-          Spelling Bee
-        </span>
+        {#each skillLevels as skillLevel}
+          <span 
+            class="skill-level"
+            style="left: {skillLevel.percent}%"
+            data-passed="{puzzleProgressPct >= skillLevel.percent}">
+            {skillLevel.name}
+          </span>
+        {/each}
       </div>
       <div 
         id="progress"
@@ -161,26 +163,6 @@
 
   .skill-level[data-passed="true"]::after {
     background-color: var(--highlight-color);
-  }
-
-  .skill-level:nth-of-type(2) {
-    left: 20%;
-  }
-
-  .skill-level:nth-of-type(3) {
-    left: 40%;
-  }
-
-  .skill-level:nth-of-type(4) {
-    left: 60%;
-  }
-
-  .skill-level:nth-of-type(5) {
-    left: 80%;
-  }
-
-  .skill-level:nth-of-type(6) {
-    left: 100%;
   }
 
   #points {
