@@ -408,6 +408,7 @@
 <style>
   #wrapper {
     position: relative;
+    padding-bottom: 1rem;
   }
 
   #main-game {

@@ -79,8 +79,11 @@
 </header>
 
 <style>
-  header {
+  :global(body) {
     --header-height: 3.75rem;
+  }
+
+  header {
     height: var(--header-height);
     padding: 0 1rem;
     display: flex;
