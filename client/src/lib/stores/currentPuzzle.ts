@@ -2,9 +2,8 @@ import type Puzzle from "$backend_interfaces/Puzzle";
 import { type DailyPuzzleData, type DailyPuzzleErrors, type ErrorResponse, type GetPuzzleData, type GetPuzzleErrors, type SuccessResponse } from "$backend_interfaces/Response";
 import type Loadable from "$lib/types/loadable";
 import request from "$lib/utils/requests/request";
-import { get, writable } from "svelte/store";
+import { writable } from "svelte/store";
 import { setNotification } from "./notification";
-import { getTotalPoints } from "$lib/utils/points";
 
 const currentPuzzle = writable<Loadable<Puzzle>>({ loading: true, data: undefined })
 

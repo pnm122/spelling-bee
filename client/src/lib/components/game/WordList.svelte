@@ -92,7 +92,7 @@
     align-items: center;
     flex-wrap: wrap;
     gap: 0.5rem;
-    padding: 1rem var(--word-list-side-padding);
+    padding: 0.5rem var(--word-list-side-padding);
     border-bottom: 1px solid var(--gray);
   }
 

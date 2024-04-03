@@ -89,10 +89,9 @@
   #main {
     --game-header-height: 4rem;
     min-height: calc(100vh - var(--header-height));
-    overflow: auto;
     display: grid;
     grid-template-rows: var(--game-header-height) 1fr;
-    grid-template-columns: 100%;
+    grid-template-columns: minmax(0, 1fr);
     grid-template-areas:
       "header"
       "game";

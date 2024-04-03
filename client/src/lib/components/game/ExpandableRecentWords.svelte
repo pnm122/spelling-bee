@@ -40,6 +40,8 @@
       <h2 id="word-list-title">Your words</h2>
       <button
         class="icon-button"
+        title="Close word list"
+        aria-label="Close word list"
         on:click={() => expanded = false}>
         <PhXBold />
       </button>
@@ -137,6 +139,9 @@
   #word-list-wrapper {
     --top-offset: calc(var(--header-height) + var(--game-header-height) + var(--recent-words-margin-top));
     --bottom-margin: 1rem;
+    /* Flex is necessary to get scrollbar overflow from word list */
+    display: flex;
+    flex-direction: column;
     background-color: var(--bg-secondary);
     border-radius: 0.25rem;
     border: 1px solid var(--gray);
@@ -154,8 +159,8 @@
 
   #word-list-wrapper[aria-expanded="true"] {
     /* Intended to guarantee that the word list doesn't go offscreen */
+    /* Setting an explicit height also lets you animate between 0 and this height */
     height: calc(100vh - var(--top-offset) - var(--bottom-margin));
-    overflow: auto;
     visibility: visible;
   }
 
