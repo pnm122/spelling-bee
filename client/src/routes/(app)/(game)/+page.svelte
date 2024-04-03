@@ -11,6 +11,7 @@
 	import gameDrawerStates, { toggleLeaderboardDrawer, toggleWordListDrawer } from "$lib/stores/gameDrawerStates";
 	import GameDrawer from "$lib/components/game/GameDrawer.svelte";
 	import WordList from "$lib/components/game/WordList.svelte";
+	import ExpandableRecentWords from "$lib/components/game/ExpandableRecentWords.svelte";
 
   onMount(() => {
     loadDailyPuzzle()
@@ -64,6 +65,7 @@
       </div>
   </div>
   <div id="game-wrapper">
+    <ExpandableRecentWords />
     <PuzzlePoints />
     {#if $currentPuzzle.loading}
       <Skeleton />

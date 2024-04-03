@@ -72,6 +72,14 @@
 </div>
 
 <style>
+  :global(body) {
+    --word-list-side-padding: 1rem;
+
+    @media screen and (width > 768px) {
+      --word-list-side-padding: 1.5rem;
+    }
+  }
+
   #word-list {
     display: flex;
     flex-direction: column;
@@ -84,7 +92,7 @@
     align-items: center;
     flex-wrap: wrap;
     gap: 0.5rem;
-    padding: 1rem 1.5rem;
+    padding: 1rem var(--word-list-side-padding);
     border-bottom: 1px solid var(--gray);
   }
 
@@ -101,7 +109,7 @@
   }
 
   #words-found {
-    padding: 1rem 1.5rem;
+    padding: 1rem var(--word-list-side-padding);
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
