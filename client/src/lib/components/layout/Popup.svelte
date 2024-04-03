@@ -41,7 +41,7 @@
 <style>
   #popup-wrapper {
     display: none;
-    z-index: 1000;
+    z-index: var(--z-max);
     position: fixed;
     inset: 0;
     background-color: rgba(0, 0, 0, 0.25);

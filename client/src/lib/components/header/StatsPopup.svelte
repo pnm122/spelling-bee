@@ -93,7 +93,7 @@
   #wrapper {
     background-color: var(--bg);
     position: fixed;
-    z-index: 101;
+    z-index: var(--z-max);
     top: 0;
     left: 0;
     bottom: 0;
@@ -145,7 +145,7 @@
     left: 0;
     bottom: 0;
     right: 0;
-    z-index: 100;
+    z-index: calc(var(--z-max) - 1);
     transition: opacity var(--transition-1),
                 visibility var(--transition-1);
   }

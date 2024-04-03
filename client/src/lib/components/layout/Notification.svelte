@@ -55,7 +55,7 @@
     position: fixed;
     bottom: 0;
     right: 0;
-    z-index: 999;
+    z-index: var(--z-alert);
     width: calc(100% - 2rem);
     max-width: 350px;
     max-height: 300px;

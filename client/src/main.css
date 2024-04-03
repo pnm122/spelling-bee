@@ -108,6 +108,11 @@ body {
   --transition-1: var(--timing-function) .3s;
   --transition-2: var(--timing-function) .5s;
 
+  --z-header: 10;
+  --z-drawer: 20;
+  --z-alert: 30;
+  --z-max: 99;
+
   margin: 0;
   font: var(--body);
 

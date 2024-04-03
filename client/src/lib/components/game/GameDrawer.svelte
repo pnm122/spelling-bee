@@ -20,7 +20,7 @@
     right: 0;
     bottom: 0;
     background-color: var(--bg-secondary);
-    z-index: 999;
+    z-index: var(--z-drawer);
     transition: transform var(--transition-2),
                 visibility var(--transition-2);
     visibility: hidden;
@@ -44,6 +44,8 @@
     @media screen and (width > 1140px) {
       width: 100%;
       position: static;
+      z-index: unset;
+      
       &.left {
         grid-area: header / left / left / left;
         border-right: 1px solid var(--gray);

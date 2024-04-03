@@ -91,7 +91,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    z-index: 99;
+    z-index: var(--z-header);
   }
 
   /* I think this has to be done this way so that there's a background above
