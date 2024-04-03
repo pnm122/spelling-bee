@@ -1,16 +1,16 @@
 <script lang="ts">
   import currentPuzzle from "$lib/stores/currentPuzzle"
-  import Skeleton from "$lib/components/Skeleton.svelte"
+  import Skeleton from "$lib/components/shared/Skeleton.svelte"
   import convertDate from "$lib/utils/convertDate"
-  import Game from "$lib/components/Game.svelte"
+  import Game from "$lib/components/game/Game.svelte"
   import { onMount } from 'svelte'
   import { loadDailyPuzzle } from "$lib/stores/currentPuzzle"
-	import PuzzlePoints from "$lib/components/PuzzlePoints.svelte";
+	import PuzzlePoints from "$lib/components/game/PuzzlePoints.svelte";
   import PhListChecks from '~icons/ph/list-checks'
   import PhTrophy from '~icons/ph/trophy'
 	import gameDrawerStates, { toggleLeaderboardDrawer, toggleWordListDrawer } from "$lib/stores/gameDrawerStates";
-	import GameDrawer from "$lib/components/GameDrawer.svelte";
-	import WordList from "$lib/components/WordList.svelte";
+	import GameDrawer from "$lib/components/game/GameDrawer.svelte";
+	import WordList from "$lib/components/game/WordList.svelte";
 
   onMount(() => {
     loadDailyPuzzle()

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { afterUpdate, onDestroy, onMount } from "svelte";
-  import Hexagon from "./Hexagon.svelte";
+  import Hexagon from "../shared/Hexagon.svelte";
   import MaterialSymbolsUndoRounded from '~icons/material-symbols/undo-rounded'
   import PhLightbulb from '~icons/ph/lightbulb'
   import PhShuffle from '~icons/ph/shuffle'

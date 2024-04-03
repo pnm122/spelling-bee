@@ -4,7 +4,7 @@
   import TablerArrowNarrowRight from '~icons/tabler/arrow-narrow-right'
   import login from '$lib/utils/requests/auth/login'
   import signup from '$lib/utils/requests/auth/signup'
-	import Loader from '$lib/components/Loader.svelte';
+	import Loader from '$lib/components/shared/Loader.svelte';
   import { notifyServerError } from '$lib/stores/notification';
   import { setUser } from '$lib/stores/user'
   

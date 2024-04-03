@@ -1,11 +1,11 @@
 <script lang="ts">
   import user from "$lib/stores/user";
 	import logout from "$lib/utils/requests/auth/logout";
-	import LevelIndicator from "./LevelIndicator.svelte";
-	import NavLink from "./NavLink.svelte";
-	import Skeleton from "./Skeleton.svelte";
-	import StatsPopup from "./StatsPopup.svelte";
-	import ThemeSwitcher from "./ThemeSwitcher.svelte";
+	import LevelIndicator from "../shared/LevelIndicator.svelte";
+	import NavLink from "../header/NavLink.svelte";
+	import Skeleton from "../shared/Skeleton.svelte";
+	import StatsPopup from "../header/StatsPopup.svelte";
+	import ThemeSwitcher from "../header/ThemeSwitcher.svelte";
   import PhDotsThreeOutlineFill from '~icons/ph/dots-three-outline-fill'
   import PhXBold from '~icons/ph/x-bold'
 

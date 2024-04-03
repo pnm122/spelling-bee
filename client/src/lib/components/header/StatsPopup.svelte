@@ -1,7 +1,7 @@
 <script lang="ts">
   import user from "$lib/stores/user";
 	import { pointsToLevel } from "$lib/utils/levels";
-	import LevelIndicator from "./LevelIndicator.svelte";
+	import LevelIndicator from "../shared/LevelIndicator.svelte";
   import PhArrowLeft from '~icons/ph/arrow-left'
   
   export let open: boolean
