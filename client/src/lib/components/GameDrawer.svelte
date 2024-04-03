@@ -24,6 +24,9 @@
     transition: transform var(--transition-2),
                 visibility var(--transition-2);
     visibility: hidden;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
 
     &.left {
       transform: translateX(-100%);

@@ -130,7 +130,7 @@
   }
 
   #game-wrapper {
-    overflow: hidden;
+    overflow: auto;
     grid-area: game;
   }
 
@@ -145,7 +145,7 @@
   }
 
   .drawer-title {
-    height: var(--game-header-height);
+    min-height: var(--game-header-height);
     padding: 0 1.5rem;
     display: flex;
     align-items: center;

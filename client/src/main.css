@@ -370,3 +370,12 @@ body[data-theme="dark"] .btn.btn.accent {
   background-color: var(--error-light) !important;
   color: var(--error) !important;
 }
+
+::-webkit-scrollbar {
+  background-color: transparent;
+  scrollbar-width: thin;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--gray);
+}

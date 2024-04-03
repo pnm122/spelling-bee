@@ -5,5 +5,14 @@
 <!-- A +layout.svelte file applies to every child route, including the sibling +page.svelte (if it exists). You can nest layouts to arbitrary depth. -->
 <!-- https://learn.svelte.dev/tutorial/layouts -->
 
-<Header />
-<slot />
+<div id="wrapper">
+  <Header />
+  <slot />
+</div>
+
+<style>
+  #wrapper {
+    display: grid;
+    grid-template-rows: var(--header-height) calc(100vh - var(--header-height));
+  }
+</style>

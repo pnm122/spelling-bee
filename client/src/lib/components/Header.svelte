@@ -84,6 +84,8 @@
   }
 
   header {
+    position: sticky;
+    top: 0;
     height: var(--header-height);
     padding: 0 1rem;
     display: flex;
