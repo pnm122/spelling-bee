@@ -1,7 +1,7 @@
 import { writable } from "svelte/store";
 
 const gameDrawerStates = writable({
-  wordList: false,
+  wordList: false, // applies to both the desktop drawer and the mobile expanded word list
   leaderboard: false
 })
 

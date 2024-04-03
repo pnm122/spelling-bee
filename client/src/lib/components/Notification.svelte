@@ -18,31 +18,39 @@
   onDestroy(() => unsubscribe())
 </script>
 
-<div 
-  role="button"
-  tabindex="0"
-  title='Expand notification'
-  on:click={() => expanded = !expanded}
-  id='notification'
-  aria-hidden="{!state.open}"
-  data-type={state.type}
-  data-expanded={expanded}>
-  <div id='notification-top'>
-    <h1>
-      <BiPatchExclamationFill id='error-icon' />
-      {state.title}
-    </h1>
-    <button 
-      id='close'
-      title='Close notification'
-      on:click|stopPropagation={closeNotification}>
-      <PhMinus />
-    </button>
+<div
+  role="alert"
+  id="notification-wrapper">
+  <div 
+    role="button"
+    tabindex="0"
+    title='Expand notification'
+    on:click={() => expanded = !expanded}
+    id='notification'
+    aria-hidden="{!state.open}"
+    data-type={state.type}
+    data-expanded={expanded}>
+    <div id='notification-top'>
+      <h1>
+        <BiPatchExclamationFill id='error-icon' />
+        {state.title}
+      </h1>
+      <button 
+        id='close'
+        title='Close notification'
+        on:click|stopPropagation={closeNotification}>
+        <PhMinus />
+      </button>
+    </div>
+    <p>{state.message}</p>
   </div>
-  <p>{state.message}</p>
 </div>
 
 <style>
+  #notification-wrapper {
+    display: contents;
+  }
+
   #notification {
     position: fixed;
     bottom: 0;

@@ -1,10 +1,8 @@
 <script lang="ts">
-  import user from "$lib/stores/user";
   import currentPuzzle from "$lib/stores/currentPuzzle"
   import Skeleton from "$lib/components/Skeleton.svelte"
   import convertDate from "$lib/utils/convertDate"
   import Game from "$lib/components/Game.svelte"
-	import { getTotalPoints } from "$lib/utils/points";
   import { onMount } from 'svelte'
   import { loadDailyPuzzle } from "$lib/stores/currentPuzzle"
 	import PuzzlePoints from "$lib/components/PuzzlePoints.svelte";
@@ -12,6 +10,7 @@
   import PhTrophy from '~icons/ph/trophy'
 	import gameDrawerStates, { toggleLeaderboardDrawer, toggleWordListDrawer } from "$lib/stores/gameDrawerStates";
 	import GameDrawer from "$lib/components/GameDrawer.svelte";
+	import WordList from "$lib/components/WordList.svelte";
 
   onMount(() => {
     loadDailyPuzzle()
@@ -21,7 +20,8 @@
 
 <div id="main">
   <GameDrawer side="left" open={$gameDrawerStates.wordList}>
-    <h1>Test</h1>
+    <h2 class="drawer-title">Your words</h2>
+    <WordList />
   </GameDrawer>
   <!-- <GameDrawer side="right" open={$gameDrawerStates.wordList}>
     <h1>Test</h1>
@@ -69,6 +69,10 @@
       <Game />
     {/if}
   </div>
+
+  <GameDrawer side="right" open={$gameDrawerStates.leaderboard}>
+    <h1>Test</h1>
+  </GameDrawer>
 </div>
 
 <style>
@@ -79,6 +83,7 @@
   #main {
     --game-header-height: 5rem;
     min-height: calc(100vh - var(--header-height));
+    overflow: hidden;
 
     @media screen and (width > 1024px) {
       display: grid;
@@ -137,5 +142,14 @@
   :global(body[data-theme="light"]) .drawer-toggle[aria-pressed="true"] {
     color: color-mix(in oklch, var(--primary) 67%, var(--dark));
     background-color: var(--primary-light);
+  }
+
+  .drawer-title {
+    height: var(--game-header-height);
+    padding: 0 1.5rem;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid var(--gray);
+    font: var(--h-xl);
   }
 </style>

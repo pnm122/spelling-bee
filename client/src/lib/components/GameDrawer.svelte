@@ -30,7 +30,7 @@
     }
 
     &.right {
-      transform: translateY(100%);
+      transform: translateX(100%);
     }
 
     &[aria-expanded="true"] {
