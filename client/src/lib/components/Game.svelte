@@ -84,11 +84,15 @@
 
     setTimeout(() => {
       if(isComponentDestroyed) return
+      // Have to hide the star first, otherwise the animation will jump
       const star = document.getElementById('pangram-star')!
-        star.style.opacity = '0'
-        star.style.visibility = 'hidden'
+      star.style.opacity = '0'
+      star.style.visibility = 'hidden'
       setTimeout(() => {
         if(isComponentDestroyed) return
+        // Remove manually set styles, so that they don't override the star if another pangram is found
+        star.style.opacity = ''
+        star.style.visibility = ''
         word = ''
         wordIsPangram = false
         animating = false
