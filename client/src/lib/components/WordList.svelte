@@ -27,33 +27,42 @@
       `)}
       title="Word preview information"
       aria-label="Word preview information"
-      class="icon-button">
+      class="icon-button"
+      id="info">
       <PhInfo />
     </button>
   </div>
   {#if !$currentProgress.loading && $currentProgress.data && !$currentPuzzle.loading && $currentPuzzle.data}
     <div id="words-wrapper">
       <div id="words-found">
-        <!-- Gross, but the goal is to reverse the words so that the recent words are at the top -->
-        {#each [...$currentProgress.data.wordsFound].reverse() as word (word)}
-          <div class="found-word-wrapper">
-            <p class="found-word {isPangram(word) ? 'pangram' : ''}">
-              {#each word as letter}
-                <span class={letter == $currentPuzzle.data.centerLetter ? 'center-letter' : ''}>{letter}</span>
-              {/each}
-            </p>
-            <span class="points-from-word">{getPointsFromWord(word)} points</span>
-          </div>
-        {/each}
+        {#if $currentProgress.data.wordsFound.length > 0}
+          <!-- Must key the items because the words shift place in the array -->
+          {#each $currentProgress.data.wordsFound as word (word)}
+            <div class="found-word-wrapper">
+              <p class="found-word {isPangram(word) ? 'pangram' : ''}">
+                {#each word as letter}
+                  <span class={letter == $currentPuzzle.data.centerLetter ? 'center-letter' : ''}>{letter}</span>
+                {/each}
+              </p>
+              <span class="points-from-word">{getPointsFromWord(word)} points</span>
+            </div>
+          {/each}
+        {:else}
+          <p id="no-words-yet">You haven't found any words yet.</p>
+        {/if}
       </div>
       {#if $isWordPreviewsActive}
         <div id="word-previews">
           <h3 id="word-previews-title">Words to find</h3>
-          {#each wordsToFind as word}
-            <div class="word-preview">
-              {#each word as letter}
-                <div class="word-preview-letter {letter == $currentPuzzle.data.centerLetter ? 'center-letter' : ''}"></div>
-              {/each}
+          {#each $currentPuzzle.data.wordList as word}
+            <div class="word-preview {isPangram(word) ? 'pangram' : ''}">
+              {#if $currentProgress.data.wordsFound.includes(word)}
+                <h4 class="crossed-off {isPangram(word) ? 'pangram' : ''}">{word}</h4>
+              {:else}
+                {#each word as letter}
+                  <div class="word-preview-letter {letter == $currentPuzzle.data.centerLetter ? 'center-letter' : ''}"></div>
+                {/each}
+              {/if}
             </div>
           {/each}
         </div>
@@ -77,6 +86,14 @@
     gap: 0.5rem;
     padding: 1rem 1.5rem;
     border-bottom: 1px solid var(--gray);
+  }
+
+  #info {
+    color: var(--darkgray);
+  }
+
+  #info:hover {
+    color: var(--heading);
   }
 
   #words-wrapper {
@@ -149,10 +166,27 @@
     width: 1rem;
     aspect-ratio: 1;
     border-radius: 0.125rem;
-    background-color: var(--gray);
+    background-color: var(--mediumgray);
   }
 
   .word-preview-letter.center-letter {
-    background-color: var(--primary);
+    background-color: var(--primary) !important;
+  }
+
+  .word-preview.pangram .word-preview-letter {
+    background-color: var(--accent);
+  }
+
+  #no-words-yet {
+    color: var(--darkgray);
+  }
+
+  .crossed-off {
+    color: var(--darkgray);
+    text-decoration: line-through;
+  }
+
+  .crossed-off.pangram {
+    color: var(--accent);
   }
 </style>

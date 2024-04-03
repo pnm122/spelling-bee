@@ -41,7 +41,7 @@
       visibility: visible;
     }
 
-    @media screen and (width > 1024px) {
+    @media screen and (width > 1140px) {
       width: 100%;
       position: static;
       &.left {

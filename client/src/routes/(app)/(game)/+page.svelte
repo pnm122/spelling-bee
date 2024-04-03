@@ -19,10 +19,12 @@
 </script>
 
 <div id="main">
-  <GameDrawer side="left" open={$gameDrawerStates.wordList}>
-    <h2 class="drawer-title">Your words</h2>
-    <WordList />
-  </GameDrawer>
+  <div id="word-list-drawer">
+    <GameDrawer side="left" open={$gameDrawerStates.wordList}>
+      <h2 class="drawer-title">Your words</h2>
+      <WordList />
+    </GameDrawer>
+  </div>
   <!-- <GameDrawer side="right" open={$gameDrawerStates.wordList}>
     <h1>Test</h1>
   </GameDrawer> -->
@@ -41,6 +43,7 @@
             title="Toggle word list"
             aria-label="Toggle word list"
             aria-pressed={$gameDrawerStates.wordList}
+            id="word-list-toggle"
             class="icon-button drawer-toggle">
             <PhListChecks />
           </button>
@@ -53,6 +56,7 @@
             title="Toggle puzzle leaderboard"
             aria-label="Toggle puzzle leaderboard"
             aria-pressed={$gameDrawerStates.leaderboard}
+            id="leaderboard-toggle"
             class="icon-button drawer-toggle">
             <PhTrophy />
           </button>
@@ -81,14 +85,23 @@
   }
 
   #main {
-    --game-header-height: 5rem;
+    --game-header-height: 4rem;
     min-height: calc(100vh - var(--header-height));
-    overflow: hidden;
+    overflow: auto;
+    display: grid;
+    grid-template-rows: var(--game-header-height) 1fr;
+    grid-template-columns: 100%;
+    grid-template-areas:
+      "header"
+      "game";
 
-    @media screen and (width > 1024px) {
-      display: grid;
+    @media screen and (width > 768px) {
+      --game-header-height: 5rem;
+    }
+
+    @media screen and (width > 1140px) {
+      overflow: hidden;
       grid-template-columns: 1fr var(--game-max-width) 1fr;
-      grid-template-rows: var(--game-header-height) 1fr;
       grid-template-areas: 
         "header header header"
         "left   game   right ";
@@ -104,7 +117,11 @@
   }
 
   #puzzle-header h1 {
-    font: var(--h-2xl);
+    font: var(--h-xl);
+
+    @media screen and (width > 768px) {
+      font: var(--h-2xl);
+    }
   }
 
   #puzzle-header h2 {
@@ -114,24 +131,42 @@
 
   #puzzle-header-inner {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    max-width: var(--game-max-width);
     width: 100%;
     padding: 0 0.5rem;
     margin: auto;
+    position: relative;
+
+    @media screen and (width > 1140px) {
+      max-width: var(--game-max-width);
+    }
   }
 
   #puzzle-title {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.25rem;
+
+    @media screen and (width > 768px) {
+      gap: 0.5rem;
+    }
   }
 
   #game-wrapper {
-    overflow: auto;
     grid-area: game;
+
+    @media screen and (width > 1140px) {
+      overflow: auto;
+      max-width: var(--game-max-width);
+    }
+  }
+
+  .drawer-toggle {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
   }
 
   :global(body[data-theme="dark"]) .drawer-toggle[aria-pressed="true"] {
@@ -151,5 +186,26 @@
     align-items: center;
     border-bottom: 1px solid var(--gray);
     font: var(--h-xl);
+  }
+
+  #word-list-drawer {
+    display: none;
+
+    @media screen and (width > 1140px) {
+      display: contents;
+    }
+  }
+
+  #word-list-toggle {
+    display: none;
+    left: 0.25rem;
+
+    @media screen and (width > 1140px) {
+      display: flex;
+    }
+  }
+
+  #leaderboard-toggle {
+    right: 0.25rem;
   }
 </style>

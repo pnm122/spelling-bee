@@ -48,7 +48,8 @@ export const tryWord = (word: string): TryWordResponse => {
         ...progress,
         data: {
           ...progress.data,
-          wordsFound: [...wordsFound, word],
+          // Add word to the front of the list so recent words show up first
+          wordsFound: [word, ...wordsFound],
           points: points + pointsFromWord,
           pointsFromLastWord: pointsFromWord
         }
