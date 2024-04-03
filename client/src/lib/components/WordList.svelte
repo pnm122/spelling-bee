@@ -5,6 +5,11 @@
 	import { openPopup } from "$lib/stores/popup";
 	import { getPointsFromWord, isPangram } from "$lib/utils/points";
   import PhInfo from '~icons/ph/info'
+
+  let wordsToFind: string[] = []
+
+  // Grossly inefficient, might be better to just store this in progress
+  $: wordsToFind = $currentPuzzle.data?.wordList.filter(w => !$currentProgress.data?.wordsFound.includes(w)) ?? []
 </script>
 
 <div id="word-list">
@@ -27,9 +32,10 @@
     </button>
   </div>
   {#if !$currentProgress.loading && $currentProgress.data && !$currentPuzzle.loading && $currentPuzzle.data}
-    <div id="words-found-wrapper">
+    <div id="words-wrapper">
       <div id="words-found">
-        {#each $currentProgress.data.wordsFound as word}
+        <!-- Gross, but the goal is to reverse the words so that the recent words are at the top -->
+        {#each [...$currentProgress.data.wordsFound].reverse() as word (word)}
           <div class="found-word-wrapper">
             <p class="found-word {isPangram(word) ? 'pangram' : ''}">
               {#each word as letter}
@@ -40,6 +46,18 @@
           </div>
         {/each}
       </div>
+      {#if $isWordPreviewsActive}
+        <div id="word-previews">
+          <h3 id="word-previews-title">Words to find</h3>
+          {#each wordsToFind as word}
+            <div class="word-preview">
+              {#each word as letter}
+                <div class="word-preview-letter {letter == $currentPuzzle.data.centerLetter ? 'center-letter' : ''}"></div>
+              {/each}
+            </div>
+          {/each}
+        </div>
+      {/if}
     </div>
   {/if}
 </div>
@@ -61,7 +79,7 @@
     border-bottom: 1px solid var(--gray);
   }
 
-  #words-found-wrapper {
+  #words-wrapper {
     overflow: auto;
   }
 
@@ -108,5 +126,33 @@
   .points-from-word {
     color: var(--darkgray);
     font: var(--label-sm);
+  }
+
+  #word-previews {
+    padding: 1rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  #word-previews-title {
+    font: var(--h-lg);
+  }
+
+  .word-preview {
+    display: flex;
+    gap: 0.25rem;
+    flex-wrap: wrap;
+  }
+
+  .word-preview-letter {
+    width: 1rem;
+    aspect-ratio: 1;
+    border-radius: 0.125rem;
+    background-color: var(--gray);
+  }
+
+  .word-preview-letter.center-letter {
+    background-color: var(--primary);
   }
 </style>
