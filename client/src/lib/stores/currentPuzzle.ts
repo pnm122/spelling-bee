@@ -37,11 +37,7 @@ export const loadDailyPuzzle = async () => {
     loading: false, 
     data: res.data.puzzle
   })
-  console.log(res.data.puzzle)
 }
 
-currentPuzzle.subscribe(c => {
-  console.log(c)
-})
 
 export default currentPuzzle
