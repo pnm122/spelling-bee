@@ -247,7 +247,7 @@
   afterUpdate(() => {
     const PSEUDO_PADDING = 16
     const wordElem = document.getElementById('word')
-    const gameWrapperElem = document.getElementById('main')
+    const gameWrapperElem = document.getElementById('game-wrapper')
     if(!wordElem || !gameWrapperElem) return
     const wordScreenWidth = wordElem.clientWidth + (2 * PSEUDO_PADDING)
     const wordsWidthScreenRatio = wordScreenWidth / gameWrapperElem.clientWidth
