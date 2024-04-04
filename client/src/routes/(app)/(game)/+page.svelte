@@ -168,6 +168,11 @@
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
+    color: var(--darkgray);
+  }
+
+  .drawer-toggle:hover {
+    color: var(--heading);
   }
 
   :global(body[data-theme="dark"]) .drawer-toggle[aria-pressed="true"] {
@@ -176,7 +181,7 @@
   }
 
   :global(body[data-theme="light"]) .drawer-toggle[aria-pressed="true"] {
-    color: color-mix(in oklch, var(--primary) 67%, var(--dark));
+    color: var(--heading);
     background-color: var(--primary-light);
   }
 
@@ -199,7 +204,7 @@
 
   #word-list-toggle {
     display: none;
-    left: 0.25rem;
+    left: 0.5rem;
 
     @media screen and (width > 1140px) {
       display: flex;
@@ -207,6 +212,6 @@
   }
 
   #leaderboard-toggle {
-    right: 0.25rem;
+    right: 0.5rem;
   }
 </style>

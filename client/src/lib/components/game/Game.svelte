@@ -627,7 +627,7 @@
 
   :global(body[data-theme="light"]) #notification[data-notification-type="congrats"] {
     background-color: var(--primary-light);
-    color: color-mix(in oklch, var(--primary) 67%, var(--dark));
+    color: var(--dark);
   }
 
   #notification[data-notification-type="pangram"] {
