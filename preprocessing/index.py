@@ -13,7 +13,7 @@ def get_matching_words(file: str, centerLetter: str, outsideLetters: str) -> lis
   with open(file, 'r') as f:
     for line in f.readlines():
       line = line.upper()
-      match = re.match(fr'[{outsideLetters}]*[{centerLetter}][{outsideLetters}]*\s', line)
+      match = re.match(fr'[{outsideLetters}]*[{centerLetter}][{outsideLetters + centerLetter}]*\s', line)
 
       if not(match is None):
         matches.append(line.strip().upper())
