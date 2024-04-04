@@ -384,3 +384,7 @@ body[data-theme="dark"] .btn.btn.accent {
 ::-webkit-scrollbar-thumb {
   background-color: var(--gray);
 }
+
+.no-overflow {
+  overflow: hidden;
+}

@@ -28,7 +28,7 @@
   let screenWidth = innerWidth
   $: hexagonSize = screenWidth >= 768 ? 100 : 80
 
-  type NotificationType = "default" | "congrats"
+  type NotificationType = "default" | "congrats" | "pangram"
   type Notification = { type: NotificationType, message: string }
   let notification: Notification = {
     type: "default",
@@ -70,34 +70,37 @@
   }
 
   const showPangramAnimation = () => {
-    const LETTER_ANIMATION_DELAY_MS = 50
-    const ANIMATION_LENGTH = 2500
-    const STAR_ANIMATION_LENGTH = 300
-    let index = 0
+    const LETTER_ANIMATION_DELAY_MS = 100
+    const ANIMATION_LENGTH = 3500
+    const HEXAGON_ANIMATION_DELAY_MS = 250
+    let letterIndex = 0
     for(let elem of document.getElementById('word')!.getElementsByTagName('span')) {
-      elem.style.animationDelay = `${LETTER_ANIMATION_DELAY_MS * index}ms`
-      index++
+      elem.style.animationDuration = `${ANIMATION_LENGTH}ms`
+      elem.style.animationDelay = `${LETTER_ANIMATION_DELAY_MS * letterIndex}ms`
+      letterIndex++
+    }
+
+    let hexIndex = 0
+    for(let letter of document.getElementsByClassName('letter-button') as HTMLCollectionOf<SVGElement>) {
+      letter.childNodes.forEach(n => {
+        (n as HTMLElement).style.animationDelay = `${HEXAGON_ANIMATION_DELAY_MS * hexIndex}ms`;
+        // Maximum animation duration such that each hexagon can animate the whole way through before the word disappears
+        (n as HTMLElement).style.animationDuration = `${ANIMATION_LENGTH + (LETTER_ANIMATION_DELAY_MS * letterIndex) - (7 * HEXAGON_ANIMATION_DELAY_MS)}ms`
+      })
+      
+      hexIndex++
     }
 
     wordIsPangram = true
     animating = true
+    setNotification('pangram', 'Well done, you found a pangram!')
 
     setTimeout(() => {
       if(isComponentDestroyed) return
-      // Have to hide the star first, otherwise the animation will jump
-      const star = document.getElementById('pangram-star')!
-      star.style.opacity = '0'
-      star.style.visibility = 'hidden'
-      setTimeout(() => {
-        if(isComponentDestroyed) return
-        // Remove manually set styles, so that they don't override the star if another pangram is found
-        star.style.opacity = ''
-        star.style.visibility = ''
-        word = ''
-        wordIsPangram = false
-        animating = false
-      }, STAR_ANIMATION_LENGTH)
-    }, (LETTER_ANIMATION_DELAY_MS * index) + ANIMATION_LENGTH)
+      word = ''
+      wordIsPangram = false
+      animating = false
+    }, (LETTER_ANIMATION_DELAY_MS * letterIndex) + ANIMATION_LENGTH)
   }
 
   const showClearWordAnimation = () => {
@@ -273,7 +276,7 @@
         </p>
       {/if}
     {/key}
-    <div id="word-wrapper-hide-overflow">
+    <div class="no-overflow">
       <div id="word-wrapper">
         <h2 
           data-is-clearing={wordIsClearing}
@@ -287,18 +290,6 @@
           {/each}
           <div id="cursor" />
         </h2>
-        <div id="pangram-star">
-          <svg width="118" height="116" viewBox="0 0 118 116" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M73.7884 1.14091L69.9369 36.2869L96.8063 13.3062L78.087 43.3006L112.266 34.2539L82.3868 53.1559L117.107 59.835L81.9847 63.9008L110.368 84.9828L76.9605 73.4072L93.386 104.717L68.3091 79.7922L69.5233 115.128L57.7441 81.7912L43.5066 114.154L47.358 79.0082L20.4887 101.989L39.208 71.9946L5.02859 81.0413L34.9082 62.1393L0.188394 55.4602L35.3102 51.3944L6.92673 30.3124L40.3345 41.888L23.909 10.5786L48.9859 35.503L47.7717 0.167435L59.5509 33.504L73.7884 1.14091Z" fill="url(#paint0_radial_260_62)"/>
-            <defs>
-            <radialGradient id="paint0_radial_260_62" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(58.6475 57.6476) rotate(105) scale(50)">
-            <stop stop-color="var(--accent-light)"/>
-            <stop offset="1" stop-color="var(--bg)"/>
-            </radialGradient>
-            </defs>
-          </svg>
-          <span>Pangram!</span>
-        </div>
       </div>
     </div>
     <div id="main-game">
@@ -306,7 +297,7 @@
         width={hexagonSize} 
         fill='var(--primary)' 
         textColor='var(--dark)'
-        class="letter-button"
+        class="letter-button {wordIsPangram ? 'pangram' : ''}"
         id="center"
         disabled={animating}
         pressed={pressedKeys.includes(puzzle.centerLetter)}
@@ -316,7 +307,7 @@
       <Hexagon 
         width={hexagonSize} 
         fill='var(--gray)' 
-        class="letter-button"
+        class="letter-button outside {wordIsPangram ? 'pangram' : ''}"
         id="top-middle"
         disabled={animating}
         pressed={pressedKeys.includes(outsideLetters[0])}
@@ -326,8 +317,8 @@
       <Hexagon 
         width={hexagonSize} 
         fill='var(--gray)' 
-        class="letter-button"
-        id="top-left"
+        class="letter-button outside {wordIsPangram ? 'pangram' : ''}"
+        id="top-right"
         disabled={animating}
         pressed={pressedKeys.includes(outsideLetters[1])}
         clickHandler={() => addLetter(outsideLetters[1])}
@@ -336,8 +327,8 @@
       <Hexagon 
         width={hexagonSize} 
         fill='var(--gray)' 
-        class="letter-button"
-        id="top-right"
+        class="letter-button outside {wordIsPangram ? 'pangram' : ''}"
+        id="bottom-right"
         disabled={animating}
         pressed={pressedKeys.includes(outsideLetters[2])}
         clickHandler={() => addLetter(outsideLetters[2])}
@@ -346,7 +337,7 @@
       <Hexagon 
         width={hexagonSize} 
         fill='var(--gray)' 
-        class="letter-button"
+        class="letter-button outside {wordIsPangram ? 'pangram' : ''}"
         id="bottom-middle"
         disabled={animating}
         pressed={pressedKeys.includes(outsideLetters[3])}
@@ -356,7 +347,7 @@
       <Hexagon 
         width={hexagonSize} 
         fill='var(--gray)' 
-        class="letter-button"
+        class="letter-button outside {wordIsPangram ? 'pangram' : ''}"
         id="bottom-left"
         disabled={animating}
         pressed={pressedKeys.includes(outsideLetters[4])}
@@ -366,8 +357,8 @@
       <Hexagon 
         width={hexagonSize} 
         fill='var(--gray)' 
-        class="letter-button"
-        id="bottom-right"
+        class="letter-button outside {wordIsPangram ? 'pangram' : ''}"
+        id="top-left"
         disabled={animating}
         pressed={pressedKeys.includes(outsideLetters[5])}
         clickHandler={() => addLetter(outsideLetters[5])}
@@ -435,7 +426,7 @@
     top: 50%;
     transform: translate(-50%, -50%);
   }
-
+  
   :global(#top-middle) {
     transform: translate(-50%, -150%);
   }
@@ -460,9 +451,56 @@
     transform: translate(25%, 0%);
   }
 
-  #word-wrapper-hide-overflow {
-    overflow: hidden;
-    width: 100%;
+  :global(.outside.pangram polygon) {
+    animation: outsideLetterPangram forwards;
+  }
+
+  @keyframes outsideLetterPangram {
+    10%, 90% {
+      fill: var(--accent);
+    }
+    100% {
+      fill: var(--gray);
+    }
+  }
+
+  :global(#center.pangram polygon) {
+    animation: centerLetterPangram forwards;
+  }
+
+  @keyframes centerLetterPangram {
+    10%, 90% {
+      fill: var(--accent);
+    }
+    100% {
+      fill: var(--primary);
+    }
+  }
+
+  :global(.outside.pangram text) {
+    animation: outsideLetterTextPangram forwards;
+  }
+
+  @keyframes outsideLetterTextPangram {
+    10%, 90% {
+      fill: var(--light);
+    }
+    100% {
+      fill: var(--heading);
+    }
+  }
+
+  :global(#center.pangram text) {
+    animation: centerLetterTextPangram forwards;
+  }
+
+  @keyframes centerLetterTextPangram {
+    10%, 90% {
+      fill: var(--light);
+    }
+    100% {
+      fill: var(--dark);
+    }
   }
 
   #word-wrapper {
@@ -501,7 +539,7 @@
   }
 
   #word[data-is-pangram="true"] span {
-    animation: pangram 2.5s cubic-bezier(0.455, 0.03, 0.515, 0.955) forwards;
+    animation: pangram cubic-bezier(0.455, 0.03, 0.515, 0.955) forwards;
   }
 
   @keyframes pangram {
@@ -592,6 +630,11 @@
     color: color-mix(in oklch, var(--primary) 67%, var(--dark));
   }
 
+  #notification[data-notification-type="pangram"] {
+    background-color: var(--accent);
+    color: var(--light);
+  }
+
   @keyframes appear {
     from {
       transform: translate(-50%, 0%);
@@ -606,39 +649,6 @@
       opacity: 0;
       visibility: hidden;
     }
-  }
-
-  #word[data-is-pangram="true"] + #pangram-star {
-    opacity: 1;
-    visibility: visible;
-  }
-
-  #pangram-star {
-    visibility: hidden;
-    opacity: 0;
-    position: absolute;
-    top: -1rem;
-    left: 100%;
-    transform: translate(-50%, -50%) rotate(15deg);
-    z-index: -1;
-    transition: opacity var(--transition-1),
-                visibility var(--transition-1);
-  }
-
-  #pangram-star span {
-    background-color: var(--accent);
-    color: var(--light);
-    width: fit-content;
-    padding: 0.125rem 0.5rem;
-    border-radius: 0.25rem;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
-
-  #pangram-star svg {
-    animation: rotate 12s linear infinite;
   }
 
   @keyframes rotate {
