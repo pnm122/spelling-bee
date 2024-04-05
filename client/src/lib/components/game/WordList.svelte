@@ -6,9 +6,6 @@
   import PhInfo from '~icons/ph/info'
 
   $: wordPreviewsOn = (!$currentScore.loading && $currentScore.data) ? $currentScore.data.wordPreviewsOn : false
-
-  // Grossly inefficient, might be better to just store this in progress
-  $: wordsToFind = $currentPuzzle.data?.wordList.filter(w => !$currentScore.data?.wordsFound.find(n => n.word == w)) ?? []
 </script>
 
 <div id="word-list">

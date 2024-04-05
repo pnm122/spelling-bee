@@ -43,13 +43,13 @@ export const tryWord = (word: string): TryWordResponse => {
   } 
 
   const { wordList } = puzzle.data
-  const { wordsFound, points } = score.data
+  const { wordsFound, points, hint, wordPreviewsOn } = score.data
 
   const validWord = wordList.includes(word)
   const alreadyFoundWord = wordsFound.find(w => w.word == word)
   if(validWord) {
     if(!alreadyFoundWord) {
-      const pointsFromWord = getPointsFromWord(word)
+      const pointsFromWord = getPointsFromWord(word, hint, wordPreviewsOn)
       // Add word to wordsFound
       currentScore.set({
         ...score,

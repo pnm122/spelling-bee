@@ -204,7 +204,7 @@
 
   #word-list-toggle {
     display: none;
-    left: 0.5rem;
+    left: 1rem;
 
     @media screen and (width > 1140px) {
       display: flex;
@@ -212,6 +212,6 @@
   }
 
   #leaderboard-toggle {
-    right: 0.5rem;
+    right: 1rem;
   }
 </style>
