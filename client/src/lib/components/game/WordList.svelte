@@ -1,5 +1,5 @@
 <script lang="ts">
-  import currentProgress from "$lib/stores/currentProgress";
+  import currentScore from "$lib/stores/currentScore";
   import currentPuzzle from "$lib/stores/currentPuzzle";
   import isWordPreviewsActive, { activateWordPreviews } from "$lib/stores/isWordPreviewsActive";
 	import { openPopup } from "$lib/stores/popup";
@@ -9,7 +9,7 @@
   let wordsToFind: string[] = []
 
   // Grossly inefficient, might be better to just store this in progress
-  $: wordsToFind = $currentPuzzle.data?.wordList.filter(w => !$currentProgress.data?.wordsFound.includes(w)) ?? []
+  $: wordsToFind = $currentPuzzle.data?.wordList.filter(w => !$currentScore.data?.wordsFound.find(n => n.word == w)) ?? []
 </script>
 
 <div id="word-list">
@@ -32,19 +32,19 @@
       <PhInfo />
     </button>
   </div>
-  {#if !$currentProgress.loading && $currentProgress.data && !$currentPuzzle.loading && $currentPuzzle.data}
+  {#if !$currentScore.loading && $currentScore.data && !$currentPuzzle.loading && $currentPuzzle.data}
     <div id="words-wrapper">
       <div id="words-found">
-        {#if $currentProgress.data.wordsFound.length > 0}
+        {#if $currentScore.data.wordsFound.length > 0}
           <!-- Must key the items because the words shift place in the array -->
-          {#each $currentProgress.data.wordsFound as word (word)}
+          {#each $currentScore.data.wordsFound as data (data.word)}
             <div class="found-word-wrapper">
-              <p class="found-word {isPangram(word) ? 'pangram' : ''}">
-                {#each word as letter}
+              <p class="found-word {isPangram(data.word) ? 'pangram' : ''}">
+                {#each data.word as letter}
                   <span class={letter == $currentPuzzle.data.centerLetter ? 'center-letter' : ''}>{letter}</span>
                 {/each}
               </p>
-              <span class="points-from-word">{getPointsFromWord(word)} points</span>
+              <span class="points-from-word">{data.points} points</span>
             </div>
           {/each}
         {:else}
@@ -56,7 +56,7 @@
           <h3 id="word-previews-title">Words to find</h3>
           {#each $currentPuzzle.data.wordList as word}
             <div class="word-preview {isPangram(word) ? 'pangram' : ''}">
-              {#if $currentProgress.data.wordsFound.includes(word)}
+              {#if $currentScore.data.wordsFound.find(w => w.word == word)}
                 <h4 class="crossed-off {isPangram(word) ? 'pangram' : ''}">{word}</h4>
               {:else}
                 {#each word as letter}

@@ -1,7 +1,7 @@
 import { WithoutId } from "mongodb"
-import Session from "../db/interfaces/Session"
+import Session from "../../db/interfaces/Session"
 import UserResponse from "./User"
-import User from "../db/interfaces/User"
+import User from "../../db/interfaces/User"
 import Puzzle from "./Puzzle"
 
 // Interface for success and error responses

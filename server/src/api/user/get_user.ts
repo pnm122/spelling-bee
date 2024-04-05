@@ -1,7 +1,7 @@
 import express from "express";
 import { authenticated } from "../../middlewares";
 import { getUser } from "../../db/utils/users";
-import { ErrorResponse, GetUserData, GetUserErrors, SuccessResponse } from "../../interfaces/Response";
+import { ErrorResponse, GetUserData, GetUserErrors, SuccessResponse } from "../../shared/interfaces/Response";
 import Session from "../../db/interfaces/Session";
 
 const router = express.Router()

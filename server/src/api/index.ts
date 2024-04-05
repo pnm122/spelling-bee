@@ -3,8 +3,7 @@ import express from 'express';
 
 import user from './user/_index'
 import puzzle from './puzzle/_index'
-import getDb from '../db/conn';
-import { SuccessResponse } from '../interfaces/Response';
+import { SuccessResponse } from '../shared/interfaces/Response';
 
 const router = express.Router();
 

@@ -3,7 +3,7 @@ import type User from "$backend_interfaces/User";
 import getUser from "$lib/utils/requests/auth/getUser";
 import type Loadable from "$lib/types/loadable";
 
-let user = writable<Loadable<User>>({ loading: true })
+let user = writable<Loadable<User>>({ loading: true, data: undefined })
 
 user.subscribe(u => {
   console.log(u)

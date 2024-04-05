@@ -1,5 +1,5 @@
 <script lang="ts">
-  import currentProgress from "$lib/stores/currentProgress";
+  import currentScore from "$lib/stores/currentScore";
   import currentPuzzle from "$lib/stores/currentPuzzle";
   import MaterialSymbolsKeyboardArrowDownRounded from '~icons/material-symbols/keyboard-arrow-down-rounded'
 	import { isPangram } from "$lib/utils/points";
@@ -15,11 +15,11 @@
     aria-pressed={expanded}
     on:click={() => expanded = true}>
     <div id="recent-words">
-      {#if !$currentProgress.loading && $currentProgress.data && !$currentPuzzle.loading && $currentPuzzle.data}
-        {#if $currentProgress.data.wordsFound.length > 0}
-          {#each $currentProgress.data.wordsFound as word (word)}
-          <span class="recent-word {isPangram(word) ? 'pangram' : ''}">
-            {#each word as letter}
+      {#if !$currentScore.loading && $currentScore.data && !$currentPuzzle.loading && $currentPuzzle.data}
+        {#if $currentScore.data.wordsFound.length > 0}
+          {#each $currentScore.data.wordsFound as data (data.word)}
+          <span class="recent-word {isPangram(data.word) ? 'pangram' : ''}">
+            {#each data.word as letter}
             <span class="recent-word-letter {letter == $currentPuzzle.data.centerLetter ? 'center-letter' : ''}">
               {letter}
             </span>

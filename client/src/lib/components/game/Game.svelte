@@ -6,14 +6,14 @@
   import PhShuffle from '~icons/ph/shuffle'
   import { isPangram } from '$lib/utils/points'
   import currentPuzzle from "$lib/stores/currentPuzzle";
-  import currentProgress, { tryWord } from "$lib/stores/currentProgress";
-	import type Progress from "$lib/types/progress";
+  import currentScore, { tryWord } from "$lib/stores/currentScore";
 	import type Puzzle from "$backend_interfaces/Puzzle";
+	import type Score from "$backend_interfaces/Score";
 
-  let loading = $currentProgress.loading || $currentPuzzle.loading
-  let dataExists = $currentProgress.data && $currentPuzzle.data
+  let loading = $currentScore.loading || $currentPuzzle.loading
+  let dataExists = $currentScore.data && $currentPuzzle.data
   $: puzzle = !loading && dataExists ? $currentPuzzle.data as Puzzle : undefined
-  $: progress = !loading && dataExists ? $currentProgress.data as Progress : undefined
+  $: progress = !loading && dataExists ? $currentScore.data as Score : undefined
 
   $: outsideLetters = puzzle
                         ? puzzle.outsideLetters
@@ -220,7 +220,7 @@
     else {
       let availableIndexes: number[] = []
       wordList.forEach((w, index) => {
-        if(!wordsFound.includes(w)) availableIndexes.push(index)
+        if(!wordsFound.find(n => n.word == w)) availableIndexes.push(index)
       })
 
       const hintIndex = availableIndexes[Math.floor(Math.random() * availableIndexes.length)]

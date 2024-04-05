@@ -1,5 +1,5 @@
 import express from 'express';
-import { ErrorResponse, SuccessResponse, ValidateErrors, ValidateData } from '../../interfaces/Response';
+import { ErrorResponse, SuccessResponse, ValidateErrors, ValidateData } from '../../shared/interfaces/Response';
 import { authenticated } from '../../middlewares';
 import Session from '../../db/interfaces/Session';
 

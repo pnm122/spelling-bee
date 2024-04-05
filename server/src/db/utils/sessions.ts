@@ -1,6 +1,6 @@
 // Utility functions for the Sessions collection
 
-import { CreateSessionErrors, DeleteSessionErrors, ErrorResponse, GetSessionData, GetSessionErrors, SuccessResponse, UpdateSessionData, UpdateSessionErrors } from "../../interfaces/Response";
+import { CreateSessionErrors, DeleteSessionErrors, ErrorResponse, GetSessionData, GetSessionErrors, SuccessResponse, UpdateSessionData, UpdateSessionErrors } from "../../shared/interfaces/Response";
 import getDb from "../conn";
 import Session, { SessionInsert } from "../interfaces/Session";
 import { v4 as uuidv4 } from 'uuid'

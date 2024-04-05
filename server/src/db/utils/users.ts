@@ -1,10 +1,10 @@
 // Utility functions for the Users collection
 
-import { LoginRequest, SignupRequest } from "../../interfaces/User";
+import { LoginRequest, SignupRequest } from "../../shared/interfaces/User";
 import bcrypt from 'bcrypt'
 import getDb from "../conn";
 import User from "../interfaces/User";
-import { CreateUserData, CreateUserErrors, ErrorResponse, GetUserErrors, GetUserUtilityData, GetUserUtilityErrors, SuccessResponse, ValidateUtilityData, ValidateUserCredentialsErrors } from "../../interfaces/Response";
+import { CreateUserData, CreateUserErrors, ErrorResponse, GetUserErrors, GetUserUtilityData, GetUserUtilityErrors, SuccessResponse, ValidateUtilityData, ValidateUserCredentialsErrors } from "../../shared/interfaces/Response";
 import { ObjectId, WithoutId } from "mongodb";
 
 /** 

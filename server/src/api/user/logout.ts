@@ -1,5 +1,5 @@
 import express from "express";
-import { ErrorResponse, LogoutErrors, SuccessResponse } from "../../interfaces/Response";
+import { ErrorResponse, LogoutErrors, SuccessResponse } from "../../shared/interfaces/Response";
 import { deleteSession } from "../../db/utils/sessions";
 
 const router = express.Router()

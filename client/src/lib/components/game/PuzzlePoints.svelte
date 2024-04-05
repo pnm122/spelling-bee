@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { getTotalPoints } from "$lib/utils/points";
-  import currentProgress from "$lib/stores/currentProgress";
+  import currentScore from "$lib/stores/currentScore";
+  import currentPuzzle from "$lib/stores/currentPuzzle";
 
   interface SkillLevel {
     name: string,
@@ -29,13 +29,16 @@
     percent: 100
   }]
 
-  $: puzzleProgressPct = $currentProgress.data ? $currentProgress.data!.points * 100 / $currentProgress.data!.maxPoints : 0
+  $: puzzleProgressPct = 
+    ($currentScore.data && $currentPuzzle.data) 
+      ? $currentScore.data!.points * 100 / $currentPuzzle.data!.maxPoints
+      : 0
   $: currentLevel = skillLevels.findLast(s => puzzleProgressPct >= s.percent)!
 </script>
 
-{#if $currentProgress.loading}
+{#if $currentScore.loading || $currentPuzzle.loading}
   <div></div>
-{:else if $currentProgress.data == undefined}
+{:else if !$currentScore.data || !$currentPuzzle.data}
   <div></div>
 {:else}
   <div id="progress-outer-wrapper">
@@ -60,8 +63,8 @@
         id="progress"
         role="progressbar"
         aria-valuenow={puzzleProgressPct}
-        aria-valuemin={$currentProgress.data.points}
-        aria-valuemax={$currentProgress.data.maxPoints}
+        aria-valuemin={$currentScore.data.points}
+        aria-valuemax={$currentPuzzle.data.maxPoints}
         aria-label="Points earned from today's puzzle">
         <div 
           id="progress-bar"
@@ -70,11 +73,11 @@
         <div
           id="points"
           style="left: {puzzleProgressPct}%;">
-          <span>{$currentProgress.data.points} points</span>
+          <span>{$currentScore.data.points} points</span>
           <!-- Force points from last word to rerender every time points changes, causing the animation -->
-          {#key $currentProgress.data.points}
-            {#if $currentProgress.data.pointsFromLastWord > 0}
-              <span id="points-from-last-word">+{$currentProgress.data.pointsFromLastWord}</span>
+          {#key $currentScore.data.points}
+            {#if $currentScore.data.wordsFound[0] && $currentScore.data.wordsFound[0].points > 0}
+              <span id="points-from-last-word">+{$currentScore.data.wordsFound[0].points}</span>
             {/if}
           {/key}
         </div>

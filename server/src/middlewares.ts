@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 
-import { AuthenticatedErrors, ErrorResponse } from './interfaces/Response';
+import { AuthenticatedErrors, ErrorResponse } from './shared/interfaces/Response';
 import { updateSession } from './db/utils/sessions';
 import Session from './db/interfaces/Session';
 

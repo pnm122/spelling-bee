@@ -6,5 +6,6 @@ export default interface Puzzle {
   centerLetter: string
   outsideLetters: [string, string, string, string, string, string]
   wordList: string[]
+  maxPoints: number
   date: string
 }

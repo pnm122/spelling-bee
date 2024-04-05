@@ -1,21 +1,28 @@
 import type Loadable from "$lib/types/loadable";
-import type Progress from "$lib/types/progress";
+import type Score from "$backend_interfaces/Score"
 import { get, writable } from "svelte/store";
 import currentPuzzle from "./currentPuzzle";
 import { getPointsFromWord, getTotalPoints } from "$lib/utils/points";
 
-const currentProgress = writable<Loadable<Progress>>({ loading: true, data: undefined })
+const currentScore = writable<Loadable<Score>>({ loading: true, data: undefined })
+
+currentScore.subscribe(c => {
+  console.log(c.data?.wordsFound)
+})
 
 currentPuzzle.subscribe(p => {
-  if(p.loading) return currentProgress.set({ loading: true, data: undefined })
-  if(!p.data) return currentProgress.set({ loading: false, data: undefined })
-  currentProgress.set({
+  if(p.loading) return currentScore.set({ loading: true, data: undefined })
+  if(!p.data) return currentScore.set({ loading: false, data: undefined })
+  // TODO: Fetch user score from server
+  currentScore.set({
     loading: false,
     data: {
+      id: 'abc',
       points: 0,
-      maxPoints: getTotalPoints(p.data.wordList),
-      pointsFromLastWord: 0,
-      wordsFound: []
+      wordsFound: [],
+      wordPreviewsOn: false,
+      puzzleId: 'abcdef',
+      userId: '12345'
     }
   })
 })
@@ -28,30 +35,29 @@ type TryWordResponse = { success: true } | { success: false, message: string }
 * @return {TryWordResponse} success = true if word added, otherwise success = false and explanation provided in message
 */
 export const tryWord = (word: string): TryWordResponse => {
-  const progress = get(currentProgress)
+  const score = get(currentScore)
   const puzzle = get(currentPuzzle)
 
-  if(puzzle.loading || !puzzle.data || progress.loading || !progress.data) {
+  if(puzzle.loading || !puzzle.data || score.loading || !score.data) {
     return { success: false, message: "Puzzle hasn't loaded yet." }
   } 
 
   const { wordList } = puzzle.data
-  const { wordsFound, points } = progress.data
+  const { wordsFound, points } = score.data
 
   const validWord = wordList.includes(word)
-  const alreadyFoundWord = wordsFound.includes(word)
+  const alreadyFoundWord = wordsFound.find(w => w.word == word)
   if(validWord) {
     if(!alreadyFoundWord) {
       const pointsFromWord = getPointsFromWord(word)
       // Add word to wordsFound
-      currentProgress.set({
-        ...progress,
+      currentScore.set({
+        ...score,
         data: {
-          ...progress.data,
+          ...score.data,
           // Add word to the front of the list so recent words show up first
-          wordsFound: [word, ...wordsFound],
+          wordsFound: [{ word: word, points: pointsFromWord }, ...wordsFound],
           points: points + pointsFromWord,
-          pointsFromLastWord: pointsFromWord
         }
       })
       return { success: true }
@@ -64,4 +70,4 @@ export const tryWord = (word: string): TryWordResponse => {
   }
 }
 
-export default currentProgress
+export default currentScore

@@ -1,6 +1,6 @@
 import express from 'express';
-import { ErrorResponse, SignUpData, SignUpErrors, SuccessResponse } from '../../interfaces/Response';
-import { SignupRequest } from '../../interfaces/User';
+import { ErrorResponse, SignUpData, SignUpErrors, SuccessResponse } from '../../shared/interfaces/Response';
+import { SignupRequest } from '../../shared/interfaces/User';
 import { createUser } from '../../db/utils/users';
 import { createSession } from '../../db/utils/sessions';
 

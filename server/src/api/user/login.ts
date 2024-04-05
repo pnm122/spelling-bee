@@ -1,6 +1,6 @@
 import express from "express";
-import { LoginRequest } from "../../interfaces/User";
-import { ErrorResponse, LogInData, LoginErrors, SuccessResponse } from "../../interfaces/Response";
+import { LoginRequest } from "../../shared/interfaces/User";
+import { ErrorResponse, LogInData, LoginErrors, SuccessResponse } from "../../shared/interfaces/Response";
 import { validateUserCredentials } from "../../db/utils/users";
 import { createSession } from "../../db/utils/sessions";
 
