@@ -77,6 +77,7 @@ export type GetOrCreateScoreErrors = WithUnknown<'no-puzzle'> | GetPuzzleUtility
 
 export type GetCurrentUserScoreErrors = GetOrCreateScoreErrors
 export type UpdateScoreUtilityErrors = WithUnknown<'no-score'>
+export type AddWordUtilityErrors = WithUnknown<'no-score'>
 
 export type GetPuzzleUtilityErrors = WithUnknown<'no-puzzle'>
 
@@ -113,8 +114,9 @@ export type GetPuzzleUtilityData = { puzzle: DBPuzzle }
 export type GetCurrentUserScoreResponse = SuccessResponse<GetCurrentUserScoreData> | ErrorResponse<GetCurrentUserScoreErrors>
 export type GetOrCreateScoreResponse = SuccessResponse<{score: Score}> | ErrorResponse<GetOrCreateScoreErrors>
 export type UpdateScoreUtilityResponse = SuccessResponse | ErrorResponse<UpdateScoreUtilityErrors>
+export type AddWordUtilityResponse = SuccessResponse | ErrorResponse<AddWordUtilityErrors>
 
-export type UpdateScoreResponse = UpdateScoreUtilityResponse
+export type AddWordResponse = AddWordUtilityResponse
 
 export type GetPuzzleUtilityResponse = SuccessResponse<GetPuzzleUtilityData> | ErrorResponse<GetPuzzleUtilityErrors>
 
