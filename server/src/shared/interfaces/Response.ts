@@ -3,6 +3,7 @@ import UserResponse from "./User"
 import Puzzle from "./Puzzle"
 import ClientScore from "./Score"
 import DBPuzzle from "../../db/interfaces/Puzzle"
+import Score from "../../db/interfaces/Score"
 
 // Interface for success and error responses
 export interface Response {
@@ -39,6 +40,7 @@ export type ErrorTypes =
   | 'failed-to-create-session' // When logging in, a user is created but creating a session failed
   | 'invalid-session' // Requested session doesn't exist (most likely session expired)
   | 'no-session' // Client requested a resource that requires a session without having one
+  | 'no-score' // Client requested a score that doesn't exist
 
 export type WithUnknown<T extends ErrorTypes> = T | 'unknown-error'
 // Utility type to force generic passed in to be one of the specified error types
@@ -74,6 +76,7 @@ export type DailyPuzzleErrors = WithUnknown<'no-puzzle'>
 export type GetOrCreateScoreErrors = WithUnknown<'no-puzzle'> | GetPuzzleUtilityErrors
 
 export type GetCurrentUserScoreErrors = GetOrCreateScoreErrors
+export type UpdateScoreUtilityErrors = WithUnknown<'no-score'>
 
 export type GetPuzzleUtilityErrors = WithUnknown<'no-puzzle'>
 
@@ -108,6 +111,10 @@ export type GetPuzzleUtilityData = { puzzle: DBPuzzle }
 // ============================================================
 
 export type GetCurrentUserScoreResponse = SuccessResponse<GetCurrentUserScoreData> | ErrorResponse<GetCurrentUserScoreErrors>
+export type GetOrCreateScoreResponse = SuccessResponse<{score: Score}> | ErrorResponse<GetOrCreateScoreErrors>
+export type UpdateScoreUtilityResponse = SuccessResponse | ErrorResponse<UpdateScoreUtilityErrors>
+
+export type UpdateScoreResponse = UpdateScoreUtilityResponse
 
 export type GetPuzzleUtilityResponse = SuccessResponse<GetPuzzleUtilityData> | ErrorResponse<GetPuzzleUtilityErrors>
 
