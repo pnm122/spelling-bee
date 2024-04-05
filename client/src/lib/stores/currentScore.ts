@@ -2,7 +2,7 @@ import type Loadable from "$lib/types/loadable";
 import type Score from "$backend_interfaces/Score"
 import { get, writable } from "svelte/store";
 import currentPuzzle from "./currentPuzzle";
-import { getPointsFromWord, getTotalPoints } from "$lib/utils/points";
+import { getPointsFromWord, getTotalPoints, wordMatchesHint } from "$lib/utils/points";
 
 const currentScore = writable<Loadable<Score>>({ loading: true, data: undefined })
 
@@ -58,6 +58,8 @@ export const tryWord = (word: string): TryWordResponse => {
           // Add word to the front of the list so recent words show up first
           wordsFound: [{ word: word, points: pointsFromWord }, ...wordsFound],
           points: points + pointsFromWord,
+          // Update hint to undefined if the word matches the hint
+          hint: wordMatchesHint(word, hint) ? undefined : hint
         }
       })
       return { success: true }
@@ -79,6 +81,49 @@ export const activateWordPreviews = () => {
       data: {
         ...c.data,
         wordPreviewsOn: true
+      }
+    }
+  })
+}
+
+// Pick an unfound word as the user's hint
+// Hint is first 3 letters of the word
+// If they've already asked for a hint and not found that word, just give them the same hint again
+export const getHint = (callback: (hint: string) => void) => {
+  const score = get(currentScore)
+  const puzzle = get(currentPuzzle)
+
+  if(puzzle.loading || !puzzle.data || score.loading || !score.data) {
+    return
+  } 
+  
+  const { wordList } = puzzle.data
+  const { wordsFound, hint } = score.data
+
+  if(hint) return callback(hint.word.slice(0, hint.lettersGiven))
+
+  let availableIndexes: number[] = []
+  wordList.forEach((w, index) => {
+    if(!wordsFound.find(n => n.word == w)) availableIndexes.push(index)
+  })
+
+  const hintIndex = availableIndexes[Math.floor(Math.random() * availableIndexes.length)]
+  let hintWord = wordList[availableIndexes[hintIndex]]
+
+  callback(hintWord.slice(0, 3))
+
+  currentScore.update(c => {
+    // Shouldn't be possible from checks above, but it stops TS from yelling at me
+    if(c.loading || !c.data) return c
+
+    return {
+      ...c,
+      data: {
+        ...c.data,
+        hint: {
+          word: hintWord,
+          lettersGiven: 3
+        }
       }
     }
   })

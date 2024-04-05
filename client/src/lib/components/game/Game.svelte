@@ -6,14 +6,14 @@
   import PhShuffle from '~icons/ph/shuffle'
   import { isPangram } from '$lib/utils/points'
   import currentPuzzle from "$lib/stores/currentPuzzle";
-  import currentScore, { tryWord } from "$lib/stores/currentScore";
+  import currentScore, { getHint, tryWord } from "$lib/stores/currentScore";
 	import type Puzzle from "$backend_interfaces/Puzzle";
 	import type Score from "$backend_interfaces/Score";
 
   let loading = $currentScore.loading || $currentPuzzle.loading
   let dataExists = $currentScore.data && $currentPuzzle.data
   $: puzzle = !loading && dataExists ? $currentPuzzle.data as Puzzle : undefined
-  $: progress = !loading && dataExists ? $currentScore.data as Score : undefined
+  $: score = !loading && dataExists ? $currentScore.data as Score : undefined
 
   $: outsideLetters = puzzle
                         ? puzzle.outsideLetters
@@ -21,7 +21,6 @@
   let word = ""
   let pressedKeys: string[] = []
   let isComponentDestroyed = false
-  let hintWord = ""
   let wordIsPangram = false
   let wordIsClearing = false
   let animating = false
@@ -135,8 +134,6 @@
       return setNotification("default", res.message)
     }
 
-    if(word == hintWord) hintWord = ''
-
     if(isPangram(word)) return showPangramAnimation()
     else {
       setNotification("congrats", generateRandomCongratsMessage())
@@ -206,28 +203,11 @@
     outsideLetters[startIndex] = currLetter
   }
 
-  // Pick an unfound word as the user's hint
-  // Hint is first 3 letters of the word
-  // If they've already asked for a hint and not found that word, just give them the same hint again
-  const getHint = () => {
-    if(!puzzle || !progress || animating) return
-    const { wordList } = puzzle
-    const { wordsFound } = progress;
+  // Callback function for getHint, so the screen always updates when the user tries to get a hint
+  const setHintWord = (hint: string) => {
+    if(animating) return
 
-    (document.activeElement as HTMLElement).blur()
-
-    if(hintWord != '') word = hintWord.slice(0, 3)
-    else {
-      let availableIndexes: number[] = []
-      wordList.forEach((w, index) => {
-        if(!wordsFound.find(n => n.word == w)) availableIndexes.push(index)
-      })
-
-      const hintIndex = availableIndexes[Math.floor(Math.random() * availableIndexes.length)]
-      hintWord = wordList[availableIndexes[hintIndex]]
-
-      word = hintWord.slice(0, 3)
-    }
+    word = hint
   }
 
   onMount(() => {
@@ -261,7 +241,7 @@
   onDestroy(() => isComponentDestroyed = true)
 </script>
 
-{#if loading || !puzzle || !progress}
+{#if loading || !puzzle || !score}
   <div></div>
 {:else if !dataExists}
   <div></div>
@@ -384,7 +364,7 @@
           Delete
         </button>
         <button
-          on:click={getHint || animating}
+          on:click={() => getHint(setHintWord)}
           class="btn secondary"
           title="Hint"
           aria-label="Hint">

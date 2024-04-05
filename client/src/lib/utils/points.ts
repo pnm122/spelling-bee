@@ -10,12 +10,11 @@ export const WORD_PREVIEWS_FACTOR = 0.8
 * @return {number} Word's point value
 */
 export function getPointsFromWord(word: string, hint: Hint | undefined, wordPreviewsOn: boolean): number {
-  console.log(word, hint, wordPreviewsOn)
   let points = 0
   // If the hint letters shown to the user match the start of the word, only give the user points for the difference
   // i.e. displayed hint = 'upp' and word = 'upper', the user gets 2 points
-  if(hint && word.slice(0, hint.lettersGiven) == hint.word.slice(0, hint.lettersGiven)) {
-    points = word.length - hint.lettersGiven
+  if(wordMatchesHint(word, hint)) {
+    points = word.length - hint!.lettersGiven
   // By default, the number of points you get is equal to the length of the word
   } else {
     points = word.length
@@ -51,4 +50,14 @@ export function isPangram(word: string): boolean {
   if(lettersSeen.length == 7) return true
   
   return false
+}
+
+/** 
+* Determine whether a word matches a given hint
+* @param {string} word
+* @param {Hint} hint
+* @return {boolean}
+*/
+export function wordMatchesHint(word: string, hint: Hint | undefined): boolean {
+  return hint != undefined && (word.slice(0, hint.lettersGiven) == hint.word.slice(0, hint.lettersGiven))
 }
