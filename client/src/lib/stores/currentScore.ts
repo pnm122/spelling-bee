@@ -70,4 +70,18 @@ export const tryWord = (word: string): TryWordResponse => {
   }
 }
 
+export const activateWordPreviews = () => {
+  currentScore.update(c => {
+    if(c.loading || !c.data) return c
+    
+    return {
+      ...c,
+      data: {
+        ...c.data,
+        wordPreviewsOn: true
+      }
+    }
+  })
+}
+
 export default currentScore

@@ -8,7 +8,7 @@ export default interface Score {
   // Total points earned from puzzle
   points: number
   // User's current hint, if they've taken one
-  hint?: string
+  hint?: Hint
   // Whether the user has turned on word previews or not
   wordPreviewsOn: boolean
   // Id of the puzzle this data refers to
@@ -20,4 +20,9 @@ export default interface Score {
 export interface UserWordFound {
   word: string
   points: number
+}
+
+export interface Hint {
+  word: string
+  lettersGiven: number
 }

@@ -1,38 +1,37 @@
 <script lang="ts">
-  import currentScore from "$lib/stores/currentScore";
+  import currentScore, { activateWordPreviews } from "$lib/stores/currentScore";
   import currentPuzzle from "$lib/stores/currentPuzzle";
-  import isWordPreviewsActive, { activateWordPreviews } from "$lib/stores/isWordPreviewsActive";
 	import { openPopup } from "$lib/stores/popup";
-	import { getPointsFromWord, isPangram } from "$lib/utils/points";
+	import { isPangram } from "$lib/utils/points";
   import PhInfo from '~icons/ph/info'
 
-  let wordsToFind: string[] = []
+  $: wordPreviewsOn = (!$currentScore.loading && $currentScore.data) ? $currentScore.data.wordPreviewsOn : false
 
   // Grossly inefficient, might be better to just store this in progress
   $: wordsToFind = $currentPuzzle.data?.wordList.filter(w => !$currentScore.data?.wordsFound.find(n => n.word == w)) ?? []
 </script>
 
 <div id="word-list">
-  <div id="word-previews-wrapper">
-    <button 
-      disabled={$isWordPreviewsActive}
-      on:click={activateWordPreviews}
-      class="btn secondary small">
-      {$isWordPreviewsActive ? 'Word previews on' : 'Turn on word previews'}
-    </button>
-    <button
-      on:click={() => openPopup(`
-        Turning on word previews shows a list of all words you haven't found yet, with their letters hidden. 
-        The center letter is marked with a yellow background. Any words found after turning on word previews will have their points reduced by 20%.
-      `)}
-      title="Word preview information"
-      aria-label="Word preview information"
-      class="icon-button"
-      id="info">
-      <PhInfo />
-    </button>
-  </div>
   {#if !$currentScore.loading && $currentScore.data && !$currentPuzzle.loading && $currentPuzzle.data}
+    <div id="word-previews-wrapper">
+      <button 
+        disabled={wordPreviewsOn}
+        on:click={activateWordPreviews}
+        class="btn secondary small">
+        {wordPreviewsOn ? 'Word previews on' : 'Turn on word previews'}
+      </button>
+      <button
+        on:click={() => openPopup(`
+          Turning on word previews shows a list of all words you haven't found yet, with their letters hidden. 
+          The center letter is marked with a yellow background. Any words found after turning on word previews will have their points reduced by 20%.
+        `)}
+        title="Word preview information"
+        aria-label="Word preview information"
+        class="icon-button"
+        id="info">
+        <PhInfo />
+      </button>
+    </div>
     <div id="words-wrapper">
       <div id="words-found">
         {#if $currentScore.data.wordsFound.length > 0}
@@ -51,7 +50,7 @@
           <p id="no-words-yet">You haven't found any words yet.</p>
         {/if}
       </div>
-      {#if $isWordPreviewsActive}
+      {#if wordPreviewsOn}
         <div id="word-previews">
           <h3 id="word-previews-title">Words to find</h3>
           {#each $currentPuzzle.data.wordList as word}
