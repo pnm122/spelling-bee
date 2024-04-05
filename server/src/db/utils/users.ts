@@ -82,8 +82,7 @@ export async function createUser({
 
 /** 
 * Get a user from the Users collection, given their ID. Returns all fields except their password
-* @param {Object} params
-* @param {string} params.userId
+* @param {string} userId
 * @return {Promise<SuccessResponse<GetUserUtilityData> | ErrorResponse<GetUserUtilityErrors>>} Details whether the function was successful or not. Fails if userId isn't found
 */
 export async function getUser(

@@ -3,12 +3,13 @@ import { authenticated } from "../../middlewares";
 import { getUser } from "../../db/utils/users";
 import { ErrorResponse, GetUserData, GetUserErrors, SuccessResponse } from "../../shared/interfaces/Response";
 import Session from "../../db/interfaces/Session";
+import { WithSession } from "../../shared/interfaces/Request";
 
 const router = express.Router()
 
 router.use(authenticated)
 
-router.get<{ session: Session }, SuccessResponse<GetUserData> | ErrorResponse<GetUserErrors>>('/', async (req, res) => {
+router.get<WithSession, SuccessResponse<GetUserData> | ErrorResponse<GetUserErrors>>('/', async (req, res) => {
   const session = req.body.session as Session
   
   const getUserRes = await getUser(session.userId)

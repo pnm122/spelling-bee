@@ -1,8 +1,8 @@
-import { WithoutId } from "mongodb"
 import Session from "../../db/interfaces/Session"
 import UserResponse from "./User"
-import User from "../../db/interfaces/User"
 import Puzzle from "./Puzzle"
+import ClientScore from "./Score"
+import DBPuzzle from "../../db/interfaces/Puzzle"
 
 // Interface for success and error responses
 export interface Response {
@@ -71,6 +71,12 @@ export type AuthenticatedErrors = AsErrorType<'no-session'> | UpdateSessionError
 export type GetPuzzleErrors = WithUnknown<'no-puzzle'>
 export type DailyPuzzleErrors = WithUnknown<'no-puzzle'>
 
+export type GetOrCreateScoreErrors = WithUnknown<'no-puzzle'> | GetPuzzleUtilityErrors
+
+export type GetCurrentUserScoreErrors = GetOrCreateScoreErrors
+
+export type GetPuzzleUtilityErrors = WithUnknown<'no-puzzle'>
+
 // ============================================================
 
 // SUCCESS DATA TYPES
@@ -91,5 +97,18 @@ export type GetSessionData = { session: Session }
 
 export type GetPuzzleData = { puzzle: Puzzle }
 export type DailyPuzzleData = { puzzle: Puzzle }
+
+export type GetCurrentUserScoreData = { score: ClientScore }
+
+export type GetPuzzleUtilityData = { puzzle: DBPuzzle }
+
+// ============================================================
+
+// FULL, COMBINED RESPONSE TYPES
+// ============================================================
+
+export type GetCurrentUserScoreResponse = SuccessResponse<GetCurrentUserScoreData> | ErrorResponse<GetCurrentUserScoreErrors>
+
+export type GetPuzzleUtilityResponse = SuccessResponse<GetPuzzleUtilityData> | ErrorResponse<GetPuzzleUtilityErrors>
 
 // ============================================================
