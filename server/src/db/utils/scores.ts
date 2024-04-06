@@ -35,7 +35,10 @@ export async function getOrCreateScore({
 
     if(findRes) return {
       success: true,
-      data: { score: findRes }
+      data: {
+        score: findRes,
+        created: false
+      }
     }
 
     const getPuzzleRes = await getPuzzle(puzzleId)
@@ -58,7 +61,8 @@ export async function getOrCreateScore({
         score: {
           ...newScore,
           _id: createRes.insertedId
-        }
+        },
+        created: true
       }
     }
   } catch(e) {

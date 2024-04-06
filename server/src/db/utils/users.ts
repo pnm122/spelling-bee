@@ -4,7 +4,7 @@ import { LoginRequest, SignupRequest } from "../../shared/interfaces/User";
 import bcrypt from 'bcrypt'
 import getDb from "../conn";
 import User from "../interfaces/User";
-import { CreateUserData, CreateUserErrors, ErrorResponse, GetUserErrors, GetUserUtilityData, GetUserUtilityErrors, SuccessResponse, ValidateUtilityData, ValidateUserCredentialsErrors, AddWordToUserResponse } from "../../shared/interfaces/Response";
+import { CreateUserData, CreateUserErrors, ErrorResponse, GetUserErrors, GetUserUtilityData, GetUserUtilityErrors, SuccessResponse, ValidateUtilityData, ValidateUserCredentialsErrors, AddWordToUserResponse, IncrementPuzzlesPlayedResponse } from "../../shared/interfaces/Response";
 import { ObjectId, WithoutId } from "mongodb";
 import { UserWordFound } from "../../shared/interfaces/Score";
 import isPangram from "../../utils/isPangram";
@@ -221,6 +221,43 @@ export async function addWordToUser({
         "stats.longest_word": newLongestWord
       }
     })
+
+    return { success: true }
+  } catch(e) {
+    return {
+      success: false,
+      message: 'unknown-error'
+    }
+  }
+}
+
+export async function incrementPuzzlesPlayed({
+  userId
+}: { userId: string }): Promise<IncrementPuzzlesPlayedResponse> {
+  if(userId.length != 24) {
+    return {
+      success: false,
+      message: 'invalid-user-id'
+    }
+  }
+
+  try {
+    const db = await getDb()
+
+    const res = await db.collection<User>('Users').updateOne({
+      _id: new ObjectId(userId)
+    }, {
+      $inc: {
+        "stats.puzzles_played": 1
+      }
+    })
+
+    if(res.matchedCount == 0) {
+      return {
+        success: false,
+        message: 'invalid-user-id'
+      }
+    }
 
     return { success: true }
   } catch(e) {

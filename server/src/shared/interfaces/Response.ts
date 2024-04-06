@@ -81,6 +81,7 @@ export type UpdateScoreUtilityErrors = WithUnknown<'no-score'>
 export type AddWordUtilityErrors = WithUnknown<'no-score'>
 
 export type GetPuzzleUtilityErrors = WithUnknown<'no-puzzle'>
+export type IncrementPuzzlesPlayedErrors = WithUnknown<'invalid-user-id'>
 
 // ============================================================
 
@@ -104,6 +105,7 @@ export type GetPuzzleData = { puzzle: Puzzle }
 export type DailyPuzzleData = { puzzle: Puzzle }
 
 export type GetCurrentUserScoreData = { score: ClientScore }
+export type GetOrCreateScoreData = { score: Score, created: boolean }
 
 export type GetPuzzleUtilityData = { puzzle: DBPuzzle }
 
@@ -113,7 +115,7 @@ export type GetPuzzleUtilityData = { puzzle: DBPuzzle }
 // ============================================================
 
 export type GetCurrentUserScoreResponse = SuccessResponse<GetCurrentUserScoreData> | ErrorResponse<GetCurrentUserScoreErrors>
-export type GetOrCreateScoreResponse = SuccessResponse<{score: Score}> | ErrorResponse<GetOrCreateScoreErrors>
+export type GetOrCreateScoreResponse = SuccessResponse<GetOrCreateScoreData> | ErrorResponse<GetOrCreateScoreErrors>
 export type UpdateScoreUtilityResponse = SuccessResponse | ErrorResponse<UpdateScoreUtilityErrors>
 export type AddWordUtilityResponse = SuccessResponse | ErrorResponse<AddWordUtilityErrors>
 
@@ -122,5 +124,6 @@ export type AddWordResponse = AddWordUtilityResponse | AddWordToUserResponse
 export type GetPuzzleUtilityResponse = SuccessResponse<GetPuzzleUtilityData> | ErrorResponse<GetPuzzleUtilityErrors>
 
 export type AddWordToUserResponse = SuccessResponse | ErrorResponse<AddWordToUserErrors>
+export type IncrementPuzzlesPlayedResponse = SuccessResponse | ErrorResponse<IncrementPuzzlesPlayedErrors>
 
 // ============================================================
