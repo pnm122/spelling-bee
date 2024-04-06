@@ -175,6 +175,13 @@ export async function validateUserCredentials({
   }
 }
 
+/** 
+* Update a user's stats based on a word they find
+* @param {Object} params
+* @param {string} params.userId - User's 24-character identifier
+* @param {string} params.word - Word to add stats for
+* @return {Promise<AddWordToUserResponse>} Details whether the function was successful or not
+*/
 export async function addWordToUser({
   userId,
   word
@@ -231,6 +238,12 @@ export async function addWordToUser({
   }
 }
 
+/** 
+* Increment a user's puzzles played stat
+* @param {Object} params
+* @param {string} params.userId - User's 24-character identifier
+* @return {Promise<IncrementPuzzlesPlayedResponse>} Details whether the function was successful or not
+*/
 export async function incrementPuzzlesPlayed({
   userId
 }: { userId: string }): Promise<IncrementPuzzlesPlayedResponse> {
