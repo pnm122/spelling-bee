@@ -10,9 +10,6 @@ export default interface User {
     pangrams: number,
     puzzles_played: number
     puzzles_solved: number
-    longest_word: {
-      word: string,
-      length: number
-    }
+    longest_word: string
   }
 }

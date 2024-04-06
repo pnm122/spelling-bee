@@ -53,6 +53,7 @@ export type AsErrorType<T extends ErrorTypes> = T
 export type CreateUserErrors =              WithUnknown<'user-exists'>
 export type GetUserUtilityErrors =          WithUnknown<'invalid-user-id'>
 export type ValidateUserCredentialsErrors = WithUnknown<'user-info-incorrect'>
+export type AddWordToUserErrors =           WithUnknown<'invalid-user-id'>
 
 export type CreateSessionErrors = AsErrorType<'failed-to-create-session'>
 export type UpdateSessionErrors = WithUnknown<'invalid-session'>
@@ -116,8 +117,10 @@ export type GetOrCreateScoreResponse = SuccessResponse<{score: Score}> | ErrorRe
 export type UpdateScoreUtilityResponse = SuccessResponse | ErrorResponse<UpdateScoreUtilityErrors>
 export type AddWordUtilityResponse = SuccessResponse | ErrorResponse<AddWordUtilityErrors>
 
-export type AddWordResponse = AddWordUtilityResponse
+export type AddWordResponse = AddWordUtilityResponse | AddWordToUserResponse
 
 export type GetPuzzleUtilityResponse = SuccessResponse<GetPuzzleUtilityData> | ErrorResponse<GetPuzzleUtilityErrors>
+
+export type AddWordToUserResponse = SuccessResponse | ErrorResponse<AddWordToUserErrors>
 
 // ============================================================

@@ -4,8 +4,10 @@ import { LoginRequest, SignupRequest } from "../../shared/interfaces/User";
 import bcrypt from 'bcrypt'
 import getDb from "../conn";
 import User from "../interfaces/User";
-import { CreateUserData, CreateUserErrors, ErrorResponse, GetUserErrors, GetUserUtilityData, GetUserUtilityErrors, SuccessResponse, ValidateUtilityData, ValidateUserCredentialsErrors } from "../../shared/interfaces/Response";
+import { CreateUserData, CreateUserErrors, ErrorResponse, GetUserErrors, GetUserUtilityData, GetUserUtilityErrors, SuccessResponse, ValidateUtilityData, ValidateUserCredentialsErrors, AddWordToUserResponse } from "../../shared/interfaces/Response";
 import { ObjectId, WithoutId } from "mongodb";
+import { UserWordFound } from "../../shared/interfaces/Score";
+import isPangram from "../../utils/isPangram";
 
 /** 
 * Create a user in the Users collection, hashing and salting the given password
@@ -47,10 +49,7 @@ export async function createUser({
         pangrams: 0,
         puzzles_played: 0,
         puzzles_solved: 0,
-        longest_word: {
-          word: '',
-          length: 0
-        }
+        longest_word: ''
       }
     }
 
@@ -168,6 +167,62 @@ export async function validateUserCredentials({
         message: 'user-info-incorrect'
       }
     }
+  } catch(e) {
+    return {
+      success: false,
+      message: 'unknown-error'
+    }
+  }
+}
+
+export async function addWordToUser({
+  userId,
+  word
+}: { userId: string, word: UserWordFound }): Promise<AddWordToUserResponse> {
+  if(userId.length != 24) {
+    return {
+      success: false,
+      message: 'invalid-user-id'
+    }
+  }
+
+  try {
+    const db = await getDb()
+
+    const longestWord = await db.collection('Users').findOne<User>({
+      _id: new ObjectId(userId)
+    }, {
+      projection: {
+        stats: {
+          longest_word: 1
+        }
+      }
+    })
+
+    if(!longestWord) {
+      return {
+        success: false,
+        message: 'invalid-user-id'
+      }
+    }
+
+    let newLongestWord = longestWord.stats.longest_word
+    if(word.word.length > newLongestWord.length) newLongestWord = word.word
+
+    const res = await db.collection<User>('Users').updateOne({
+      _id: new ObjectId(userId)
+    }, {
+      $inc: {
+        "stats.words_found": 1,
+        "stats.points": word.points,
+        "stats.pangrams": isPangram(word.word) ? 1 : 0
+      },
+      $set: {
+        "stats.longest_word": newLongestWord
+      }
+    })
+
+    return { success: true }
   } catch(e) {
     return {
       success: false,
