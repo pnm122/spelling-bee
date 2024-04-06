@@ -36,3 +36,12 @@ Solutions:
 * Hint button gives an additional letter every time you click it until it gives you the full word
   * Has a warning if it's about to give you the last letter
   * Points you earn = number of words you come up with
+
+## TODO
+
+* Add hint update endpoint and call when changing hint
+* Add wordPreviewsOn update endpoint and call when changing value
+* Add finish puzzle endpoint and call when the user finishes a puzzle
+* Add animation for finishing a puzzle
+* Improve params setting for requesting and params retrieving for API
+* (?) Add metadata about each word so you know if you used a hint or word previews to get it

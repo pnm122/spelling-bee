@@ -6,7 +6,7 @@
   
   export let open: boolean
 
-  const level = $user.loading || !$user.data ? undefined : pointsToLevel($user.data.stats.points)
+  $: level = $user.loading || !$user.data ? undefined : pointsToLevel($user.data.stats.points)
 </script>
 
 {#if !$user.loading && $user.data}
