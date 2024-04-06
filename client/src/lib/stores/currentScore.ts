@@ -184,7 +184,7 @@ export const getHint = (callback: (hint: string) => void) => {
   })
 
   const hintIndex = availableIndexes[Math.floor(Math.random() * availableIndexes.length)]
-  let hintWord = wordList[availableIndexes[hintIndex]]
+  let hintWord = wordList[hintIndex]
 
   callback(hintWord.slice(0, 3))
 
