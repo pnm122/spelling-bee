@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 
-import { AuthenticatedErrors, ErrorResponse } from './shared/interfaces/Response';
+import { AuthenticatedErrors, AuthenticatedResponse, ErrorResponse } from './shared/interfaces/Response';
 import { updateSession } from './db/utils/sessions';
 import Session from './db/interfaces/Session';
 
@@ -22,7 +22,7 @@ export function errorHandler(err: Error, req: Request, res: Response<ErrorRespon
 * Check if the user is authenticated. Updates the user's session from the request cookie if it exists,
 * otherwise responds to the client with a 401 not authenticated
 */
-export async function authenticated(req: Request, res: Response<ErrorResponse<AuthenticatedErrors>>, next: NextFunction) {
+export async function authenticated(req: Request, res: Response<AuthenticatedResponse>, next: NextFunction) {
   const sessionId = req.cookies['session']
 
   if(!sessionId) {

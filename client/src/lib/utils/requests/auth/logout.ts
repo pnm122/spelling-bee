@@ -11,7 +11,7 @@ export default async function logout(): Promise<false | SuccessResponse | ErrorR
     }
   }
 
-  const res = await request<SuccessResponse | ErrorResponse<LogoutErrors>>(
+  const res = await request<{}, SuccessResponse | ErrorResponse<LogoutErrors>>(
     'user/logout',
     'POST'
   )

@@ -1,23 +1,27 @@
 import express from 'express'
 import { DailyPuzzleData, DailyPuzzleErrors, ErrorResponse, SuccessResponse } from '../../shared/interfaces/Response'
 import Puzzle from '../../shared/interfaces/Puzzle'
+import { getPuzzle } from '../../db/utils/puzzles'
 
 const router = express.Router()
 
-router.get<{}, SuccessResponse<DailyPuzzleData> | ErrorResponse<DailyPuzzleErrors>>('/', (req, res) => {
-  const tempPuzzle: Puzzle = {
-    id: 'abcdef',
-    centerLetter: 'N',
-    outsideLetters: ['D', 'M', 'E', 'U', 'I', 'R'],
-    wordList: ['DENIED', 'DENIER', 'DENUDE', 'DINE', 'DINED', 'DINER', 'DINNER', 'DUNE', 'ENDED', 'ENDER', 'ENDURE', 'ENDURED', 'ENNUI', 'ERMINE', 'IMMUNE', 'INDEED', 'INNER', 'MEND', 'MENDED', 'MENDER', 'MENU', 'MIEN', 'MIND', 'MINDED', 'MINE', 'MINED', 'MINER', 'MINI', 'MINIMUM', 'MINUEND', 'NEED', 'NEEDED', 'NINE', 'NUDE', 'REDDEN', 'REDDENED', 'REIN', 'REINDEER', 'REINED', 'REMIND', 'REMINDED', 'REMINDER', 'REND', 'RENDER', 'RENDERED', 'RERUN', 'RIDDEN', 'RIND', 'RUIN', 'RUINED', 'RUMEN', 'RUNNER', 'UNDER', 'UNDERMINE', 'UNDERMINED', 'UNDID', 'UNDUE', 'UNNEEDED', 'URINE'],
-    date: '04/03/2024',
-    maxPoints: 1000
+router.get<{}, SuccessResponse<DailyPuzzleData> | ErrorResponse<DailyPuzzleErrors>>('/', async (req, res) => {
+  const puzzleRes = await getPuzzle('660f8402676f0c3f52f89f2e')
+
+  if(!puzzleRes.success) {
+    if(puzzleRes.message == 'no-puzzle') return res.status(404).json(puzzleRes)
+    else return res.status(500).json(puzzleRes)
   }
+
+  const { _id, ...puzzle } = puzzleRes.data.puzzle
 
   res.json({
     success: true,
     data: {
-      puzzle: tempPuzzle
+      puzzle: {
+        id: '660f8402676f0c3f52f89f2e',
+        ...puzzle
+      }
     }
   })
 })

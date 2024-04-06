@@ -10,8 +10,8 @@
 	import type Puzzle from "$backend_interfaces/Puzzle";
 	import type Score from "$backend_interfaces/Score";
 
-  let loading = $currentScore.loading || $currentPuzzle.loading
-  let dataExists = $currentScore.data && $currentPuzzle.data
+  $: loading = $currentScore.loading || $currentPuzzle.loading
+  $: dataExists = $currentScore.data && $currentPuzzle.data
   $: puzzle = !loading && dataExists ? $currentPuzzle.data as Puzzle : undefined
   $: score = !loading && dataExists ? $currentScore.data as Score : undefined
 
@@ -51,7 +51,7 @@
     return messages[Math.round(Math.random() * (messages.length - 1))]
   }
   
-  const setNotification = (type: NotificationType, message: string) => {
+  const setGameNotification = (type: NotificationType, message: string) => {
     notification = { type, message }
     notificationKey++
   }
@@ -92,7 +92,7 @@
 
     wordIsPangram = true
     animating = true
-    setNotification('pangram', 'Well done, you found a pangram!')
+    setGameNotification('pangram', 'Well done, you found a pangram!')
 
     setTimeout(() => {
       if(isComponentDestroyed) return
@@ -131,12 +131,12 @@
     const res = tryWord(word)
     if(!res.success) {
       showClearWordAnimation()
-      return setNotification("default", res.message)
+      return setGameNotification("default", res.message)
     }
 
     if(isPangram(word)) return showPangramAnimation()
     else {
-      setNotification("congrats", generateRandomCongratsMessage())
+      setGameNotification("congrats", generateRandomCongratsMessage())
       showClearWordAnimation()
     }
   }

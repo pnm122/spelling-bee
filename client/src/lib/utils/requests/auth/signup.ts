@@ -1,4 +1,5 @@
 import type { SuccessResponse, ErrorResponse, SignUpData, SignUpErrors } from '$backend_interfaces/Response'
+import type { SignupRequest } from '$backend_interfaces/User'
 import { setUser } from '$lib/stores/user'
 import request from '../request'
 
@@ -7,7 +8,7 @@ export default async function signup(
   password: string
 ) {
   
-  const res = await request<SuccessResponse<SignUpData> | ErrorResponse<SignUpErrors>>(
+  const res = await request<SignupRequest, SuccessResponse<SignUpData> | ErrorResponse<SignUpErrors>>(
     'user/signup',
     'POST',
     {

@@ -9,10 +9,10 @@ const notificationState = writable<NotificationState>({
   message: ''
 })
 
-export function setNotification(title: string, message: string) {
+export function setNotification(title: string, message: string, type: 'default' | 'error') {
   notificationState.set({
     open: true,
-    type: 'error',
+    type,
     title,
     message
   })

@@ -70,10 +70,10 @@
       </div>
     </div>
     <!-- No need to show the longest word if the user doesn't have one -->
-    {#if $user.data.stats.longest_word.word != ''}
+    {#if $user.data.stats.longest_word != ''}
       <hr>
       <div id="longest-word-wrapper">
-        <h3>{$user.data.stats.longest_word.word}abcdf</h3>
+        <h3>{$user.data.stats.longest_word}</h3>
         <span>Longest word found</span>
       </div>
     {/if}

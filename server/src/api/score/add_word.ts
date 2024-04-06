@@ -8,7 +8,7 @@ import { addWordToUser } from '../../db/utils/users'
 const router = express.Router()
 
 router.use(authenticated)
-router.get<WithSession<AddWordRequest>, AddWordResponse>('/', async (req, res) => {
+router.post<WithSession<AddWordRequest>, AddWordResponse>('/', async (req, res) => {
   const body: WithSession<AddWordRequest> = req.body
   const updateScoreRes = await addWord({
     scoreId: body.scoreId,
@@ -16,7 +16,7 @@ router.get<WithSession<AddWordRequest>, AddWordResponse>('/', async (req, res) =
   })
 
   if(!updateScoreRes.success) {
-    if(updateScoreRes.message == 'no-score') return res.status(404).json(updateScoreRes)
+    if(updateScoreRes.message == 'no-score') return res.status(400).json(updateScoreRes)
     if(updateScoreRes.message == 'unknown-error') return res.status(500).json(updateScoreRes)
   }
 
@@ -26,7 +26,7 @@ router.get<WithSession<AddWordRequest>, AddWordResponse>('/', async (req, res) =
   })
 
   if(!updateStatsRes.success) {
-    if(updateStatsRes.message == 'invalid-user-id') return res.status(404).json(updateStatsRes)
+    if(updateStatsRes.message == 'invalid-user-id') return res.status(400).json(updateStatsRes)
     if(updateStatsRes.message == 'unknown-error') return res.status(500).json(updateStatsRes)
   }
 

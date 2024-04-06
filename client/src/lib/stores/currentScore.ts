@@ -3,6 +3,12 @@ import type Score from "$backend_interfaces/Score"
 import { get, writable } from "svelte/store";
 import currentPuzzle from "./currentPuzzle";
 import { getPointsFromWord, getTotalPoints, wordMatchesHint } from "$lib/utils/points";
+import { setNotification } from "./notification";
+import request from "$lib/utils/requests/request";
+import type { AddWordResponse, GetCurrentUserScoreResponse } from "$backend_interfaces/Response";
+import { type GetCurrentUserScoreRequest, type AddWordRequest } from "$backend_interfaces/Request"
+import user, { addWordToUser } from "./user";
+import type { UserWordFound } from "$backend_interfaces/Score";
 
 const currentScore = writable<Loadable<Score>>({ loading: true, data: undefined })
 
@@ -12,19 +18,31 @@ currentScore.subscribe(c => {
 
 currentPuzzle.subscribe(p => {
   if(p.loading) return currentScore.set({ loading: true, data: undefined })
-  if(!p.data) return currentScore.set({ loading: false, data: undefined })
+  if(!p.data) return currentScore.set({ loading: false, data: undefined });
   // TODO: Fetch user score from server
-  currentScore.set({
-    loading: false,
-    data: {
-      id: 'abc',
-      points: 0,
-      wordsFound: [],
-      wordPreviewsOn: false,
-      puzzleId: 'abcdef',
-      userId: '12345'
+  (async () => {
+    const res = await request<GetCurrentUserScoreRequest, GetCurrentUserScoreResponse>(
+      `score/get_current_user?puzzleId=${p.data!.id}`
+    )
+
+    if(!res.success) {
+      setNotification(
+        'Error getting user score',
+        res.message,
+        'error'
+      )
+      currentScore.set({
+        loading: false,
+        data: undefined
+      })
+      return
     }
-  })
+
+    currentScore.set({
+      loading: false,
+      data: res.data.score
+    })
+  })()
 })
 
 type TryWordResponse = { success: true } | { success: false, message: string }
@@ -43,25 +61,20 @@ export const tryWord = (word: string): TryWordResponse => {
   } 
 
   const { wordList } = puzzle.data
-  const { wordsFound, points, hint, wordPreviewsOn } = score.data
+  const { wordsFound } = score.data
 
   const validWord = wordList.includes(word)
   const alreadyFoundWord = wordsFound.find(w => w.word == word)
   if(validWord) {
     if(!alreadyFoundWord) {
-      const pointsFromWord = getPointsFromWord(word, hint, wordPreviewsOn)
-      // Add word to wordsFound
-      currentScore.set({
-        ...score,
-        data: {
-          ...score.data,
-          // Add word to the front of the list so recent words show up first
-          wordsFound: [{ word: word, points: pointsFromWord }, ...wordsFound],
-          points: points + pointsFromWord,
-          // Update hint to undefined if the word matches the hint
-          hint: wordMatchesHint(word, hint) ? undefined : hint
-        }
-      })
+      
+      (async () => {
+        // Add word to wordsFound
+        const w: UserWordFound | undefined = await updateScoreWithWord(word)
+        // Update user's stats with new word
+        if(w) addWordToUser(w)
+      })()
+
       return { success: true }
     }
     else return { success: false, message: "You've already found this word." }
@@ -69,6 +82,69 @@ export const tryWord = (word: string): TryWordResponse => {
     if(word.length < 4) return { success: false, message: "Must be at least 4 letters long." }
     else if(!word.includes(puzzle.data.centerLetter)) return { success: false, message: "Must contain center letter." }
     else return { success: false, message: "We don't have that word in our dictionary." }
+  }
+}
+
+const updateScoreWithWord = async (word: string): Promise<UserWordFound | undefined> => {
+  let pointsFromWord = -1
+  let scoreId = ''
+
+  currentScore.update(score => {
+    if(score.loading || !score.data) return score
+    const { hint, wordPreviewsOn, wordsFound, points, id } = score.data
+    scoreId = id
+
+    pointsFromWord = getPointsFromWord(word, hint, wordPreviewsOn)
+
+    return {
+      ...score,
+      data: {
+        ...score.data,
+        // Add word to the front of the list so recent words show up first
+        wordsFound: [{ word: word, points: pointsFromWord }, ...wordsFound],
+        points: points + pointsFromWord,
+        // Update hint to undefined if the word matches the hint
+        hint: wordMatchesHint(word, hint) ? undefined : hint
+      }
+    }
+  })
+  
+  if(pointsFromWord == -1 || scoreId == '') setNotification('Error', 'There was an error updating your score, please refresh.', 'error')
+
+  const res = await request<AddWordRequest, AddWordResponse>(
+    'score/add_word',
+    'POST',
+    { 
+      word: { word, points: pointsFromWord },
+      scoreId: scoreId
+    }
+  )
+
+  console.log(res)
+
+  const u = get(user)
+
+  if(!res.success) {
+    if((res.message == 'no-session' || res.message == 'invalid-session') && u.data) {
+      setNotification(
+        'Session expired',
+        'Your session has expired, please log in again to save your data!',
+        'error'
+      )
+    } else {
+      setNotification(
+        'Error', 
+        'There was an error updating your score, please refresh.', 
+        'error'
+      )
+    }
+
+    return
+  }
+
+  return {
+    word,
+    points: pointsFromWord
   }
 }
 

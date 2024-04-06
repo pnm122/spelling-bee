@@ -114,12 +114,14 @@ export type GetPuzzleUtilityData = { puzzle: DBPuzzle }
 // FULL, COMBINED RESPONSE TYPES
 // ============================================================
 
+export type AuthenticatedResponse = ErrorResponse<AuthenticatedErrors>
+
 export type GetCurrentUserScoreResponse = SuccessResponse<GetCurrentUserScoreData> | ErrorResponse<GetCurrentUserScoreErrors>
 export type GetOrCreateScoreResponse = SuccessResponse<GetOrCreateScoreData> | ErrorResponse<GetOrCreateScoreErrors>
 export type UpdateScoreUtilityResponse = SuccessResponse | ErrorResponse<UpdateScoreUtilityErrors>
 export type AddWordUtilityResponse = SuccessResponse | ErrorResponse<AddWordUtilityErrors>
 
-export type AddWordResponse = AddWordUtilityResponse | AddWordToUserResponse
+export type AddWordResponse = AddWordUtilityResponse | AddWordToUserResponse | AuthenticatedResponse
 
 export type GetPuzzleUtilityResponse = SuccessResponse<GetPuzzleUtilityData> | ErrorResponse<GetPuzzleUtilityErrors>
 

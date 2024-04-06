@@ -9,11 +9,19 @@ const router = express.Router()
 
 router.use(authenticated)
 router.get<WithSession<GetCurrentUserScoreRequest>, GetCurrentUserScoreResponse>('/', async (req, res) => {
-  const body: WithSession<GetCurrentUserScoreRequest> = req.body
+  const body: WithSession = req.body
+  const queryPuzzleId = req.query.puzzleId
+
+  if(typeof queryPuzzleId != "string") {
+    return res.status(400).json({
+      success: false,
+      message: 'no-puzzle'
+    })
+  }
   
   const dbRes = await getOrCreateScore({ 
     userId: body.session.userId, 
-    puzzleId: body.puzzleId
+    puzzleId: queryPuzzleId
   })
 
   if(!dbRes.success) {

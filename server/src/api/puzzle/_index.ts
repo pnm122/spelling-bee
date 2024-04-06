@@ -4,7 +4,7 @@ import daily from './daily'
 
 const router = express.Router()
 
-router.use('/:id', get_puzzle)
 router.use('/daily', daily)
+router.use('/:id', get_puzzle)
 
 export default router

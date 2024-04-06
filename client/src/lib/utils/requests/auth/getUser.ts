@@ -6,7 +6,7 @@ export default async function getUser(): Promise<GetUserData | undefined> {
   const session = Cookies.get('session')
   if(!session) return undefined
 
-  const res = await request<SuccessResponse<GetUserData> | ErrorResponse<GetUserErrors>>('user/get_user')
+  const res = await request<{}, SuccessResponse<GetUserData> | ErrorResponse<GetUserErrors>>('user/get_user')
 
   if(!res.success) return undefined
 
