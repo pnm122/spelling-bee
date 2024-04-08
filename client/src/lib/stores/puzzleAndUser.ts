@@ -14,7 +14,6 @@ import type { GetCurrentUserScoreRequest } from "$backend_interfaces/Request"
 import type { GetCurrentUserScoreResponse } from "$backend_interfaces/Response"
 
 const puzzleAndUser = derived<[Writable<Loadable<Puzzle>>, Writable<Loadable<User>>], PuzzleAndUser>([currentPuzzle, user], ([$p, $u], set) => {
-  console.log(set)
   set({
     puzzle: $p,
     user: $u
@@ -23,7 +22,6 @@ const puzzleAndUser = derived<[Writable<Loadable<Puzzle>>, Writable<Loadable<Use
 
 puzzleAndUser.subscribe(x => {
   const { user, puzzle } = x
-  console.log(x)
 
   if(puzzle.loading || user.loading) return currentScore.set({ loading: true, data: undefined })
   if(!puzzle.data) return currentScore.set({ loading: false, data: undefined })

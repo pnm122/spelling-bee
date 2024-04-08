@@ -3,7 +3,7 @@ import type Score from "$backend_interfaces/Score"
 import { get, writable } from "svelte/store";
 import currentPuzzle from "./currentPuzzle";
 import { getPointsFromWord, wordMatchesHint } from "$lib/utils/points";
-import { setNotification } from "./notification";
+import { notifyNeedAccount, setNotification } from "./notification";
 import request from "$lib/utils/requests/request";
 import type { ActivateWordPreviewsResponse, AddWordResponse } from "$backend_interfaces/Response";
 import { type AddWordRequest, type ActivateWordPreviewsRequest } from "$backend_interfaces/Request"
@@ -122,7 +122,14 @@ const updateScoreWithWord = async (word: string): Promise<UserWordFound | undefi
 
 export const activateWordPreviews = async () => {
   currentScore.update(c => {
-    if(c.loading || !c.data) return c;
+    if(c.loading || !c.data) return c
+
+    const u = get(user);
+
+    if(!u.data) {
+      notifyNeedAccount()
+      return c
+    }
 
     (async () => {
       const res = await request<ActivateWordPreviewsRequest, ActivateWordPreviewsResponse>(
@@ -130,6 +137,8 @@ export const activateWordPreviews = async () => {
         'POST',
         { scoreId: c.data!.id}
       )
+
+      console.log(res)
 
       if(!res.success) {
         setNotification(
@@ -158,6 +167,11 @@ export const activateWordPreviews = async () => {
 export const getHint = (callback: (hint: string) => void) => {
   const score = get(currentScore)
   const puzzle = get(currentPuzzle)
+  const u = get(user)
+
+  if(u.loading || !u.data) {
+    return notifyNeedAccount()
+  }
 
   if(puzzle.loading || !puzzle.data || score.loading || !score.data) {
     return

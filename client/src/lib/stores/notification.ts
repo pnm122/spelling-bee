@@ -18,6 +18,14 @@ export function setNotification(title: string, message: string, type: 'default' 
   })
 }
 
+export function notifyNeedAccount() {
+  setNotification(
+    'Create an account',
+    'You need an account to use this feature.',
+    'default'
+  )
+}
+
 export function notifyServerError() {
   notificationState.set({
     open: true,
