@@ -203,21 +203,48 @@ export async function activateWordPreviews({
 }
 
 /** 
-* Update a user's hint on a given puzzle. If the score does not exist already, return a no-score error.
+* Update a user's hint on a given puzzle. If no hint is provided, the hint is removed from the database. If the score does not exist already, return a no-score error.
 * @param {Object} params
 * @param {string} params.scoreId - Score's 24-character identifier
-* @return {Promise<ActivateWordPreviewsUtilityResponse>} { success: true } if successful, otherwise returns the appropriate error
+* @param {Hint | undefined} params.hint - Hint object to set; if not provided, the hint is removed from the database
+* @return {Promise<SetHintUtilityResponse>} { success: true } if successful, otherwise returns the appropriate error
 */
 export async function setHint({
   scoreId,
   hint
-}: { scoreId: string, hint: Hint}): Promise<SetHintUtilityResponse> {
-  const res = await updateScore({
-    scoreId,
-    data: {
-      hint
+}: { scoreId: string, hint?: Hint }): Promise<SetHintUtilityResponse> {
+  try {
+    if(scoreId.length != 24) {
+      return {
+        success: false,
+        message: 'no-score'
+      }
     }
-  })
 
-  return res
+    const db = await getDb()
+
+    const res = await db.collection<Score>('Scores').updateOne({
+      _id: new ObjectId(scoreId),
+    }, hint 
+        ? { $set: { hint } } 
+        // Remove the hint if a hint isn't provided
+        : { $unset: { hint: 1 } }
+    )
+
+    if(res.matchedCount == 0) {
+      return {
+        success: false,
+        message: 'no-score'
+      }
+    }
+
+    return {
+      success: true
+    }
+  } catch(e) {
+    return {
+      success: false,
+      message: 'unknown-error'
+    }
+  }
 }

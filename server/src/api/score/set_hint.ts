@@ -16,12 +16,7 @@ router.post<WithSession<SetHintRequest>, SetHintResponse>('/', async (req, res) 
     message: 'no-score'
   })
 
-  if(!hint) return res.status(400).json({
-    success: false,
-    message: 'no-hint'
-  })
-
-  if(!hint.lettersGiven || !hint.word) return res.status(400).json({
+  if(hint && (!hint.lettersGiven || !hint.word)) return res.status(400).json({
     success: false,
     message: 'invalid-hint'
   })

@@ -8,4 +8,4 @@ export type AddWordRequest = { scoreId: string, word: UserWordFound }
 export type GetCurrentUserScoreRequest = Pick<ClientScore, 'puzzleId'>
 export type GetScoreRequest = Pick<ClientScore, 'puzzleId' | 'userId'>
 export type ActivateWordPreviewsRequest = { scoreId: string }
-export type SetHintRequest = { scoreId: string, hint: Hint }
+export type SetHintRequest = { scoreId: string, hint?: Hint }
