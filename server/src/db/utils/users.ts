@@ -7,7 +7,7 @@ import User from "../interfaces/User";
 import { CreateUserData, CreateUserErrors, ErrorResponse, GetUserErrors, GetUserUtilityData, GetUserUtilityErrors, SuccessResponse, ValidateUtilityData, ValidateUserCredentialsErrors, AddWordToUserResponse, IncrementPuzzlesPlayedResponse } from "../../shared/interfaces/Response";
 import { ObjectId, WithoutId } from "mongodb";
 import { UserWordFound } from "../../shared/interfaces/Score";
-import isPangram from "../../utils/isPangram";
+import { isPangram } from "../../shared/utils/points";
 
 /** 
 * Create a user in the Users collection, hashing and salting the given password

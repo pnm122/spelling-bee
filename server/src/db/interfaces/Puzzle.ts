@@ -4,8 +4,10 @@ import { ObjectId } from "mongodb"
 export default interface Puzzle {
   _id: ObjectId
   centerLetter: string
-  outsideLetters: [string, string, string, string, string, string]
+  outsideLetters: OutsideLetters
   wordList: string[]
   maxPoints: number
   date: string
 }
+
+export type OutsideLetters = [string, string, string, string, string, string]
