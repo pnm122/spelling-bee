@@ -82,6 +82,8 @@ export type AddWordUtilityErrors = WithUnknown<'no-score'>
 
 export type GetPuzzleUtilityErrors = WithUnknown<'no-puzzle'>
 export type IncrementPuzzlesPlayedErrors = WithUnknown<'invalid-user-id'>
+export type ActivateWordPreviewsUtilityErrors = UpdateScoreUtilityErrors
+export type ActivateWordPreviewsErrors = ActivateWordPreviewsUtilityErrors
 
 // ============================================================
 
@@ -127,5 +129,7 @@ export type GetPuzzleUtilityResponse = SuccessResponse<GetPuzzleUtilityData> | E
 
 export type AddWordToUserResponse = SuccessResponse | ErrorResponse<AddWordToUserErrors>
 export type IncrementPuzzlesPlayedResponse = SuccessResponse | ErrorResponse<IncrementPuzzlesPlayedErrors>
+export type ActivateWordPreviewsUtilityResponse = SuccessResponse | ErrorResponse<ActivateWordPreviewsUtilityErrors>
+export type ActivateWordPreviewsResponse = SuccessResponse | ErrorResponse<ActivateWordPreviewsErrors> | AuthenticatedResponse
 
 // ============================================================

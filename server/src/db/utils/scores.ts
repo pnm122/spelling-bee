@@ -1,7 +1,7 @@
 // Utility functions for the Scores collection
 
 import { ObjectId, WithoutId } from "mongodb";
-import { AddWordUtilityResponse, GetOrCreateScoreResponse, UpdateScoreUtilityResponse } from "../../shared/interfaces/Response";
+import { ActivateWordPreviewsUtilityResponse, AddWordUtilityResponse, GetOrCreateScoreResponse, UpdateScoreUtilityResponse } from "../../shared/interfaces/Response";
 import getDb from "../conn";
 import Score from "../interfaces/Score";
 import { getPuzzle } from "./puzzles";
@@ -86,7 +86,7 @@ interface UpdateScoreParams {
 * @param {UpdateScoreData} params.data - Data to update. Can be either or both of the following properties: hint, wordPreviewsOn
 * @return {Promise<UpdateScoreUtilityResponse>} { success: true } if successful, otherwise returns the appropriate error
 */
-export async function updateScore({
+async function updateScore({
   scoreId,
   data
 }: UpdateScoreParams): Promise<UpdateScoreUtilityResponse> {
@@ -181,4 +181,23 @@ export async function addWord({
       message: 'unknown-error'
     }
   }
+}
+
+/** 
+* Update a user's hint or wordPreviewsOn on a given puzzle. If the score does not exist already, return a no-score error.
+* @param {Object} params
+* @param {string} params.scoreId - Score's 24-character identifier
+* @return {Promise<ActivateWordPreviewsUtilityResponse>} { success: true } if successful, otherwise returns the appropriate error
+*/
+export async function activateWordPreviews({
+  scoreId
+}: { scoreId: string }): Promise<ActivateWordPreviewsUtilityResponse> {
+  const res = await updateScore({
+    scoreId,
+    data: {
+      wordPreviewsOn: true
+    }
+  })
+
+  return res
 }
