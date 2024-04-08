@@ -8,6 +8,8 @@ import { CreateUserData, CreateUserErrors, ErrorResponse, GetUserErrors, GetUser
 import { ObjectId, WithoutId } from "mongodb";
 import { UserWordFound } from "../../shared/interfaces/Score";
 import { isPangram } from "../../shared/utils/points";
+import { getPuzzleById } from "./puzzles";
+import Score from "../interfaces/Score";
 
 /** 
 * Create a user in the Users collection, hashing and salting the given password
@@ -184,8 +186,13 @@ export async function validateUserCredentials({
 */
 export async function addWordToUser({
   userId,
-  word
-}: { userId: string, word: UserWordFound }): Promise<AddWordToUserResponse> {
+  word,
+  score
+}: { 
+  userId: string, 
+  word: UserWordFound,
+  score: Score
+}): Promise<AddWordToUserResponse> {
   if(userId.length != 24) {
     return {
       success: false,
@@ -213,6 +220,17 @@ export async function addWordToUser({
       }
     }
 
+    const puzzle = await getPuzzleById(score.puzzleId.toString(), { wordList: 1 })
+
+    if(!puzzle.success) {
+      return puzzle
+    }
+
+    const { wordList } = puzzle.data.puzzle
+    const { wordsFound } = score
+
+    console.log(wordList, wordsFound, wordList.length, wordsFound.length)
+
     let newLongestWord = longestWord.stats.longest_word
     if(word.word.length > newLongestWord.length) newLongestWord = word.word
 
@@ -222,7 +240,8 @@ export async function addWordToUser({
       $inc: {
         "stats.words_found": 1,
         "stats.points": word.points,
-        "stats.pangrams": isPangram(word.word) ? 1 : 0
+        "stats.pangrams": isPangram(word.word) ? 1 : 0,
+        "stats.puzzles_solved": wordList.length == wordsFound.length ? 1 : 0
       },
       $set: {
         "stats.longest_word": newLongestWord

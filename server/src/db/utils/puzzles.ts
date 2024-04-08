@@ -1,19 +1,22 @@
 // Utility functions for the Puzzles collection
 
-import { ObjectId, WithoutId } from "mongodb"
+import { FindOptions, ObjectId, WithoutId } from "mongodb"
 import { GetPuzzleUtilityResponse, InsertPuzzleResponse } from "../../shared/interfaces/Response"
 import getDb from "../conn"
-import Puzzle, { OutsideLetters } from "../interfaces/Puzzle"
-import { readFile } from "fs"
-import { getTotalPoints, getUniqueLetters, isPangram } from "../../shared/utils/points"
-import getMatchingWords from "../../utils/getMatchingWords"
-import getTodaysDate from "../../utils/getTodaysDate"
+import Puzzle from "../interfaces/Puzzle"
 
-export async function getPuzzleById(puzzleId: string): Promise<GetPuzzleUtilityResponse> {
+export async function getPuzzleById(
+  puzzleId: string,
+  projection?: FindOptions<Document>['projection']
+): Promise<GetPuzzleUtilityResponse> {
   try {
     const db = await getDb()
 
-    const findRes = await db.collection('Puzzles').findOne<Puzzle>({ _id: new ObjectId(puzzleId) })
+    const findRes = await db.collection('Puzzles').findOne<Puzzle>({ 
+      _id: new ObjectId(puzzleId)
+    }, projection ? {
+      projection
+    } : undefined)
 
     if(findRes) return {
       success: true,

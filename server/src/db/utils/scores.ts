@@ -145,7 +145,7 @@ export async function addWord({
 
     const db = await getDb()
 
-    const res = await db.collection<Score>('Scores').updateOne({
+    const res = await db.collection<Score>('Scores').findOneAndUpdate({
       _id: new ObjectId(scoreId),
     }, {
       // Push the word to the start of the wordsFound array
@@ -162,9 +162,12 @@ export async function addWord({
       $inc: {
         points: word.points
       }
+    }, {
+      // Return the updated document
+      returnDocument: 'after'
     })
 
-    if(res.matchedCount == 0) {
+    if(!res) {
       return {
         success: false,
         message: 'no-score'
@@ -172,7 +175,10 @@ export async function addWord({
     }
 
     return {
-      success: true
+      success: true,
+      data: {
+        score: res
+      }
     }
   } catch(e) {
     console.log(e)

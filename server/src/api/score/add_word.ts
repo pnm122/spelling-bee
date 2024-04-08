@@ -17,24 +17,22 @@ router.post<WithSession<AddWordRequest>, AddWordResponse>('/', async (req, res) 
 
   if(!updateScoreRes.success) {
     if(updateScoreRes.message == 'no-score') return res.status(400).json(updateScoreRes)
-    if(updateScoreRes.message == 'unknown-error') return res.status(500).json(updateScoreRes)
+    else return res.status(500).json(updateScoreRes)
   }
 
   const updateStatsRes = await addWordToUser({
     userId: body.session.userId,
-    word: body.word
+    word: body.word,
+    score: updateScoreRes.data.score
   })
 
   if(!updateStatsRes.success) {
     if(updateStatsRes.message == 'invalid-user-id') return res.status(400).json(updateStatsRes)
-    if(updateStatsRes.message == 'unknown-error') return res.status(500).json(updateStatsRes)
+    if(updateStatsRes.message == 'no-puzzle') return res.status(400).json(updateStatsRes) 
+    else return res.status(500).json(updateStatsRes)
   }
 
   res.json({ success: true })
-
-  
-
-  // res.json(updateRes)
 })
 
 export default router

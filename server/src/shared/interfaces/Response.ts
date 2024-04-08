@@ -56,7 +56,7 @@ export type AsErrorType<T extends ErrorTypes> = T
 export type CreateUserErrors =              WithUnknown<'user-exists'>
 export type GetUserUtilityErrors =          WithUnknown<'invalid-user-id'>
 export type ValidateUserCredentialsErrors = WithUnknown<'user-info-incorrect'>
-export type AddWordToUserErrors =           WithUnknown<'invalid-user-id'>
+export type AddWordToUserErrors =           WithUnknown<'invalid-user-id' | 'no-puzzle'>
 
 export type CreateSessionErrors = AsErrorType<'failed-to-create-session'>
 export type UpdateSessionErrors = WithUnknown<'invalid-session'>
@@ -114,6 +114,7 @@ export type DailyPuzzleData = { puzzle: Puzzle }
 
 export type GetCurrentUserScoreData = { score: ClientScore }
 export type GetOrCreateScoreData = { score: Score, created: boolean }
+export type AddWordUtilityData = { score: Score }
 
 export type GetPuzzleUtilityData = { puzzle: DBPuzzle }
 export type InsertPuzzleData = { puzzle: DBPuzzle }
@@ -128,7 +129,7 @@ export type AuthenticatedResponse = ErrorResponse<AuthenticatedErrors>
 export type GetCurrentUserScoreResponse = SuccessResponse<GetCurrentUserScoreData> | ErrorResponse<GetCurrentUserScoreErrors>
 export type GetOrCreateScoreResponse = SuccessResponse<GetOrCreateScoreData> | ErrorResponse<GetOrCreateScoreErrors>
 export type UpdateScoreUtilityResponse = SuccessResponse | ErrorResponse<UpdateScoreUtilityErrors>
-export type AddWordUtilityResponse = SuccessResponse | ErrorResponse<AddWordUtilityErrors>
+export type AddWordUtilityResponse = SuccessResponse<AddWordUtilityData> | ErrorResponse<AddWordUtilityErrors>
 
 export type AddWordResponse = AddWordUtilityResponse | AddWordToUserResponse | AuthenticatedResponse
 
