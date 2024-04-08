@@ -1,4 +1,7 @@
 <script>
+  import currentPuzzle from "$lib/stores/currentPuzzle"
+  import puzzleAndUser from "$lib/stores/puzzleAndUser";
+  import currentScore from "$lib/stores/currentScore";
 	import Header from "$lib/components/layout/Header.svelte";
   
 </script>

@@ -2,70 +2,17 @@ import type Loadable from "$lib/types/loadable";
 import type Score from "$backend_interfaces/Score"
 import { get, writable } from "svelte/store";
 import currentPuzzle from "./currentPuzzle";
-import { getPointsFromWord, getTotalPoints, wordMatchesHint } from "$lib/utils/points";
+import { getPointsFromWord, wordMatchesHint } from "$lib/utils/points";
 import { setNotification } from "./notification";
 import request from "$lib/utils/requests/request";
-import type { AddWordResponse, GetCurrentUserScoreResponse } from "$backend_interfaces/Response";
-import { type GetCurrentUserScoreRequest, type AddWordRequest } from "$backend_interfaces/Request"
+import type { ActivateWordPreviewsResponse, AddWordResponse } from "$backend_interfaces/Response";
+import { type AddWordRequest, type ActivateWordPreviewsRequest } from "$backend_interfaces/Request"
 import user, { addWordToUser } from "./user";
 import type { UserWordFound } from "$backend_interfaces/Score";
 
 const currentScore = writable<Loadable<Score>>({ loading: true, data: undefined })
 
-currentScore.subscribe(c => {
-  console.log(c.data?.wordsFound)
-})
-
-currentPuzzle.subscribe(p => {
-  if(p.loading) return currentScore.set({ loading: true, data: undefined })
-  if(!p.data) return currentScore.set({ loading: false, data: undefined })
-
-  // If the user isn't signed in, give them an empty score and tell them to login to save the score
-  const u = get(user)
-  if(u.loading || !u.data) {
-    currentScore.set({
-      loading: false,
-      data: {
-        id: '',
-        wordPreviewsOn: false,
-        points: 0,
-        puzzleId: p.data.id,
-        userId: '',
-        wordsFound: []
-      }
-    })
-
-    return setNotification(
-      "Your score is not being saved",
-      "Please login to save your scores.",
-      "default"
-    )
-  }
-
-  (async () => {
-    const res = await request<GetCurrentUserScoreRequest, GetCurrentUserScoreResponse>(
-      `score/get_current_user?puzzleId=${p.data!.id}`
-    )
-
-    if(!res.success) {
-      setNotification(
-        'Error getting user score',
-        res.message,
-        'error'
-      )
-      currentScore.set({
-        loading: false,
-        data: undefined
-      })
-      return
-    }
-
-    currentScore.set({
-      loading: false,
-      data: res.data.score
-    })
-  })()
-})
+currentScore.subscribe(s => console.log(s))
 
 type TryWordResponse = { success: true } | { success: false, message: string }
 
@@ -106,6 +53,7 @@ export const tryWord = (word: string): TryWordResponse => {
     else return { success: false, message: "We don't have that word in our dictionary." }
   }
 }
+
 /** 
 * Update the local score state, then update the database if the user is logged in
 * @param {string} word - Word to add
@@ -172,9 +120,25 @@ const updateScoreWithWord = async (word: string): Promise<UserWordFound | undefi
   }
 }
 
-export const activateWordPreviews = () => {
+export const activateWordPreviews = async () => {
   currentScore.update(c => {
-    if(c.loading || !c.data) return c
+    if(c.loading || !c.data) return c;
+
+    (async () => {
+      const res = await request<ActivateWordPreviewsRequest, ActivateWordPreviewsResponse>(
+        'score/activate_word_previews',
+        'POST',
+        { scoreId: c.data!.id}
+      )
+
+      if(!res.success) {
+        setNotification(
+          'Failed to update database',
+          'Please refresh the page and try again.',
+          'error'
+        )
+      }
+    })()
     
     return {
       ...c,
@@ -184,6 +148,8 @@ export const activateWordPreviews = () => {
       }
     }
   })
+
+  
 }
 
 // Pick an unfound word as the user's hint
