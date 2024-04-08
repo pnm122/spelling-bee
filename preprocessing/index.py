@@ -47,13 +47,47 @@ def filter_words(inputFile: str, outputFile: str):
       if not(match is None) and numDifferentLetters <= 7:
         output.write(f"{word}\n")
 
+def find_pangrams(file: str, outputFile: str):
+  with open(file, 'r') as f:
+    output = open(outputFile, 'w')
+
+    for line in f.readlines():
+      word = line.strip()
+      wordIsPangram = is_pangram(word)
+      if wordIsPangram:
+        output.write(f'{word}\n')
+
+def is_pangram(word: str) -> bool:
+  letters_seen = []
+  for letter in word:
+    if not(letter in letters_seen):
+      letters_seen.append(letter)
+
+  if len(letters_seen) == 7:
+    return True
+  
+  return False
+
+# export function isPangram(word: string): boolean {
+#   let lettersSeen: string[] = []
+#   for(let letter of word) {
+#     if(!lettersSeen.includes(letter)) lettersSeen.push(letter)
+#   }
+
+#   if(lettersSeen.length == 7) return true
+  
+#   return false
+# }
+
 if __name__ == "__main__":
   # filter_words("wordlist.txt", "wordlist_filtered.txt")
 
-  matches = get_matching_words(
-    "wordlist_filtered.txt",
-    "G",
-    "TDARYE"
-  )
+  # matches = get_matching_words(
+  #   "wordlist_filtered.txt",
+  #   "N",
+  #   "DOCITE"
+  # )
 
-  print(matches, len(matches))
+  # print(matches, len(matches))
+
+  find_pangrams('wordlist_filtered.txt', 'pangrams.txt')
