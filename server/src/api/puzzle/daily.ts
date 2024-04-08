@@ -1,37 +1,45 @@
 import express from 'express'
 import { DailyPuzzleData, DailyPuzzleErrors, ErrorResponse, SuccessResponse } from '../../shared/interfaces/Response'
-import Puzzle from '../../shared/interfaces/Puzzle'
-import { generatePuzzle, getPuzzle } from '../../db/utils/puzzles'
+import { getPuzzleByDate, insertPuzzle } from '../../db/utils/puzzles'
+import generatePuzzle from '../../utils/generatePuzzle'
+import getTodaysDate from '../../utils/getTodaysDate'
 
 const router = express.Router()
 
 router.get<{}, SuccessResponse<DailyPuzzleData> | ErrorResponse<DailyPuzzleErrors>>('/', async (req, res) => {
-  generatePuzzle()
+  const getPuzzleRes = await getPuzzleByDate(getTodaysDate())
 
-  return res.json({
-    success: false,
-    message: 'no-puzzle'
-  })
-  // const puzzleId = '6612146a676f0c3f52f89f47'
+  if(getPuzzleRes.success) {
+    const { _id, ...puzzle } = getPuzzleRes.data.puzzle
+    return res.json({
+      success: true,
+      data: {
+        puzzle: {
+          id: _id.toString(),
+          ...puzzle
+        }
+      }
+    })
+  }
+
+  const newPuzzleData = await generatePuzzle()
+  const insertRes = await insertPuzzle(newPuzzleData)
   
-  // const puzzleRes = await getPuzzle(puzzleId)
+  if(!insertRes.success) {
+    return res.status(500).json({ success: false, message: 'failed-to-create-puzzle' })
+  }
 
-  // if(!puzzleRes.success) {
-  //   if(puzzleRes.message == 'no-puzzle') return res.status(404).json(puzzleRes)
-  //   else return res.status(500).json(puzzleRes)
-  // }
+  const { _id, ...puzzle } = insertRes.data.puzzle
 
-  // const { _id, ...puzzle } = puzzleRes.data.puzzle
-
-  // res.json({
-  //   success: true,
-  //   data: {
-  //     puzzle: {
-  //       id: puzzleId,
-  //       ...puzzle
-  //     }
-  //   }
-  // })
+  res.json({
+    success: true,
+    data: {
+      puzzle: {
+        id: _id.toString(),
+        ...puzzle
+      }
+    }
+  })
 })
 
 export default router

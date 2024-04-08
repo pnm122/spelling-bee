@@ -42,6 +42,8 @@ export type ErrorTypes =
   | 'no-session' // Client requested a resource that requires a session without having one
   | 'no-score' // Client requested a score that doesn't exist
   | 'invalid-hint' // Client requested to update a user's hint, but the hint provided is invalid
+  | 'invalid-puzzle' // Attempted to insert an invalid puzzle to the database
+  | 'failed-to-create-puzzle' // Daily puzzle didn't exist, and the server failed to create a new puzzle
 
 export type WithUnknown<T extends ErrorTypes> = T | 'unknown-error'
 // Utility type to force generic passed in to be one of the specified error types
@@ -73,7 +75,7 @@ export type GetUserErrors = AuthenticatedErrors | GetUserUtilityErrors
 export type AuthenticatedErrors = AsErrorType<'no-session'> | UpdateSessionErrors
 
 export type GetPuzzleErrors = WithUnknown<'no-puzzle'>
-export type DailyPuzzleErrors = WithUnknown<'no-puzzle'>
+export type DailyPuzzleErrors = AsErrorType<'failed-to-create-puzzle'>
 
 export type GetOrCreateScoreErrors = WithUnknown<'no-puzzle'> | GetPuzzleUtilityErrors
 
@@ -82,6 +84,7 @@ export type UpdateScoreUtilityErrors = WithUnknown<'no-score'>
 export type AddWordUtilityErrors = WithUnknown<'no-score'>
 
 export type GetPuzzleUtilityErrors = WithUnknown<'no-puzzle'>
+export type InsertPuzzleErrors = WithUnknown<'invalid-puzzle'>
 export type IncrementPuzzlesPlayedErrors = WithUnknown<'invalid-user-id'>
 export type ActivateWordPreviewsUtilityErrors = UpdateScoreUtilityErrors
 export type ActivateWordPreviewsErrors = ActivateWordPreviewsUtilityErrors
@@ -113,6 +116,7 @@ export type GetCurrentUserScoreData = { score: ClientScore }
 export type GetOrCreateScoreData = { score: Score, created: boolean }
 
 export type GetPuzzleUtilityData = { puzzle: DBPuzzle }
+export type InsertPuzzleData = { puzzle: DBPuzzle }
 
 // ============================================================
 
@@ -129,6 +133,7 @@ export type AddWordUtilityResponse = SuccessResponse | ErrorResponse<AddWordUtil
 export type AddWordResponse = AddWordUtilityResponse | AddWordToUserResponse | AuthenticatedResponse
 
 export type GetPuzzleUtilityResponse = SuccessResponse<GetPuzzleUtilityData> | ErrorResponse<GetPuzzleUtilityErrors>
+export type InsertPuzzleResponse = SuccessResponse<InsertPuzzleData> | ErrorResponse<InsertPuzzleErrors>
 
 export type AddWordToUserResponse = SuccessResponse | ErrorResponse<AddWordToUserErrors>
 export type IncrementPuzzlesPlayedResponse = SuccessResponse | ErrorResponse<IncrementPuzzlesPlayedErrors>

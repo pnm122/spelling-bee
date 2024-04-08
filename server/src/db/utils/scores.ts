@@ -4,7 +4,7 @@ import { ObjectId, WithoutId } from "mongodb";
 import { ActivateWordPreviewsUtilityResponse, AddWordUtilityResponse, GetOrCreateScoreResponse, SetHintUtilityResponse, UpdateScoreUtilityResponse } from "../../shared/interfaces/Response";
 import getDb from "../conn";
 import Score from "../interfaces/Score";
-import { getPuzzle } from "./puzzles";
+import { getPuzzleById } from "./puzzles";
 import ClientScore, { Hint, UserWordFound } from "../../shared/interfaces/Score";
 /** 
 * Get a user's score on a given puzzle, creating one if it doesn't already exist. If the puzzle does not exist, return a no-puzzle error.
@@ -41,7 +41,7 @@ export async function getOrCreateScore({
       }
     }
 
-    const getPuzzleRes = await getPuzzle(puzzleId)
+    const getPuzzleRes = await getPuzzleById(puzzleId)
     if(!getPuzzleRes.success) {
       return getPuzzleRes
     }
