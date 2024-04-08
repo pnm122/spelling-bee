@@ -6,7 +6,9 @@ import { getPuzzle } from '../../db/utils/puzzles'
 const router = express.Router()
 
 router.get<{}, SuccessResponse<DailyPuzzleData> | ErrorResponse<DailyPuzzleErrors>>('/', async (req, res) => {
-  const puzzleRes = await getPuzzle('660f8402676f0c3f52f89f2e')
+  const puzzleId = '6612146a676f0c3f52f89f47'
+  
+  const puzzleRes = await getPuzzle(puzzleId)
 
   if(!puzzleRes.success) {
     if(puzzleRes.message == 'no-puzzle') return res.status(404).json(puzzleRes)
@@ -19,7 +21,7 @@ router.get<{}, SuccessResponse<DailyPuzzleData> | ErrorResponse<DailyPuzzleError
     success: true,
     data: {
       puzzle: {
-        id: '660f8402676f0c3f52f89f2e',
+        id: puzzleId,
         ...puzzle
       }
     }

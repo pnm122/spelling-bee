@@ -60,7 +60,7 @@
     max-width: 350px;
     max-height: 300px;
     overflow: auto;
-    background-color: var(--heading);
+    background-color: var(--mediumgray);
     padding: 1rem;
     border-radius: 0.5rem;
     margin: 0 1rem 1rem 0;
@@ -84,6 +84,10 @@
 
   #notification[data-type="error"] * {
     color: var(--error-light);
+  }
+
+  #notification[data-type="default"] * {
+    color: var(--heading);
   }
 
   #notification-top {

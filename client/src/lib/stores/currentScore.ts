@@ -18,8 +18,30 @@ currentScore.subscribe(c => {
 
 currentPuzzle.subscribe(p => {
   if(p.loading) return currentScore.set({ loading: true, data: undefined })
-  if(!p.data) return currentScore.set({ loading: false, data: undefined });
-  // TODO: Fetch user score from server
+  if(!p.data) return currentScore.set({ loading: false, data: undefined })
+
+  // If the user isn't signed in, give them an empty score and tell them to login to save the score
+  const u = get(user)
+  if(u.loading || !u.data) {
+    currentScore.set({
+      loading: false,
+      data: {
+        id: '',
+        wordPreviewsOn: false,
+        points: 0,
+        puzzleId: p.data.id,
+        userId: '',
+        wordsFound: []
+      }
+    })
+
+    return setNotification(
+      "Your score is not being saved",
+      "Please login to save your scores.",
+      "default"
+    )
+  }
+
   (async () => {
     const res = await request<GetCurrentUserScoreRequest, GetCurrentUserScoreResponse>(
       `score/get_current_user?puzzleId=${p.data!.id}`
@@ -71,7 +93,7 @@ export const tryWord = (word: string): TryWordResponse => {
       (async () => {
         // Add word to wordsFound
         const w: UserWordFound | undefined = await updateScoreWithWord(word)
-        // Update user's stats with new word
+        // Update user's stats with new word if successfully updated database
         if(w) addWordToUser(w)
       })()
 
@@ -84,7 +106,11 @@ export const tryWord = (word: string): TryWordResponse => {
     else return { success: false, message: "We don't have that word in our dictionary." }
   }
 }
-
+/** 
+* Update the local score state, then update the database if the user is logged in
+* @param {string} word - Word to add
+* @return {Promise<UserWordFound | undefined>} Return the word and point value if added to the database, undefined otherwise
+*/
 const updateScoreWithWord = async (word: string): Promise<UserWordFound | undefined> => {
   let pointsFromWord = -1
   let scoreId = ''
@@ -108,8 +134,9 @@ const updateScoreWithWord = async (word: string): Promise<UserWordFound | undefi
       }
     }
   })
-  
-  if(pointsFromWord == -1 || scoreId == '') setNotification('Error', 'There was an error updating your score, please refresh.', 'error')
+    
+  const u = get(user)
+  if(u.loading || !u.data) return
 
   const res = await request<AddWordRequest, AddWordResponse>(
     'score/add_word',
@@ -120,9 +147,6 @@ const updateScoreWithWord = async (word: string): Promise<UserWordFound | undefi
     }
   )
 
-  console.log(res)
-
-  const u = get(user)
 
   if(!res.success) {
     if((res.message == 'no-session' || res.message == 'invalid-session') && u.data) {
