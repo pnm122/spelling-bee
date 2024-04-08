@@ -6,6 +6,7 @@ import { SetHintResponse } from '../../shared/interfaces/Response'
 
 const router = express.Router()
 
+// Set the user's hint if a hint object is provided, otherwise remove the hint from the database
 router.use(authenticated)
 router.post<WithSession<SetHintRequest>, SetHintResponse>('/', async (req, res) => {
   const body: WithSession<SetHintRequest> = req.body

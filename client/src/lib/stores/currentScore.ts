@@ -5,10 +5,10 @@ import currentPuzzle from "./currentPuzzle";
 import { getPointsFromWord, wordMatchesHint } from "$lib/utils/points";
 import { notifyNeedAccount, setNotification } from "./notification";
 import request from "$lib/utils/requests/request";
-import type { ActivateWordPreviewsResponse, AddWordResponse } from "$backend_interfaces/Response";
-import { type AddWordRequest, type ActivateWordPreviewsRequest } from "$backend_interfaces/Request"
+import type { ActivateWordPreviewsResponse, AddWordResponse, SetHintResponse } from "$backend_interfaces/Response";
+import { type AddWordRequest, type ActivateWordPreviewsRequest, type SetHintRequest } from "$backend_interfaces/Request"
 import user, { addWordToUser } from "./user";
-import type { UserWordFound } from "$backend_interfaces/Score";
+import type { Hint, UserWordFound } from "$backend_interfaces/Score";
 
 const currentScore = writable<Loadable<Score>>({ loading: true, data: undefined })
 
@@ -62,6 +62,7 @@ export const tryWord = (word: string): TryWordResponse => {
 const updateScoreWithWord = async (word: string): Promise<UserWordFound | undefined> => {
   let pointsFromWord = -1
   let scoreId = ''
+  let wordMatchedHint = false
 
   currentScore.update(score => {
     if(score.loading || !score.data) return score
@@ -69,6 +70,7 @@ const updateScoreWithWord = async (word: string): Promise<UserWordFound | undefi
     scoreId = id
 
     pointsFromWord = getPointsFromWord(word, hint, wordPreviewsOn)
+    wordMatchedHint = wordMatchesHint(word, hint)
 
     return {
       ...score,
@@ -78,7 +80,7 @@ const updateScoreWithWord = async (word: string): Promise<UserWordFound | undefi
         wordsFound: [{ word: word, points: pointsFromWord }, ...wordsFound],
         points: points + pointsFromWord,
         // Update hint to undefined if the word matches the hint
-        hint: wordMatchesHint(word, hint) ? undefined : hint
+        hint: wordMatchedHint ? undefined : hint
       }
     }
   })
@@ -95,6 +97,13 @@ const updateScoreWithWord = async (word: string): Promise<UserWordFound | undefi
     }
   )
 
+  if(wordMatchedHint) {
+    const hintRes = await request<SetHintRequest, SetHintResponse>(
+      'score/set_hint',
+      'POST',
+      { scoreId }
+    )
+  }
 
   if(!res.success) {
     if((res.message == 'no-session' || res.message == 'invalid-session') && u.data) {
@@ -164,7 +173,7 @@ export const activateWordPreviews = async () => {
 // Pick an unfound word as the user's hint
 // Hint is first 3 letters of the word
 // If they've already asked for a hint and not found that word, just give them the same hint again
-export const getHint = (callback: (hint: string) => void) => {
+export const getHint = async (callback: (hint: string) => void) => {
   const score = get(currentScore)
   const puzzle = get(currentPuzzle)
   const u = get(user)
@@ -182,6 +191,9 @@ export const getHint = (callback: (hint: string) => void) => {
 
   if(hint) return callback(hint.word.slice(0, hint.lettersGiven))
 
+  // User has found all the words
+  if(wordList.length == wordsFound.length) return
+
   let availableIndexes: number[] = []
   wordList.forEach((w, index) => {
     if(!wordsFound.find(n => n.word == w)) availableIndexes.push(index)
@@ -189,6 +201,11 @@ export const getHint = (callback: (hint: string) => void) => {
 
   const hintIndex = availableIndexes[Math.floor(Math.random() * availableIndexes.length)]
   let hintWord = wordList[hintIndex]
+
+  const newHint: Hint = {
+    word: hintWord,
+    lettersGiven: 3
+  }
 
   callback(hintWord.slice(0, 3))
 
@@ -200,13 +217,16 @@ export const getHint = (callback: (hint: string) => void) => {
       ...c,
       data: {
         ...c.data,
-        hint: {
-          word: hintWord,
-          lettersGiven: 3
-        }
+        hint: newHint
       }
     }
   })
+
+  const res = await request<SetHintRequest, SetHintResponse>(
+    'score/set_hint',
+    'POST',
+    { scoreId: score.data.id, hint: newHint }
+  )
 }
 
 export default currentScore
