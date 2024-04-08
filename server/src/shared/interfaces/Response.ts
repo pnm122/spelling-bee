@@ -41,6 +41,8 @@ export type ErrorTypes =
   | 'invalid-session' // Requested session doesn't exist (most likely session expired)
   | 'no-session' // Client requested a resource that requires a session without having one
   | 'no-score' // Client requested a score that doesn't exist
+  | 'no-hint' // Client requested to update a user's hint, but didn't provide a hint
+  | 'invalid-hint' // Client requested to update a user's hint, but the hint provided is invalid
 
 export type WithUnknown<T extends ErrorTypes> = T | 'unknown-error'
 // Utility type to force generic passed in to be one of the specified error types
@@ -84,6 +86,8 @@ export type GetPuzzleUtilityErrors = WithUnknown<'no-puzzle'>
 export type IncrementPuzzlesPlayedErrors = WithUnknown<'invalid-user-id'>
 export type ActivateWordPreviewsUtilityErrors = UpdateScoreUtilityErrors
 export type ActivateWordPreviewsErrors = ActivateWordPreviewsUtilityErrors
+export type SetHintUtilityErrors = UpdateScoreUtilityErrors
+export type SetHintErrors = AsErrorType<'no-hint' | 'invalid-hint'>
 
 // ============================================================
 
@@ -131,5 +135,7 @@ export type AddWordToUserResponse = SuccessResponse | ErrorResponse<AddWordToUse
 export type IncrementPuzzlesPlayedResponse = SuccessResponse | ErrorResponse<IncrementPuzzlesPlayedErrors>
 export type ActivateWordPreviewsUtilityResponse = SuccessResponse | ErrorResponse<ActivateWordPreviewsUtilityErrors>
 export type ActivateWordPreviewsResponse = SuccessResponse | ErrorResponse<ActivateWordPreviewsErrors> | AuthenticatedResponse
+export type SetHintUtilityResponse = SuccessResponse | ErrorResponse<SetHintUtilityErrors>
+export type SetHintResponse = SetHintUtilityResponse | ErrorResponse<SetHintErrors>
 
 // ============================================================

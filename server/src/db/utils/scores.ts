@@ -1,11 +1,11 @@
 // Utility functions for the Scores collection
 
 import { ObjectId, WithoutId } from "mongodb";
-import { ActivateWordPreviewsUtilityResponse, AddWordUtilityResponse, GetOrCreateScoreResponse, UpdateScoreUtilityResponse } from "../../shared/interfaces/Response";
+import { ActivateWordPreviewsUtilityResponse, AddWordUtilityResponse, GetOrCreateScoreResponse, SetHintUtilityResponse, UpdateScoreUtilityResponse } from "../../shared/interfaces/Response";
 import getDb from "../conn";
 import Score from "../interfaces/Score";
 import { getPuzzle } from "./puzzles";
-import ClientScore, { UserWordFound } from "../../shared/interfaces/Score";
+import ClientScore, { Hint, UserWordFound } from "../../shared/interfaces/Score";
 /** 
 * Get a user's score on a given puzzle, creating one if it doesn't already exist. If the puzzle does not exist, return a no-puzzle error.
 * @param {Object} params
@@ -184,7 +184,7 @@ export async function addWord({
 }
 
 /** 
-* Update a user's hint or wordPreviewsOn on a given puzzle. If the score does not exist already, return a no-score error.
+* Mark wordPreviewsOn as true for a given score. If the score does not exist already, return a no-score error.
 * @param {Object} params
 * @param {string} params.scoreId - Score's 24-character identifier
 * @return {Promise<ActivateWordPreviewsUtilityResponse>} { success: true } if successful, otherwise returns the appropriate error
@@ -196,6 +196,26 @@ export async function activateWordPreviews({
     scoreId,
     data: {
       wordPreviewsOn: true
+    }
+  })
+
+  return res
+}
+
+/** 
+* Update a user's hint on a given puzzle. If the score does not exist already, return a no-score error.
+* @param {Object} params
+* @param {string} params.scoreId - Score's 24-character identifier
+* @return {Promise<ActivateWordPreviewsUtilityResponse>} { success: true } if successful, otherwise returns the appropriate error
+*/
+export async function setHint({
+  scoreId,
+  hint
+}: { scoreId: string, hint: Hint}): Promise<SetHintUtilityResponse> {
+  const res = await updateScore({
+    scoreId,
+    data: {
+      hint
     }
   })
 

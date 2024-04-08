@@ -1,5 +1,5 @@
 import Session from "../../db/interfaces/Session";
-import ClientScore, { UserWordFound } from "./Score";
+import ClientScore, { Hint, UserWordFound } from "./Score";
 
 export type WithSession<T = {}> = T & { session: Session }
 
@@ -8,3 +8,4 @@ export type AddWordRequest = { scoreId: string, word: UserWordFound }
 export type GetCurrentUserScoreRequest = Pick<ClientScore, 'puzzleId'>
 export type GetScoreRequest = Pick<ClientScore, 'puzzleId' | 'userId'>
 export type ActivateWordPreviewsRequest = { scoreId: string }
+export type SetHintRequest = { scoreId: string, hint: Hint }
