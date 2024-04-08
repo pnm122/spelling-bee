@@ -4,6 +4,7 @@ import { getTotalPoints, getUniqueLetters, isPangram } from "../shared/utils/poi
 import getMatchingWords from "./getMatchingWords"
 import getTodaysDate from "./getTodaysDate"
 import { readFile } from "fs"
+import shuffle from "./shuffle"
 
 export default async function generatePuzzle(): Promise<WithoutId<DBPuzzle>> {
   const MIN_POINTS = 200
@@ -54,10 +55,10 @@ export default async function generatePuzzle(): Promise<WithoutId<DBPuzzle>> {
             if(isPangram(word)) numPangrams++
           }
         }
-  
+
         const puzzle: WithoutId<DBPuzzle> = {
           centerLetter,
-          outsideLetters,
+          outsideLetters: shuffle<OutsideLetters>(outsideLetters),
           wordList,
           maxPoints,
           date: getTodaysDate()
