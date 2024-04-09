@@ -5,18 +5,13 @@
   import PhLightbulb from '~icons/ph/lightbulb'
   import PhShuffle from '~icons/ph/shuffle'
   import { isPangram } from '$lib/utils/points'
-  import currentPuzzle from "$lib/stores/currentPuzzle";
-  import currentScore, { getHint, tryWord } from "$lib/stores/currentScore";
+  import gameData from "$lib/stores/gameData";
 	import type Puzzle from "$backend_interfaces/Puzzle";
 	import type Score from "$backend_interfaces/Score";
+	import { getHint, tryWord } from "$lib/stores/currentScore";
 
-  $: loading = $currentScore.loading || $currentPuzzle.loading
-  $: dataExists = $currentScore.data && $currentPuzzle.data
-  $: puzzle = !loading && dataExists ? $currentPuzzle.data as Puzzle : undefined
-  $: score = !loading && dataExists ? $currentScore.data as Score : undefined
-
-  $: outsideLetters = puzzle
-                        ? puzzle.outsideLetters
+  $: outsideLetters = $gameData.exists
+                        ? $gameData.puzzle.outsideLetters
                         : ['', '', '', '', '', ''] 
   let word = ""
   let pressedKeys: string[] = []
@@ -142,8 +137,8 @@
   }
 
   const handleKeyDown = (e: KeyboardEvent) => {
-    if(!puzzle || animating) return
-    const { centerLetter } = puzzle
+    if(!$gameData.exists || animating) return
+    const { centerLetter } = $gameData.puzzle
 
     const key = e.key.toUpperCase()
 
@@ -241,9 +236,9 @@
   onDestroy(() => isComponentDestroyed = true)
 </script>
 
-{#if loading || !puzzle || !score}
+{#if $gameData.loading}
   <div></div>
-{:else if !dataExists}
+{:else if !$gameData.exists}
   <div></div>
 {:else}
   <div id="wrapper">
@@ -264,7 +259,7 @@
           id="word">
           {#each word as char}
             <span
-              data-center-letter={char.toUpperCase() == puzzle.centerLetter.toUpperCase()}>
+              data-center-letter={char.toUpperCase() == $gameData.puzzle.centerLetter.toUpperCase()}>
               {char}
             </span>
           {/each}
@@ -280,9 +275,12 @@
         class="letter-button {wordIsPangram ? 'pangram' : ''}"
         id="center"
         disabled={animating}
-        pressed={pressedKeys.includes(puzzle.centerLetter)}
-        clickHandler={() => addLetter(puzzle?.centerLetter)}
-        letter="{puzzle.centerLetter}"
+        pressed={pressedKeys.includes($gameData.puzzle.centerLetter)}
+        clickHandler={() => {
+          if(!$gameData.exists) return
+          addLetter($gameData.puzzle.centerLetter)
+        }}
+        letter="{$gameData.puzzle.centerLetter}"
       />
       <Hexagon 
         width={hexagonSize} 

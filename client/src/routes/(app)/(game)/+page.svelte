@@ -1,5 +1,5 @@
 <script lang="ts">
-  import currentPuzzle from "$lib/stores/currentPuzzle"
+  import gameData from "$lib/stores/gameData"
   import Skeleton from "$lib/components/shared/Skeleton.svelte"
   import convertDate from "$lib/utils/convertDate"
   import Game from "$lib/components/game/Game.svelte"
@@ -12,6 +12,7 @@
 	import GameDrawer from "$lib/components/game/GameDrawer.svelte";
 	import WordList from "$lib/components/game/WordList.svelte";
 	import ExpandableRecentWords from "$lib/components/game/ExpandableRecentWords.svelte";
+	import PuzzleComplete from "$lib/components/game/PuzzleComplete.svelte";
 
   onMount(() => {
     loadDailyPuzzle()
@@ -31,12 +32,12 @@
   </GameDrawer> -->
   <div id="puzzle-header">
       <div id="puzzle-header-inner">
-        {#if $currentPuzzle.loading}
+        {#if $gameData.loading}
           <div id="puzzle-title" style="margin: auto;">
             <Skeleton --width="10rem" --height="1.5rem" />
             <Skeleton --width="9rem" --height="1rem" />
           </div>
-        {:else if !$currentPuzzle.data}
+        {:else if !$gameData.exists}
           <span class="error">Error getting today's puzzle</span>
         {:else}
           <button 
@@ -50,7 +51,7 @@
           </button>
           <div id="puzzle-title">
             <h1>Today's Puzzle</h1>
-            <h2>{convertDate($currentPuzzle.data.date)}</h2>
+            <h2>{convertDate($gameData.puzzle.date)}</h2>
           </div>
           <button 
             on:click={toggleLeaderboardDrawer}
@@ -67,11 +68,12 @@
   <div id="game-wrapper">
     <ExpandableRecentWords />
     <PuzzlePoints />
-    {#if $currentPuzzle.loading}
+    {#if $gameData.loading}
       <Skeleton />
-    {:else if !$currentPuzzle.data}
+    {:else if !$gameData.exists}
       <div></div>
     {:else}
+      <PuzzleComplete />
       <Game />
     {/if}
   </div>

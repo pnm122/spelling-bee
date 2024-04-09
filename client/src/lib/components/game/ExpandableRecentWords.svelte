@@ -1,6 +1,5 @@
 <script lang="ts">
-  import currentScore from "$lib/stores/currentScore";
-  import currentPuzzle from "$lib/stores/currentPuzzle";
+  import gameData from '$lib/stores/gameData';
   import MaterialSymbolsKeyboardArrowDownRounded from '~icons/material-symbols/keyboard-arrow-down-rounded'
 	import { isPangram } from "$lib/utils/points";
 	import WordList from "./WordList.svelte";
@@ -15,12 +14,12 @@
     aria-pressed={expanded}
     on:click={() => expanded = true}>
     <div id="recent-words">
-      {#if !$currentScore.loading && $currentScore.data && !$currentPuzzle.loading && $currentPuzzle.data}
-        {#if $currentScore.data.wordsFound.length > 0}
-          {#each $currentScore.data.wordsFound as data (data.word)}
+      {#if $gameData.exists}
+        {#if $gameData.score.wordsFound.length > 0}
+          {#each $gameData.score.wordsFound as data (data.word)}
           <span class="recent-word {isPangram(data.word) ? 'pangram' : ''}">
             {#each data.word as letter}
-            <span class="recent-word-letter {letter == $currentPuzzle.data.centerLetter ? 'center-letter' : ''}">
+            <span class="recent-word-letter {letter == $gameData.puzzle.centerLetter ? 'center-letter' : ''}">
               {letter}
             </span>
             {/each}

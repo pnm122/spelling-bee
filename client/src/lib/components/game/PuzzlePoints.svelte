@@ -1,6 +1,5 @@
 <script lang="ts">
-  import currentScore from "$lib/stores/currentScore";
-  import currentPuzzle from "$lib/stores/currentPuzzle";
+  import gameData from "$lib/stores/gameData";
 
   interface SkillLevel {
     name: string,
@@ -30,15 +29,15 @@
   }]
 
   $: puzzleProgressPct = 
-    ($currentScore.data && $currentPuzzle.data) 
-      ? $currentScore.data!.points * 100 / $currentPuzzle.data!.maxPoints
+    $gameData.exists
+      ? $gameData.score.points * 100 / $gameData.puzzle.maxPoints
       : 0
   $: currentLevel = skillLevels.findLast(s => puzzleProgressPct >= s.percent)!
 </script>
 
-{#if $currentScore.loading || $currentPuzzle.loading}
+{#if $gameData.loading}
   <div></div>
-{:else if !$currentScore.data || !$currentPuzzle.data}
+{:else if !$gameData.exists}
   <div></div>
 {:else}
   <div id="progress-outer-wrapper">
@@ -63,8 +62,8 @@
         id="progress"
         role="progressbar"
         aria-valuenow={puzzleProgressPct}
-        aria-valuemin={$currentScore.data.points}
-        aria-valuemax={$currentPuzzle.data.maxPoints}
+        aria-valuemin={$gameData.score.points}
+        aria-valuemax={$gameData.puzzle.maxPoints}
         aria-label="Points earned from today's puzzle">
         <div 
           id="progress-bar"
@@ -73,11 +72,11 @@
         <div
           id="points"
           style="left: {puzzleProgressPct}%;">
-          <span>{$currentScore.data.points} points</span>
+          <span>{$gameData.score.points} points</span>
           <!-- Force points from last word to rerender every time points changes, causing the animation -->
-          {#key $currentScore.data.points}
-            {#if $currentScore.data.wordsFound[0] && $currentScore.data.wordsFound[0].points > 0}
-              <span id="points-from-last-word">+{$currentScore.data.wordsFound[0].points}</span>
+          {#key $gameData.score.points}
+            {#if $gameData.score.wordsFound[0] && $gameData.score.wordsFound[0].points > 0}
+              <span id="points-from-last-word">+{$gameData.score.wordsFound[0].points}</span>
             {/if}
           {/key}
         </div>
