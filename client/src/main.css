@@ -215,6 +215,11 @@ hr {
   background-color: var(--gray);
 }
 
+.container {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
 .btn {
   --hover-offset: 0.333rem;
   cursor: pointer;

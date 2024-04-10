@@ -1,11 +1,11 @@
 <script lang="ts">
   import user from "$lib/stores/user";
 	import logout from "$lib/utils/requests/auth/logout";
-	import LevelIndicator from "../shared/LevelIndicator.svelte";
-	import NavLink from "../header/NavLink.svelte";
-	import Skeleton from "../shared/Skeleton.svelte";
-	import StatsPopup from "../header/StatsPopup.svelte";
-	import ThemeSwitcher from "../header/ThemeSwitcher.svelte";
+	import LevelIndicator from "../../shared/LevelIndicator.svelte";
+	import NavLink from "./NavLink.svelte";
+	import Skeleton from "../../shared/Skeleton.svelte";
+	import StatsPopup from "./StatsPopup.svelte";
+	import ThemeSwitcher from "./ThemeSwitcher.svelte";
   import PhDotsThreeOutlineFill from '~icons/ph/dots-three-outline-fill'
   import PhXBold from '~icons/ph/x-bold'
 
@@ -49,8 +49,11 @@
         <ThemeSwitcher />
       </li>
       {#if $user.loading || !$user.data}
-        <li>
+        <!-- <li>
           <NavLink href="/leaderboard">Leaderboard</NavLink>
+        </li> -->
+        <li>
+          <NavLink href="/puzzles">Past Puzzles</NavLink>
         </li>
         <div id="divider" />
         <li>
@@ -61,11 +64,11 @@
         </li>
       {:else}
         <li>
-          <NavLink href="/past-puzzles">Past Puzzles</NavLink>
+          <NavLink href="/puzzles">Past Puzzles</NavLink>
         </li>
-        <li>
+        <!-- <li>
           <NavLink href="/leaderboard">Leaderboard</NavLink>
-        </li>
+        </li> -->
         <li>
           <button 
             on:click={logout}
