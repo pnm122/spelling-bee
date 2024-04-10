@@ -1,7 +1,7 @@
 // Utility functions for the Puzzles collection
 
 import { FindOptions, ObjectId, WithoutId } from "mongodb"
-import { GetPuzzleUtilityResponse, InsertPuzzleResponse } from "../../shared/interfaces/Response"
+import { AllPuzzlesUtilityResponse, GetPuzzleUtilityResponse, InsertPuzzleResponse } from "../../shared/interfaces/Response"
 import getDb from "../conn"
 import Puzzle from "../interfaces/Puzzle"
 
@@ -49,6 +49,36 @@ export async function getPuzzleByDate(date: string): Promise<GetPuzzleUtilityRes
     return {
       success: false,
       message: 'no-puzzle'
+    }
+  } catch(e) {
+    return {
+      success: false,
+      message: 'unknown-error'
+    }
+  }
+}
+
+// Fetch the 10 most recent puzzles
+// TODO: Pagination
+export async function getAllPuzzles(): Promise<AllPuzzlesUtilityResponse> {
+  try {
+    const db = await getDb()
+
+    const findRes = await db.collection('Puzzles').find<Pick<Puzzle, '_id' | 'centerLetter' | 'outsideLetters' | 'date'>>(
+      {}, {
+      projection: {
+        date: 1,
+        centerLetter: 1,
+        outsideLetters: 1
+      },
+      sort: {
+        date: -1
+      }
+    }).limit(10).toArray()
+
+    return {
+      success: true,
+      data: { puzzles: findRes }
     }
   } catch(e) {
     return {

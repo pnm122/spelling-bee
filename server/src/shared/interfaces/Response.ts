@@ -90,6 +90,8 @@ export type ActivateWordPreviewsUtilityErrors = UpdateScoreUtilityErrors
 export type ActivateWordPreviewsErrors = ActivateWordPreviewsUtilityErrors
 export type SetHintUtilityErrors = UpdateScoreUtilityErrors
 export type SetHintErrors = AsErrorType<'invalid-hint'>
+export type AllPuzzlesUtilityErrors = AsErrorType<'unknown-error'>
+export type AllPuzzlesErrors = AllPuzzlesUtilityErrors
 
 // ============================================================
 
@@ -118,6 +120,8 @@ export type AddWordUtilityData = { score: Score }
 
 export type GetPuzzleUtilityData = { puzzle: DBPuzzle }
 export type InsertPuzzleData = { puzzle: DBPuzzle }
+export type AllPuzzlesUtilityData = { puzzles: Pick<DBPuzzle, '_id' | 'centerLetter' | 'outsideLetters' | 'date'>[] }
+export type AllPuzzlesData = { puzzles: Pick<Puzzle, 'id' | 'centerLetter' | 'outsideLetters' | 'date'>[] }
 
 // ============================================================
 
@@ -135,6 +139,8 @@ export type AddWordResponse = AddWordUtilityResponse | AddWordToUserResponse | A
 
 export type GetPuzzleUtilityResponse = SuccessResponse<GetPuzzleUtilityData> | ErrorResponse<GetPuzzleUtilityErrors>
 export type InsertPuzzleResponse = SuccessResponse<InsertPuzzleData> | ErrorResponse<InsertPuzzleErrors>
+export type AllPuzzlesUtilityResponse = SuccessResponse<AllPuzzlesUtilityData> | ErrorResponse<AllPuzzlesUtilityErrors>
+export type AllPuzzlesResponse = SuccessResponse<AllPuzzlesData> | ErrorResponse<'unknown-error'> | AuthenticatedResponse
 
 export type AddWordToUserResponse = SuccessResponse | ErrorResponse<AddWordToUserErrors>
 export type IncrementPuzzlesPlayedResponse = SuccessResponse | ErrorResponse<IncrementPuzzlesPlayedErrors>
