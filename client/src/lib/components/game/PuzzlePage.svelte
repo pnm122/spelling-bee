@@ -16,9 +16,9 @@
 
   
 
-  onMount(() => {
-    loadDailyPuzzle()
-  })
+  // onMount(() => {
+  //   loadDailyPuzzle()
+  // })
 
 </script>
 

@@ -10,7 +10,7 @@ const currentPuzzle = writable<Loadable<Puzzle>>({ loading: true, data: undefine
 export const loadNewPuzzle = async (id: string) => {
   currentPuzzle.set({ loading: true, data: undefined })
 
-  const res = await request<{}, SuccessResponse<GetPuzzleData> | ErrorResponse<GetPuzzleErrors>>(`puzzle/${id}`)
+  const res = await request<{}, SuccessResponse<GetPuzzleData> | ErrorResponse<GetPuzzleErrors>>(`puzzle/get?id=${id}`)
   if(!res.success) {
     setNotification(`Error fetching puzzle with id "${id}"`, res.message, 'error')
     currentPuzzle.set({ loading: false, data: undefined })
@@ -32,13 +32,15 @@ export const loadDailyPuzzle = async () => {
   if(!res.success) {
     setNotification('Error fetching daily puzzle', res.message, 'error')
     currentPuzzle.set({ loading: false, data: undefined })
-    return
+    return false
   }
   
   currentPuzzle.set({ 
     loading: false, 
     data: res.data.puzzle
   })
+
+  return true
 }
 
 

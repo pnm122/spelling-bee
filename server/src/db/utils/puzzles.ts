@@ -10,6 +10,13 @@ export async function getPuzzleById(
   projection?: FindOptions<Document>['projection']
 ): Promise<GetPuzzleUtilityResponse> {
   try {
+    if(puzzleId.length != 24) {
+      return {
+        success: false,
+        message: 'no-puzzle'
+      }
+    }
+
     const db = await getDb()
 
     const findRes = await db.collection('Puzzles').findOne<Puzzle>({ 
