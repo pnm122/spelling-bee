@@ -109,6 +109,7 @@ body {
   --transition-2: var(--timing-function) .5s;
 
   --z-puzzle-complete: 5;
+  --z-under-header: 9;
   --z-header: 10;
   --z-drawer: 20;
   --z-alert: 30;

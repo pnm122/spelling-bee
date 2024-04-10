@@ -12,7 +12,7 @@
   data-game-complete={isGameComplete}>
   <div id="puzzle-complete">
     {#if $gameData.exists}
-      <PuzzlePoints />
+      <PuzzlePoints isGameComplete={true} />
       <div id="puzzle-letters">
         <Hexagon
           width={60}

@@ -1,6 +1,8 @@
 <script lang="ts">
   import gameData from "$lib/stores/gameData";
 
+  export let isGameComplete = false
+
   interface SkillLevel {
     name: string,
     percent: number
@@ -33,7 +35,6 @@
       ? $gameData.score.points * 100 / $gameData.puzzle.maxPoints
       : 0
   $: currentLevel = skillLevels.findLast(s => puzzleProgressPct >= s.percent)!
-  $: isGameComplete = $gameData.exists && $gameData.puzzle.wordList.length == $gameData.score.wordsFound.length
 </script>
 
 {#if $gameData.loading}

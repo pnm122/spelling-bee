@@ -75,7 +75,7 @@
     }
 
     let hexIndex = 0
-    for(let letter of document.getElementsByClassName('letter-button') as HTMLCollectionOf<SVGElement>) {
+    for(let letter of document.getElementById('main-game')!.getElementsByClassName('letter-button') as HTMLCollectionOf<SVGElement>) {
       letter.childNodes.forEach(n => {
         (n as HTMLElement).style.animationDelay = `${HEXAGON_ANIMATION_DELAY_MS * hexIndex}ms`;
         // Maximum animation duration such that each hexagon can animate the whole way through before the word disappears
@@ -404,7 +404,7 @@
     }
   }
 
-  :global(#center.pangram polygon) {
+  :global(.center-letter-hexagon.pangram polygon) {
     animation: centerLetterPangram forwards;
   }
 
@@ -430,7 +430,7 @@
     }
   }
 
-  :global(#center.pangram text) {
+  :global(.center-letter-hexagon.pangram text) {
     animation: centerLetterTextPangram forwards;
   }
 
