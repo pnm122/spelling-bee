@@ -108,6 +108,7 @@ body {
   --transition-1: var(--timing-function) .3s;
   --transition-2: var(--timing-function) .5s;
 
+  --z-puzzle-complete: 5;
   --z-header: 10;
   --z-drawer: 20;
   --z-alert: 30;
@@ -392,4 +393,38 @@ body[data-theme="light"] .btn.accent:hover {
 
 .no-overflow {
   overflow: hidden;
+}
+
+.letter-button {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+}
+
+.center-letter-hexagon {
+  transform: translate(-50%, -50%);
+}
+
+.top-middle-letter {
+  transform: translate(-50%, -150%);
+}
+
+.bottom-middle-letter {
+  transform: translate(-50%, 50%);
+}
+
+.top-left-letter {
+  transform: translate(-125%, -100%);
+}
+
+.bottom-left-letter {
+  transform: translate(-125%, 0%);
+}
+
+.top-right-letter {
+  transform: translate(25%, -100%);
+}
+
+.bottom-right-letter {
+  transform: translate(25%, 0%);
 }

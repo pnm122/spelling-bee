@@ -90,6 +90,7 @@
 
   #main {
     --game-header-height: 4rem;
+    position: relative;
     min-height: calc(100vh - var(--header-height));
     display: grid;
     grid-template-rows: var(--game-header-height) 1fr;

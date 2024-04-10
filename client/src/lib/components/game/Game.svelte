@@ -272,8 +272,7 @@
         width={hexagonSize} 
         fill='var(--primary)' 
         textColor='var(--dark)'
-        class="letter-button {wordIsPangram ? 'pangram' : ''}"
-        id="center"
+        class="center-letter-hexagon letter-button {wordIsPangram ? 'pangram' : ''}"
         disabled={animating}
         pressed={pressedKeys.includes($gameData.puzzle.centerLetter)}
         clickHandler={() => {
@@ -285,8 +284,7 @@
       <Hexagon 
         width={hexagonSize} 
         fill='var(--gray)' 
-        class="letter-button outside {wordIsPangram ? 'pangram' : ''}"
-        id="top-middle"
+        class="top-middle-letter letter-button outside {wordIsPangram ? 'pangram' : ''}"
         disabled={animating}
         pressed={pressedKeys.includes(outsideLetters[0])}
         clickHandler={() => addLetter(outsideLetters[0])}
@@ -295,8 +293,7 @@
       <Hexagon 
         width={hexagonSize} 
         fill='var(--gray)' 
-        class="letter-button outside {wordIsPangram ? 'pangram' : ''}"
-        id="top-right"
+        class="top-right-letter letter-button outside {wordIsPangram ? 'pangram' : ''}"
         disabled={animating}
         pressed={pressedKeys.includes(outsideLetters[1])}
         clickHandler={() => addLetter(outsideLetters[1])}
@@ -305,8 +302,7 @@
       <Hexagon 
         width={hexagonSize} 
         fill='var(--gray)' 
-        class="letter-button outside {wordIsPangram ? 'pangram' : ''}"
-        id="bottom-right"
+        class="bottom-right-letter letter-button outside {wordIsPangram ? 'pangram' : ''}"
         disabled={animating}
         pressed={pressedKeys.includes(outsideLetters[2])}
         clickHandler={() => addLetter(outsideLetters[2])}
@@ -315,8 +311,7 @@
       <Hexagon 
         width={hexagonSize} 
         fill='var(--gray)' 
-        class="letter-button outside {wordIsPangram ? 'pangram' : ''}"
-        id="bottom-middle"
+        class="bottom-middle-letter letter-button outside {wordIsPangram ? 'pangram' : ''}"
         disabled={animating}
         pressed={pressedKeys.includes(outsideLetters[3])}
         clickHandler={() => addLetter(outsideLetters[3])}
@@ -325,8 +320,7 @@
       <Hexagon 
         width={hexagonSize} 
         fill='var(--gray)' 
-        class="letter-button outside {wordIsPangram ? 'pangram' : ''}"
-        id="bottom-left"
+        class="bottom-left-letter letter-button outside {wordIsPangram ? 'pangram' : ''}"
         disabled={animating}
         pressed={pressedKeys.includes(outsideLetters[4])}
         clickHandler={() => addLetter(outsideLetters[4])}
@@ -335,8 +329,7 @@
       <Hexagon 
         width={hexagonSize} 
         fill='var(--gray)' 
-        class="letter-button outside {wordIsPangram ? 'pangram' : ''}"
-        id="top-left"
+        class="top-left-letter letter-button outside {wordIsPangram ? 'pangram' : ''}"
         disabled={animating}
         pressed={pressedKeys.includes(outsideLetters[5])}
         clickHandler={() => addLetter(outsideLetters[5])}
@@ -396,37 +389,6 @@
     @media screen and (width > 768px) {
       height: 275px;
     }
-  }
-
-  :global(.letter-button) {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-  }
-  
-  :global(#top-middle) {
-    transform: translate(-50%, -150%);
-  }
-
-  :global(#bottom-middle) {
-    transform: translate(-50%, 50%);
-  }
-
-  :global(#top-left) {
-    transform: translate(-125%, -100%);
-  }
-
-  :global(#bottom-left) {
-    transform: translate(-125%, 0%);
-  }
-
-  :global(#top-right) {
-    transform: translate(25%, -100%);
-  }
-
-  :global(#bottom-right) {
-    transform: translate(25%, 0%);
   }
 
   :global(.outside.pangram polygon) {

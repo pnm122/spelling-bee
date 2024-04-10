@@ -33,6 +33,7 @@
       ? $gameData.score.points * 100 / $gameData.puzzle.maxPoints
       : 0
   $: currentLevel = skillLevels.findLast(s => puzzleProgressPct >= s.percent)!
+  $: isGameComplete = $gameData.exists && $gameData.puzzle.wordList.length == $gameData.score.wordsFound.length
 </script>
 
 {#if $gameData.loading}
@@ -44,7 +45,8 @@
     <div 
       id="progress-inner-wrapper"
       style="transform: translate(-{Math.min(currentLevel.percent, skillLevels[skillLevels.length - 3].percent)}%)"
-      data-puzzle-solved={puzzleProgressPct == 100}>
+      data-perfect-score={puzzleProgressPct == 100}
+      data-game-complete={isGameComplete}>
       <!-- ^ Moves the progress bar on mobile depending on which skill level the user has achieved -->
       <!-- Using this idea since the whole bar can't fit on mobile -->
       <!-- TODO: Accessibility? -->
@@ -96,15 +98,26 @@
   #progress-inner-wrapper {
     --highlight-color: var(--primary);
     --on-highlight: var(--dark);
+    --bar-color: var(--gray);
+    --default-text-color: var(--mediumgray);
+    --highlight-text-color: var(--heading);
 
     position: relative;
     min-width: 450px;
     transition: transform var(--transition-2);
   }
 
-  #progress-inner-wrapper[data-puzzle-solved="true"] {
+  #progress-inner-wrapper[data-perfect-score="true"] {
     --highlight-color: var(--accent);
     --on-highlight: var(--light);
+  }
+
+  #progress-inner-wrapper[data-game-complete="true"] {
+    --highlight-color: var(--dark);
+    --on-highlight: var(--primary);
+    --bar-color: color-mix(in oklch, var(--dark) 75%, var(--primary));
+    --default-text-color: color-mix(in oklch, var(--dark) 75%, var(--primary));
+    --highlight-text-color: var(--dark);
   }
 
   @media screen and (width > 550px) {
@@ -116,7 +129,7 @@
   #progress {
     width: 100%;
     height: var(--bar-height);
-    background-color: var(--gray);
+    background-color: var(--bar-color);
   }
 
   #progress-bar {
@@ -137,7 +150,7 @@
 
   .skill-level {
     width: fit-content;
-    color: var(--mediumgray);
+    color: var(--default-text-color);
     position: absolute;
     transform: translateX(-50%);
     font: var(--label-xs);
@@ -156,12 +169,12 @@
     width: var(--dot-size);
     aspect-ratio: 1;
     border-radius: 999px;
-    background-color: var(--gray);
+    background-color: var(--bar-color);
     transition: background-color var(--transition-2);
   }
 
   .skill-level[data-passed="true"] {
-    color: var(--heading);
+    color: var(--highlight-text-color);
   }
 
   .skill-level[data-passed="true"]::after {
