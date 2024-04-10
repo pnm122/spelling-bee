@@ -1,8 +1,8 @@
 import Session from "../../db/interfaces/Session"
 import UserResponse from "./User"
-import Puzzle from "./Puzzle"
+import Puzzle, { PuzzlePreview } from "./Puzzle"
 import ClientScore from "./Score"
-import DBPuzzle from "../../db/interfaces/Puzzle"
+import DBPuzzle, { DBPuzzlePreview } from "../../db/interfaces/Puzzle"
 import Score from "../../db/interfaces/Score"
 
 // Interface for success and error responses
@@ -120,8 +120,8 @@ export type AddWordUtilityData = { score: Score }
 
 export type GetPuzzleUtilityData = { puzzle: DBPuzzle }
 export type InsertPuzzleData = { puzzle: DBPuzzle }
-export type AllPuzzlesUtilityData = { puzzles: Pick<DBPuzzle, '_id' | 'centerLetter' | 'outsideLetters' | 'date'>[] }
-export type AllPuzzlesData = { puzzles: Pick<Puzzle, 'id' | 'centerLetter' | 'outsideLetters' | 'date'>[] }
+export type AllPuzzlesUtilityData = { puzzles: DBPuzzlePreview[] }
+export type AllPuzzlesData = { puzzles: PuzzlePreview[] }
 
 // ============================================================
 

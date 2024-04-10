@@ -7,6 +7,7 @@
   export let id = ""
   export let pressed = false
   export let disabled = false
+  export let largeText = false
   let classes: string = ""
 
   export {classes as class}
@@ -25,6 +26,7 @@
   </polygon>
   {#if letter}
     <text
+      data-large={largeText}
       fill={textColor}
       x="50%" y="50%" dx="-0.1em" dy="-0.05em" dominant-baseline="middle" text-anchor="middle">
       {letter}
@@ -54,5 +56,9 @@
     pointer-events: none;
     font: var(--h-3xl);
     user-select: none;
+  }
+
+  text[data-large="true"] {
+    font: var(--h-6xl);
   }
 </style>

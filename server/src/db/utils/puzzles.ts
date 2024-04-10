@@ -3,7 +3,7 @@
 import { FindOptions, ObjectId, WithoutId } from "mongodb"
 import { AllPuzzlesUtilityResponse, GetPuzzleUtilityResponse, InsertPuzzleResponse } from "../../shared/interfaces/Response"
 import getDb from "../conn"
-import Puzzle from "../interfaces/Puzzle"
+import Puzzle, { DBPuzzlePreview } from "../interfaces/Puzzle"
 
 export async function getPuzzleById(
   puzzleId: string,
@@ -64,7 +64,7 @@ export async function getAllPuzzles(): Promise<AllPuzzlesUtilityResponse> {
   try {
     const db = await getDb()
 
-    const findRes = await db.collection('Puzzles').find<Pick<Puzzle, '_id' | 'centerLetter' | 'outsideLetters' | 'date'>>(
+    const findRes = await db.collection('Puzzles').find<DBPuzzlePreview>(
       {}, {
       projection: {
         date: 1,

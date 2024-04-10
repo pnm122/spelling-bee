@@ -10,4 +10,6 @@ export default interface Puzzle {
   date: string
 }
 
+export type DBPuzzlePreview = Pick<Puzzle, '_id' | 'centerLetter' | 'outsideLetters' | 'date'>
+
 export type OutsideLetters = [string, string, string, string, string, string]
