@@ -7,6 +7,6 @@ const router = express.Router()
 
 router.use('/daily', daily)
 router.use('/all', all)
-router.use('/:id', get_puzzle)
+router.use('/get', get_puzzle)
 
 export default router

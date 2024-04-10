@@ -111,7 +111,6 @@ export type ValidateData = { userId: string }
 export type UpdateSessionData = { session: Session }
 export type GetSessionData = { session: Session }
 
-export type GetPuzzleData = { puzzle: Puzzle }
 export type DailyPuzzleData = { puzzle: Puzzle }
 
 export type GetCurrentUserScoreData = { score: ClientScore }
@@ -119,6 +118,7 @@ export type GetOrCreateScoreData = { score: Score, created: boolean }
 export type AddWordUtilityData = { score: Score }
 
 export type GetPuzzleUtilityData = { puzzle: DBPuzzle }
+export type GetPuzzleData = { puzzle: Puzzle }
 export type InsertPuzzleData = { puzzle: DBPuzzle }
 export type AllPuzzlesUtilityData = { puzzles: DBPuzzlePreview[] }
 export type AllPuzzlesData = { puzzles: PuzzlePreview[] }
@@ -141,6 +141,7 @@ export type GetPuzzleUtilityResponse = SuccessResponse<GetPuzzleUtilityData> | E
 export type InsertPuzzleResponse = SuccessResponse<InsertPuzzleData> | ErrorResponse<InsertPuzzleErrors>
 export type AllPuzzlesUtilityResponse = SuccessResponse<AllPuzzlesUtilityData> | ErrorResponse<AllPuzzlesUtilityErrors>
 export type AllPuzzlesResponse = SuccessResponse<AllPuzzlesData> | ErrorResponse<'unknown-error'> | AuthenticatedResponse
+export type GetPuzzleResponse = SuccessResponse<GetPuzzleData> | ErrorResponse<GetPuzzleUtilityErrors> | AuthenticatedResponse
 
 export type AddWordToUserResponse = SuccessResponse | ErrorResponse<AddWordToUserErrors>
 export type IncrementPuzzlesPlayedResponse = SuccessResponse | ErrorResponse<IncrementPuzzlesPlayedErrors>
