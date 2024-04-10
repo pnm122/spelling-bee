@@ -68,7 +68,7 @@
       />
     </div>
   {:else if !puzzles.data}
-    <div>
+    <div id="past-puzzles">
       <p>{errorMessage}</p>
     </div>
   {:else}
@@ -86,7 +86,7 @@
   }
 
   #title {
-    font: var(--h-4xl);
+    font: var(--h-3xl);
   }
 
   #past-puzzles {

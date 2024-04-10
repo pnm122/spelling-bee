@@ -4,7 +4,6 @@ import type Loadable from "$lib/types/loadable";
 import request from "$lib/utils/requests/request";
 import { writable } from "svelte/store";
 import { setNotification } from "./notification";
-import { getTotalPoints } from "$lib/utils/points";
 
 const currentPuzzle = writable<Loadable<Puzzle>>({ loading: true, data: undefined })
 
@@ -15,13 +14,15 @@ export const loadNewPuzzle = async (id: string) => {
   if(!res.success) {
     setNotification(`Error fetching puzzle with id "${id}"`, res.message, 'error')
     currentPuzzle.set({ loading: false, data: undefined })
-    return
+    return false
   }
   
   currentPuzzle.set({ 
     loading: false, 
     data: res.data.puzzle
   })
+
+  return true
 }
 
 export const loadDailyPuzzle = async () => {

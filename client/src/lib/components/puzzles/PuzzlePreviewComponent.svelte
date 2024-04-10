@@ -7,10 +7,11 @@
 
 <a 
   class="preview"
+  data-sveltekit-preload-data="tap"
   href="/puzzle/{puzzle.id}">
   <div class="info">
     <h2 class="date">{puzzle.date}</h2>
-    <h3 class="state">Not started</h3>
+    <!-- <h3 class="state">Not started</h3> -->
   </div>
   <div class="puzzle-letters">
     <Hexagon
