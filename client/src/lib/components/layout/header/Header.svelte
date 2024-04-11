@@ -8,9 +8,13 @@
 	import ThemeSwitcher from "./ThemeSwitcher.svelte";
   import PhDotsThreeOutlineFill from '~icons/ph/dots-three-outline-fill'
   import PhXBold from '~icons/ph/x-bold'
+  import { page } from "$app/stores";
 
   let expanded = false
   let isStatsOpen = false
+
+  // Close header on page route change
+  $: if($page.route) expanded = false
 </script>
 
 <header>
@@ -53,7 +57,7 @@
           <NavLink href="/leaderboard">Leaderboard</NavLink>
         </li> -->
         <li>
-          <NavLink href="/puzzles">Past Puzzles</NavLink>
+          <NavLink href="/">Daily Puzzle</NavLink>
         </li>
         <div id="divider" />
         <li>
@@ -63,6 +67,9 @@
           <a class="btn primary main-button" href="/signup">Sign up</a>
         </li>
       {:else}
+        <li>
+          <NavLink href="/">Daily Puzzle</NavLink>
+        </li>
         <li>
           <NavLink href="/puzzles">Past Puzzles</NavLink>
         </li>

@@ -7,6 +7,8 @@ import { setNotification } from "./notification";
 
 const currentPuzzle = writable<Loadable<Puzzle>>({ loading: true, data: undefined })
 
+// currentPuzzle.subscribe(p => console.log(p))
+
 export const loadNewPuzzle = async (id: string) => {
   currentPuzzle.set({ loading: true, data: undefined })
 

@@ -12,8 +12,6 @@ import type { Hint, UserWordFound } from "$backend_interfaces/Score";
 
 const currentScore = writable<Loadable<Score>>({ loading: true, data: undefined })
 
-currentScore.subscribe(s => console.log(s))
-
 type TryWordResponse = { success: true } | { success: false, message: string }
 
 /** 

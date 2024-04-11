@@ -9,6 +9,8 @@ const notificationState = writable<NotificationState>({
   message: ''
 })
 
+notificationState.subscribe(n => console.log('NOTIFICATION UPDATE', n))
+
 export function setNotification(title: string, message: string, type: 'default' | 'error') {
   notificationState.set({
     open: true,

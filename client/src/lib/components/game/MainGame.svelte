@@ -19,7 +19,7 @@
   let wordIsPangram = false
   let wordIsClearing = false
   let animating = false
-  let screenWidth = innerWidth
+  let screenWidth = -1
   $: hexagonSize = screenWidth >= 768 ? 100 : 80
 
   type NotificationType = "default" | "congrats" | "pangram"
@@ -206,6 +206,8 @@
   }
 
   onMount(() => {
+    screenWidth = innerWidth
+
     document.addEventListener('keydown', handleKeyDown)
     document.addEventListener('keypress', handleKeyPress)
     document.addEventListener('keyup', handleKeyUp)

@@ -215,6 +215,11 @@ hr {
   background-color: var(--gray);
 }
 
+#page-wrapper {
+  display: grid;
+  grid-template-rows: var(--header-height) calc(100vh - var(--header-height));
+}
+
 .container {
   padding-left: 1rem;
   padding-right: 1rem;
