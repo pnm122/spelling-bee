@@ -150,9 +150,4 @@
   .preview :global(.letter-button:nth-of-type(7) text) {
     transition-delay: calc(var(--hover-delay) * 5);
   }
-
-  .preview :global(.letter-button:nth-of-type(8) polygon),
-  .preview :global(.letter-button:nth-of-type(8) text) {
-    transition-delay: calc(var(--hover-delay) * 6);
-  }
 </style>

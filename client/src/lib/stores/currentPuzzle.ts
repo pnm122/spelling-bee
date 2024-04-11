@@ -5,7 +5,7 @@ import request from "$lib/utils/requests/request";
 import { writable } from "svelte/store";
 import getTodaysPuzzle from "$lib/utils/requests/puzzle/getTodaysPuzzle";
 
-type CurrentPuzzleErrors = GetPuzzleErrors | DailyPuzzleErrors | AuthenticatedErrors
+export type CurrentPuzzleErrors = GetPuzzleErrors | DailyPuzzleErrors | AuthenticatedErrors
 export type CurrentPuzzle = Loadable<Puzzle, CurrentPuzzleErrors>
 const currentPuzzle = writable<CurrentPuzzle>({ loading: true, data: undefined })
 

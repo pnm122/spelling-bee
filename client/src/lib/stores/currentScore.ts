@@ -10,7 +10,7 @@ import { type AddWordRequest, type ActivateWordPreviewsRequest, type SetHintRequ
 import user, { addWordToUser } from "./user";
 import type { Hint, UserWordFound } from "$shared/interfaces/Score";
 
-type CurrentScoreErrors = GetCurrentUserScoreErrors | AuthenticatedErrors
+export type CurrentScoreErrors = GetCurrentUserScoreErrors | AuthenticatedErrors
 export type CurrentScore = Loadable<Score, CurrentScoreErrors>
 const currentScore = writable<CurrentScore>({ loading: true, data: undefined })
 
