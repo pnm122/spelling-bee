@@ -3,9 +3,11 @@
   import PhMinus from '~icons/ph/minus'
   import BiPatchExclamationFill from '~icons/bi/patch-exclamation-fill'
 	import { onDestroy } from "svelte";
+  import user from "$lib/stores/user";
 
   let state = $notificationState
   let expanded = false
+  $: if($user.data && state.message == 'Please login to save your scores.') expanded = false
 
   const unsubscribe = notificationState.subscribe(s => {
     state = s

@@ -5,15 +5,15 @@ import type User from "$shared/interfaces/User"
 import type Loadable from "$lib/types/loadable"
 import type PuzzleAndUser from "$lib/types/puzzleAndUser"
 import { derived, get, type Writable } from "svelte/store"
-import currentPuzzle from "./currentPuzzle"
-import user from "./user"
+import currentPuzzle, { type CurrentPuzzle } from "./currentPuzzle"
+import user, { type GameUser } from "./user"
 import currentScore from "./currentScore"
 import { setNotification } from "./notification"
 import request from "$lib/utils/requests/request"
 import type { GetCurrentUserScoreRequest } from "$shared/interfaces/Request"
 import type { GetCurrentUserScoreResponse } from "$shared/interfaces/Response"
 
-const puzzleAndUser = derived<[Writable<Loadable<Puzzle>>, Writable<Loadable<User>>], PuzzleAndUser>([currentPuzzle, user], ([$p, $u], set) => {
+const puzzleAndUser = derived<[Writable<CurrentPuzzle>, Writable<GameUser>], PuzzleAndUser>([currentPuzzle, user], ([$p, $u], set) => {
   set({
     puzzle: $p,
     user: $u
@@ -24,7 +24,7 @@ puzzleAndUser.subscribe(x => {
   const { user, puzzle } = x
 
   if(puzzle.loading || user.loading) return currentScore.set({ loading: true, data: undefined })
-  if(!puzzle.data) return currentScore.set({ loading: false, data: undefined })
+  if(!puzzle.data) return currentScore.set({ loading: false, data: undefined, error: 'no-puzzle' })
 
   if(!user.data) {
     currentScore.set({
@@ -49,7 +49,7 @@ puzzleAndUser.subscribe(x => {
   getCurrentUserScore(puzzle)
 })
 
-const getCurrentUserScore = async (p: Loadable<Puzzle>) => {
+const getCurrentUserScore = async (p: CurrentPuzzle) => {
   if(p.loading || !p.data) return
 
   const res = await request<GetCurrentUserScoreRequest, GetCurrentUserScoreResponse>(
@@ -64,7 +64,8 @@ const getCurrentUserScore = async (p: Loadable<Puzzle>) => {
     )
     currentScore.set({
       loading: false,
-      data: undefined
+      data: undefined,
+      error: res.message
     })
     return
   }

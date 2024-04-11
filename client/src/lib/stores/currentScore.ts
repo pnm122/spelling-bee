@@ -5,12 +5,14 @@ import currentPuzzle from "./currentPuzzle";
 import { getPointsFromWord, wordMatchesHint } from "$lib/utils/points";
 import { notifyNeedAccount, setNotification } from "./notification";
 import request from "$lib/utils/requests/request";
-import type { ActivateWordPreviewsResponse, AddWordResponse, SetHintResponse } from "$shared/interfaces/Response";
+import type { ActivateWordPreviewsResponse, AddWordResponse, AuthenticatedErrors, GetCurrentUserScoreErrors, SetHintResponse } from "$shared/interfaces/Response";
 import { type AddWordRequest, type ActivateWordPreviewsRequest, type SetHintRequest } from "$shared/interfaces/Request"
 import user, { addWordToUser } from "./user";
 import type { Hint, UserWordFound } from "$shared/interfaces/Score";
 
-const currentScore = writable<Loadable<Score>>({ loading: true, data: undefined })
+type CurrentScoreErrors = GetCurrentUserScoreErrors | AuthenticatedErrors
+export type CurrentScore = Loadable<Score, CurrentScoreErrors>
+const currentScore = writable<CurrentScore>({ loading: true, data: undefined })
 
 type TryWordResponse = { success: true } | { success: false, message: string }
 
@@ -142,10 +144,8 @@ export const activateWordPreviews = async () => {
       const res = await request<ActivateWordPreviewsRequest, ActivateWordPreviewsResponse>(
         'score/activate_word_previews',
         'POST',
-        { scoreId: c.data!.id}
+        { scoreId: c.data!.id }
       )
-
-      console.log(res)
 
       if(!res.success) {
         setNotification(
