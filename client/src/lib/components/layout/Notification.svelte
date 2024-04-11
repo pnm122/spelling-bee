@@ -2,22 +2,15 @@
 	import notificationState from "$lib/stores/notification";
   import PhMinus from '~icons/ph/minus'
   import BiPatchExclamationFill from '~icons/bi/patch-exclamation-fill'
-	import { onDestroy } from "svelte";
   import user from "$lib/stores/user";
 
-  let state = $notificationState
   let expanded = false
-  $: if($user.data && state.message == 'Please login to save your scores.') expanded = false
-
-  const unsubscribe = notificationState.subscribe(s => {
-    state = s
-  })
+  $: if($user.data && $notificationState.message == 'Please login to save your scores.') closeNotification()
 
   const closeNotification = () => {
     notificationState.set({ ...$notificationState, open: false })
   }
 
-  onDestroy(() => unsubscribe())
 </script>
 
 <div
@@ -29,13 +22,13 @@
     title='Expand notification'
     on:click={() => expanded = !expanded}
     id='notification'
-    aria-hidden="{!state.open}"
-    data-type={state.type}
+    aria-hidden="{!$notificationState.open}"
+    data-type={$notificationState.type}
     data-expanded={expanded}>
     <div id='notification-top'>
       <h1>
         <BiPatchExclamationFill id='error-icon' />
-        {state.title}
+        {$notificationState.title}
       </h1>
       <button 
         id='close'
@@ -44,7 +37,7 @@
         <PhMinus />
       </button>
     </div>
-    <p>{state.message}</p>
+    <p>{$notificationState.message}</p>
   </div>
 </div>
 
