@@ -116,7 +116,7 @@
   #progress-inner-wrapper[data-game-complete="true"] {
     --highlight-color: var(--dark);
     --on-highlight: var(--primary);
-    --bar-color: color-mix(in oklch, var(--dark) 75%, var(--primary));
+    --bar-color: color-mix(in oklch, var(--dark) 50%, var(--primary));
     --default-text-color: color-mix(in oklch, var(--dark) 75%, var(--primary));
     --highlight-text-color: var(--dark);
   }

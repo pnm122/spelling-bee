@@ -27,6 +27,7 @@
     padding: 0.5rem var(--side-padding);
     position: relative;
     width: fit-content;
+    white-space: nowrap;
   }
 
   a::after {

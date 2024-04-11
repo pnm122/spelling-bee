@@ -88,10 +88,14 @@
 <style>
   :global(body) {
     --game-max-width: 600px;
+    --game-header-height: 4rem;
+
+    @media screen and (width > 768px) {
+      --game-header-height: 5rem;
+    }
   }
 
   #main {
-    --game-header-height: 4rem;
     position: relative;
     min-height: calc(100vh - var(--header-height));
     display: grid;
@@ -100,11 +104,6 @@
     grid-template-areas:
       "header"
       "game";
-
-    @media screen and (width > 768px) {
-      --game-header-height: 5rem;
-    }
-
     @media screen and (width > 1140px) {
       overflow: hidden;
       grid-template-columns: 1fr var(--game-max-width) 1fr;

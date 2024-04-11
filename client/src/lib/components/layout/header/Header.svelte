@@ -48,43 +48,43 @@
   </button>
   <nav
     data-expanded={expanded}>
-    <ul>
-      <li>
-        <ThemeSwitcher />
-      </li>
-      {#if $user.loading || !$user.data}
-        <!-- <li>
-          <NavLink href="/leaderboard">Leaderboard</NavLink>
-        </li> -->
+      <ul>
         <li>
-          <NavLink href="/">Daily Puzzle</NavLink>
+          <ThemeSwitcher />
         </li>
-        <div id="divider" />
-        <li>
-          <NavLink href="/login">Log in</NavLink>
-        </li>
-        <li>
-          <a class="btn primary main-button" href="/signup">Sign up</a>
-        </li>
-      {:else}
-        <li>
-          <NavLink href="/">Daily Puzzle</NavLink>
-        </li>
-        <li>
-          <NavLink href="/puzzles">Past Puzzles</NavLink>
-        </li>
-        <!-- <li>
-          <NavLink href="/leaderboard">Leaderboard</NavLink>
-        </li> -->
-        <li>
-          <button 
-            on:click={logout}
-            class="btn primary main-button">
-            Log out
-          </button>
-        </li>
-      {/if}
-    </ul>
+        {#if $user.loading || !$user.data}
+          <!-- <li>
+            <NavLink href="/leaderboard">Leaderboard</NavLink>
+          </li> -->
+          <li>
+            <NavLink href="/">Daily Puzzle</NavLink>
+          </li>
+          <div id="divider" />
+          <li>
+            <NavLink href="/login">Log in</NavLink>
+          </li>
+          <li>
+            <a class="btn primary main-button" href="/signup">Sign up</a>
+          </li>
+        {:else}
+          <li>
+            <NavLink href="/">Daily Puzzle</NavLink>
+          </li>
+          <li>
+            <NavLink href="/puzzles">Past Puzzles</NavLink>
+          </li>
+          <!-- <li>
+            <NavLink href="/leaderboard">Leaderboard</NavLink>
+          </li> -->
+          <li>
+            <button 
+              on:click={logout}
+              class="btn primary main-button">
+              Log out
+            </button>
+          </li>
+        {/if}
+      </ul>
   </nav>
 </header>
 
@@ -129,22 +129,27 @@
 
   nav {
     position: absolute;
-    top: 0;
+    bottom: 0;
     left: 0;
     right: 0;
-    height: var(--header-height);
+    height: var(--game-header-height);
     display: flex;
     align-items: center;
     justify-content: flex-end;
     padding: 0 1rem;
     z-index: 0;
     background-color: var(--gray);
+    overflow: auto;
     transition: transform var(--transition-1),
                 visibility var(--transition-1);
   }
 
   nav[data-expanded="true"] {
     transform: translateY(100%);
+  }
+
+  nav::-webkit-scrollbar-thumb {
+    background-color: var(--mediumgray);
   }
 
   nav ul {
