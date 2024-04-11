@@ -1,5 +1,5 @@
 <script lang="ts">
-  export let width: number
+  export let width: number | string
   export let fill: string
   export let textColor: string = "var(--heading)"
   export let clickHandler: (() => void) | undefined = undefined

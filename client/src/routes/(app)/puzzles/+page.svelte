@@ -49,8 +49,7 @@
       {#if puzzles.loading || !puzzles.data }
         <div class="puzzles-wrapper">
           <Skeleton
-            --width='100%'
-            --height='5.5rem'
+            classes="preview-skeleton"
           />
         </div>
       {:else}
@@ -64,44 +63,34 @@
       {#if puzzles.loading || !puzzles.data }
         <div class="puzzles-wrapper">
           <Skeleton
-            --width='100%'
-            --height='5.5rem'
+            classes="preview-skeleton"
           />
           <Skeleton
-            --width='100%'
-            --height='5.5rem'
+            classes="preview-skeleton"
           />
           <Skeleton
-            --width='100%'
-            --height='5.5rem'
+            classes="preview-skeleton"
           />
           <Skeleton
-            --width='100%'
-            --height='5.5rem'
+            classes="preview-skeleton"
           />
           <Skeleton
-            --width='100%'
-            --height='5.5rem'
+            classes="preview-skeleton"
           />
           <Skeleton
-            --width='100%'
-            --height='5.5rem'
+            classes="preview-skeleton"
           />
           <Skeleton
-            --width='100%'
-            --height='5.5rem'
+            classes="preview-skeleton"
           />
           <Skeleton
-            --width='100%'
-            --height='5.5rem'
+            classes="preview-skeleton"
           />
           <Skeleton
-            --width='100%'
-            --height='5.5rem'
+            classes="preview-skeleton"
           />
           <Skeleton
-            --width='100%'
-            --height='5.5rem'
+            classes="preview-skeleton"
           />
         </div>
       {:else}
@@ -132,15 +121,19 @@
 
   .puzzles-wrapper {
     display: grid;
-    grid-template-columns: repeat(1, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1rem;
 
+    @media screen and (width > 600px) {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
     @media screen and (width > 768px) {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
     }
 
     @media screen and (width > 1024px) {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(6, minmax(0, 1fr));
     }
   }
 
@@ -148,5 +141,10 @@
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+  }
+
+  :global(.preview-skeleton) {
+    width: 100%;
+    aspect-ratio: 1;
   }
 </style>
