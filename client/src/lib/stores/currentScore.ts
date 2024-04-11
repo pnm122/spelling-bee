@@ -1,14 +1,14 @@
 import type Loadable from "$lib/types/loadable";
-import type Score from "$backend_interfaces/Score"
+import type Score from "$shared/interfaces/Score"
 import { get, writable } from "svelte/store";
 import currentPuzzle from "./currentPuzzle";
 import { getPointsFromWord, wordMatchesHint } from "$lib/utils/points";
 import { notifyNeedAccount, setNotification } from "./notification";
 import request from "$lib/utils/requests/request";
-import type { ActivateWordPreviewsResponse, AddWordResponse, SetHintResponse } from "$backend_interfaces/Response";
-import { type AddWordRequest, type ActivateWordPreviewsRequest, type SetHintRequest } from "$backend_interfaces/Request"
+import type { ActivateWordPreviewsResponse, AddWordResponse, SetHintResponse } from "$shared/interfaces/Response";
+import { type AddWordRequest, type ActivateWordPreviewsRequest, type SetHintRequest } from "$shared/interfaces/Request"
 import user, { addWordToUser } from "./user";
-import type { Hint, UserWordFound } from "$backend_interfaces/Score";
+import type { Hint, UserWordFound } from "$shared/interfaces/Score";
 
 const currentScore = writable<Loadable<Score>>({ loading: true, data: undefined })
 

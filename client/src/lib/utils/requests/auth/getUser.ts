@@ -1,4 +1,4 @@
-import type { ErrorResponse, GetUserData, GetUserErrors, SuccessResponse } from "$backend_interfaces/Response";
+import type { ErrorResponse, GetUserData, GetUserErrors, SuccessResponse } from "$shared/interfaces/Response";
 import request from "../request";
 import Cookies from "js-cookie";
 

@@ -1,7 +1,7 @@
 // Derived store of puzzle and user, which sets the current score once both are loaded
 
-import type Puzzle from "$backend_interfaces/Puzzle"
-import type User from "$backend_interfaces/User"
+import type Puzzle from "$shared/interfaces/Puzzle"
+import type User from "$shared/interfaces/User"
 import type Loadable from "$lib/types/loadable"
 import type PuzzleAndUser from "$lib/types/puzzleAndUser"
 import { derived, get, type Writable } from "svelte/store"
@@ -10,8 +10,8 @@ import user from "./user"
 import currentScore from "./currentScore"
 import { setNotification } from "./notification"
 import request from "$lib/utils/requests/request"
-import type { GetCurrentUserScoreRequest } from "$backend_interfaces/Request"
-import type { GetCurrentUserScoreResponse } from "$backend_interfaces/Response"
+import type { GetCurrentUserScoreRequest } from "$shared/interfaces/Request"
+import type { GetCurrentUserScoreResponse } from "$shared/interfaces/Response"
 
 const puzzleAndUser = derived<[Writable<Loadable<Puzzle>>, Writable<Loadable<User>>], PuzzleAndUser>([currentPuzzle, user], ([$p, $u], set) => {
   set({

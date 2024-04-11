@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { type PuzzlePreview } from "$backend_interfaces/Puzzle";
+  import { type PuzzlePreview } from "$shared/interfaces/Puzzle";
 	import Hexagon from "../shared/Hexagon.svelte";
 
   export let puzzle: PuzzlePreview

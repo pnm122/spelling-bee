@@ -71,7 +71,7 @@
             <NavLink href="/">Daily Puzzle</NavLink>
           </li>
           <li>
-            <NavLink href="/puzzles">Past Puzzles</NavLink>
+            <NavLink href="/puzzles">All Puzzles</NavLink>
           </li>
           <!-- <li>
             <NavLink href="/leaderboard">Leaderboard</NavLink>
@@ -192,6 +192,7 @@
       padding: 0;
       z-index: inherit;
       transition: none;
+      overflow: visible;
     }
 
     nav ul {

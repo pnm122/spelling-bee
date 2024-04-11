@@ -6,8 +6,8 @@
   import PhShuffle from '~icons/ph/shuffle'
   import { isPangram } from '$lib/utils/points'
   import gameData from "$lib/stores/gameData";
-	import type Puzzle from "$backend_interfaces/Puzzle";
-	import type Score from "$backend_interfaces/Score";
+	import type Puzzle from "$shared/interfaces/Puzzle";
+	import type Score from "$shared/interfaces/Score";
 	import { getHint, tryWord } from "$lib/stores/currentScore";
 
   $: outsideLetters = $gameData.exists

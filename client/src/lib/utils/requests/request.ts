@@ -1,4 +1,4 @@
-import type { WithUnknown } from "$backend_interfaces/Response";
+import type { WithUnknown } from "$shared/interfaces/Response";
 import type Method from "$lib/types/method";
 
 export default async function request<

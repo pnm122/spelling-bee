@@ -1,100 +1,139 @@
 <script lang="ts">
   import { onMount } from "svelte"
-  import { type PuzzlePreview } from "$backend_interfaces/Puzzle"
+  import { type PuzzlePreview } from "$shared/interfaces/Puzzle"
   import getAllPuzzles from "$lib/utils/requests/puzzle/getAllPuzzles"
   import type Loadable from "$lib/types/loadable"
 	import PuzzlePreviewComponent from "$lib/components/puzzles/PuzzlePreviewComponent.svelte";
 	import Skeleton from "$lib/components/shared/Skeleton.svelte";
+  import getTodaysDate from '$shared/utils/getTodaysDate'
+  import getTodaysPuzzle from "$lib/utils/requests/puzzle/getTodaysPuzzle"
+  import type Puzzle from "$shared/interfaces/Puzzle"
 
-  let puzzles: Loadable<PuzzlePreview[]> = { loading: true, data: undefined }
+  type PuzzleData = {
+    daily: Puzzle,
+    past: PuzzlePreview[]
+  }
+
+  let puzzles: Loadable<PuzzleData> = { loading: true, data: undefined }
   let errorMessage = ''
 
   onMount(async () => {
-    const res = await getAllPuzzles()
-    if(!res.success) {
-      if(res.message == 'unknown-error') errorMessage = 'An unknown error occurred.'
+    const allPuzzlesRes = await getAllPuzzles()
+    if(!allPuzzlesRes.success) {
+      if(allPuzzlesRes.message == 'unknown-error') errorMessage = 'An unknown error occurred. Please refresh the page.'
       else errorMessage = 'Please log in to see all puzzles.'
       puzzles = { loading: false, data: undefined }
       return
     }
 
-    puzzles = { loading: false, data: res.data.puzzles }
+    const dailyPuzzleRes = await getTodaysPuzzle()
+    if(!dailyPuzzleRes.success) {
+      errorMessage = 'An unknown error occurred. Please refresh the page.'
+      puzzles = { loading: false, data: undefined }
+      return
+    }
+
+    puzzles = { loading: false, data: {
+      daily: dailyPuzzleRes.data.puzzle,
+      past: allPuzzlesRes.data.puzzles
+    } }
   })
 </script>
 
 <div class="container" id="wrapper">
-  <h1 id="title">Past Puzzles</h1>
-  {#if puzzles.loading}
-    <div id="past-puzzles">
-      <Skeleton
-        --width='100%'
-        --height='5.5rem'
-      />
-      <Skeleton
-        --width='100%'
-        --height='5.5rem'
-      />
-      <Skeleton
-        --width='100%'
-        --height='5.5rem'
-      />
-      <Skeleton
-        --width='100%'
-        --height='5.5rem'
-      />
-      <Skeleton
-        --width='100%'
-        --height='5.5rem'
-      />
-      <Skeleton
-        --width='100%'
-        --height='5.5rem'
-      />
-      <Skeleton
-        --width='100%'
-        --height='5.5rem'
-      />
-      <Skeleton
-        --width='100%'
-        --height='5.5rem'
-      />
-      <Skeleton
-        --width='100%'
-        --height='5.5rem'
-      />
-      <Skeleton
-        --width='100%'
-        --height='5.5rem'
-      />
-    </div>
-  {:else if !puzzles.data}
-    <div id="past-puzzles">
-      <p>{errorMessage}</p>
-    </div>
+  {#if !puzzles.loading && !puzzles.data }
+    <p class="error" role="alert">{errorMessage}</p>
   {:else}
-    <div id="past-puzzles">
-      {#each puzzles.data as puzzle}
-        <PuzzlePreviewComponent puzzle={puzzle} />
-      {/each}
-    </div>
+    <section>
+      <h1 class="title">Today's Puzzle</h1>
+      {#if puzzles.loading || !puzzles.data }
+        <div class="puzzles-wrapper">
+          <Skeleton
+            --width='100%'
+            --height='5.5rem'
+          />
+        </div>
+      {:else}
+        <div class="puzzles-wrapper">
+          <PuzzlePreviewComponent puzzle={puzzles.data.daily} />
+        </div>
+      {/if}
+    </section>
+    <section>
+      <h1 class="title">Past Puzzles</h1>
+      {#if puzzles.loading || !puzzles.data }
+        <div class="puzzles-wrapper">
+          <Skeleton
+            --width='100%'
+            --height='5.5rem'
+          />
+          <Skeleton
+            --width='100%'
+            --height='5.5rem'
+          />
+          <Skeleton
+            --width='100%'
+            --height='5.5rem'
+          />
+          <Skeleton
+            --width='100%'
+            --height='5.5rem'
+          />
+          <Skeleton
+            --width='100%'
+            --height='5.5rem'
+          />
+          <Skeleton
+            --width='100%'
+            --height='5.5rem'
+          />
+          <Skeleton
+            --width='100%'
+            --height='5.5rem'
+          />
+          <Skeleton
+            --width='100%'
+            --height='5.5rem'
+          />
+          <Skeleton
+            --width='100%'
+            --height='5.5rem'
+          />
+          <Skeleton
+            --width='100%'
+            --height='5.5rem'
+          />
+        </div>
+      {:else}
+        <div class="puzzles-wrapper">
+          {#each puzzles.data.past as puzzle}
+            <!-- Today's puzzle goes in daily puzzle section -->
+            {#if puzzle.date != getTodaysDate()}
+              <PuzzlePreviewComponent puzzle={puzzle} />
+            {/if}
+          {/each}
+        </div>
+      {/if}
+    </section>
   {/if}
 </div>
 
 <style>
   #wrapper {
     padding-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
   }
 
-  #title {
-    font: var(--h-3xl);
+  .title {
+    font: var(--h-2xl);
   }
 
-  #past-puzzles {
+  .puzzles-wrapper {
     display: grid;
     grid-template-columns: repeat(1, minmax(0, 1fr));
-    row-gap: 2rem;
-    column-gap: 1rem;
-    margin-top: 2rem;
+    gap: 1rem;
 
     @media screen and (width > 768px) {
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -103,5 +142,11 @@
     @media screen and (width > 1024px) {
       grid-template-columns: repeat(4, minmax(0, 1fr));
     }
+  }
+
+  section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
   }
 </style>

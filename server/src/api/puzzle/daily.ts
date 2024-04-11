@@ -2,7 +2,7 @@ import express from 'express'
 import { DailyPuzzleData, DailyPuzzleErrors, ErrorResponse, SuccessResponse } from '../../shared/interfaces/Response'
 import { getPuzzleByDate, insertPuzzle } from '../../db/utils/puzzles'
 import generatePuzzle from '../../utils/generatePuzzle'
-import getTodaysDate from '../../utils/getTodaysDate'
+import getTodaysDate from '../../shared/utils/getTodaysDate'
 
 const router = express.Router()
 

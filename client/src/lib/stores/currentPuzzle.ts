@@ -1,9 +1,10 @@
-import type Puzzle from "$backend_interfaces/Puzzle";
-import { type DailyPuzzleData, type DailyPuzzleErrors, type ErrorResponse, type GetPuzzleData, type GetPuzzleErrors, type SuccessResponse } from "$backend_interfaces/Response";
+import type Puzzle from "$shared/interfaces/Puzzle";
+import { type DailyPuzzleData, type DailyPuzzleErrors, type ErrorResponse, type GetPuzzleData, type GetPuzzleErrors, type SuccessResponse } from "$shared/interfaces/Response";
 import type Loadable from "$lib/types/loadable";
 import request from "$lib/utils/requests/request";
 import { writable } from "svelte/store";
 import { setNotification } from "./notification";
+import getTodaysPuzzle from "$lib/utils/requests/puzzle/getTodaysPuzzle";
 
 const currentPuzzle = writable<Loadable<Puzzle>>({ loading: true, data: undefined })
 
@@ -29,8 +30,7 @@ export const loadNewPuzzle = async (id: string) => {
 
 export const loadDailyPuzzle = async () => {
   currentPuzzle.set({ loading: true, data: undefined })
-
-  const res = await request<{}, SuccessResponse<DailyPuzzleData> | ErrorResponse<DailyPuzzleErrors>>('puzzle/daily')
+  const res = await getTodaysPuzzle()
   if(!res.success) {
     setNotification('Error fetching daily puzzle', res.message, 'error')
     currentPuzzle.set({ loading: false, data: undefined })

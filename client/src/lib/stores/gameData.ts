@@ -1,5 +1,5 @@
-import type Puzzle from "$backend_interfaces/Puzzle"
-import type Score from "$backend_interfaces/Score"
+import type Puzzle from "$shared/interfaces/Puzzle"
+import type Score from "$shared/interfaces/Score"
 import type Loadable from "$lib/types/loadable"
 import { derived, type Writable } from "svelte/store"
 import currentPuzzle from "./currentPuzzle"

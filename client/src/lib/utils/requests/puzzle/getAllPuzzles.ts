@@ -1,4 +1,4 @@
-import type { AllPuzzlesResponse } from "$backend_interfaces/Response";
+import type { AllPuzzlesResponse } from "$shared/interfaces/Response";
 import { setNotification } from "$lib/stores/notification";
 import request from "../request";
 

@@ -1,8 +1,8 @@
 import { writable } from "svelte/store";
-import type User from "$backend_interfaces/User";
+import type User from "$shared/interfaces/User";
 import getUser from "$lib/utils/requests/auth/getUser";
 import type Loadable from "$lib/types/loadable";
-import type { UserWordFound } from "$backend_interfaces/Score";
+import type { UserWordFound } from "$shared/interfaces/Score";
 import { isPangram } from "$lib/utils/points";
 
 let user = writable<Loadable<User>>({ loading: true, data: undefined })

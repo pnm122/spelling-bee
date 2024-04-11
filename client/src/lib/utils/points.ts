@@ -1,4 +1,4 @@
-import type { Hint } from "$backend_interfaces/Score";
+import type { Hint } from "$shared/interfaces/Score";
 
 export const PANGRAM_POINTS = 5
 // Multiplier when word previews are on
