@@ -146,15 +146,6 @@
 </div>
 
 <style>
-  :global(body) {
-    --game-max-width: 600px;
-    --game-header-height: 4rem;
-
-    @media screen and (width > 768px) {
-      --game-header-height: 5rem;
-    }
-  }
-
   #main {
     position: relative;
     min-height: calc(100vh - var(--header-height));

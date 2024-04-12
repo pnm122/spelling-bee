@@ -115,6 +115,13 @@ body {
   --z-alert: 30;
   --z-max: 99;
 
+  --game-max-width: 600px;
+  --game-header-height: 4rem;
+
+  @media screen and (width > 768px) {
+    --game-header-height: 5rem;
+  }
+
   margin: 0;
   font: var(--body);
 
