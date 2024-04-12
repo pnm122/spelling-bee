@@ -6,7 +6,7 @@
   import signup from '$lib/utils/requests/auth/signup'
 	import Loader from '$lib/components/shared/Loader.svelte';
   import { notifyServerError } from '$lib/stores/notification';
-  import { setUser } from '$lib/stores/user'
+  import { ALLOWED_SPECIAL_CHARACTERS, MAX_PASSWORD_LENGTH, MAX_USERNAME_LENGTH, MIN_PASSWORD_LENGTH, MIN_USERNAME_LENGTH, isValidPassword, isValidUsername } from '$shared/utils/validation'
   
   export let type: 'login' | 'signup'
   let username = ""
@@ -27,12 +27,28 @@
     password = (e.target as HTMLInputElement).value;
   }
 
+  const validate = (): boolean => {
+    const u = username.trim()
+    const p = password.trim()
+    const validUsername = isValidUsername(u)
+    const validPassword = isValidPassword(p)
+    if(validPassword && validUsername) return true
+
+    if(u.length < MIN_USERNAME_LENGTH || u.length > MAX_USERNAME_LENGTH) usernameError = `Must be ${MIN_USERNAME_LENGTH}-${MAX_USERNAME_LENGTH} characters`
+    else if(!validUsername) usernameError = `Must be alphanumeric and have ${MIN_USERNAME_LENGTH}-${MAX_USERNAME_LENGTH} characters`
+    
+    if(p.length < MIN_PASSWORD_LENGTH || p.length > MAX_PASSWORD_LENGTH) passwordError = `Must be ${MIN_PASSWORD_LENGTH}-${MAX_PASSWORD_LENGTH} characters`
+    else if(!validPassword) passwordError = `Must be alphanumeric or have special characters [${ALLOWED_SPECIAL_CHARACTERS}]`
+  
+    return false
+  }
+
   const handleLogin = async () => {
-    const res = await login(username, password)
+    if(!validate()) return
+
+    const res = await login(username.trim(), password.trim())
     
     if(!res.success) {
-      loading = false
-
       switch(res.message) {
         case 'user-info-not-provided':
           // Shouldn't happen because inputs are required
@@ -54,8 +70,9 @@
   }
 
   const handleSignup = async () => {
-    const res = await signup(username, password)
-    loading = false
+    if(!validate()) return
+
+    const res = await signup(username.trim(), password.trim())
     
     if(!res.success){
       switch(res.message) {
@@ -77,7 +94,10 @@
     }
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    usernameError = ''
+    passwordError = ''
+
     if(type == 'signup' && (password != confirmPassword)) {
       passwordError = 'Passwords must match'
       return
@@ -85,8 +105,10 @@
 
     loading = true
     
-    if(type == 'login') handleLogin()
-    else handleSignup()
+    if(type == 'login') await handleLogin()
+    else await handleSignup()
+
+    loading = false
   }
 </script>
 
