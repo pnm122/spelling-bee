@@ -54,6 +54,7 @@
 
 	#card {
 		flex: 1;
+    min-height: calc(100vh - var(--header-height));
 		background-color: var(--bg);
 		padding: 2rem;
 		overflow: hidden;
