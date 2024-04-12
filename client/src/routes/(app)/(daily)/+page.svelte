@@ -8,4 +8,8 @@
   });
 </script>
 
+<svelte:head>
+  <title>Spelling Bee | Today's Puzzle</title>
+</svelte:head>
+
 <PuzzlePage />

@@ -56,6 +56,10 @@
   })
 </script>
 
+<svelte:head>
+  <title>Spelling Bee | All Puzzles</title>
+</svelte:head>
+
 <div class="container">
   <div id="wrapper">
     {#if !puzzles.loading && !puzzles.data }
