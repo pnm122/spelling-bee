@@ -31,9 +31,11 @@ export interface ErrorResponse<T extends ErrorTypes> extends Response {
 }
 
 export type ErrorTypes = 
+  | 'unknown-error' // A catch-all for non-specific errors
   | 'no-puzzle' // Attempted to fetch a puzzle that doesn't exist
   | 'user-info-not-provided' // Attempted to login without providing username/password/both
-  | 'unknown-error' // A catch-all for non-specific errors
+  | 'invalid-username' // User tried to login/signup with an invalid username
+  | 'invalid-password' // User tried to login/signup with an invalid password
   | 'invalid-user-id' // Tried to get a user from the database that doesn't exist
   | 'user-info-incorrect' // A user tried to log in, but the username or password was incorrect
   | 'user-exists' // A user tried to sign up, but the username already exists
@@ -66,8 +68,8 @@ export type GetSessionErrors =    WithUnknown<'invalid-session'>
 // I really like this type declaration because it directly models what the code does
 // i.e. the login route validates a user and creates a session + has its own error checking
 // These types tell you exactly what the potential sources of error are
-export type SignUpErrors = AsErrorType<'user-info-not-provided'> | CreateUserErrors | CreateSessionErrors
-export type LoginErrors =  AsErrorType<'user-info-not-provided'> | ValidateUserCredentialsErrors | CreateSessionErrors
+export type SignUpErrors = AsErrorType<'user-info-not-provided' | 'invalid-password' | 'invalid-username'> | CreateUserErrors | CreateSessionErrors
+export type LoginErrors =  AsErrorType<'user-info-not-provided' | 'invalid-password' | 'invalid-username'> | ValidateUserCredentialsErrors | CreateSessionErrors
 export type LogoutErrors = WithUnknown<'no-session'> | DeleteSessionErrors
 export type ValidateErrors = AuthenticatedErrors
 export type GetUserErrors = AuthenticatedErrors | GetUserUtilityErrors
