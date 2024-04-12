@@ -14,35 +14,51 @@
     past: PuzzlePreview[]
   }
 
-  let puzzles: Loadable<PuzzleData> = { loading: true, data: undefined }
-  let errorMessage = ''
+  let puzzles: Loadable<PuzzleData, string> = { loading: true, data: undefined }
 
   onMount(async () => {
     const allPuzzlesRes = await getAllPuzzles()
     if(!allPuzzlesRes.success) {
-      if(allPuzzlesRes.message == 'unknown-error') errorMessage = 'An unknown error occurred. Please refresh the page.'
-      else errorMessage = 'Please log in to see all puzzles.'
-      puzzles = { loading: false, data: undefined }
+      if(allPuzzlesRes.message == 'unknown-error') {
+        puzzles = { 
+          loading: false, 
+          data: undefined, 
+          error: 'An unknown error occurred. Please refresh the page.' 
+        }
+      }
+      else {
+        puzzles = { 
+          loading: false, 
+          data: undefined, 
+          error: 'Please log in to see all puzzles.'
+        }
+      }
       return
     }
 
     const dailyPuzzleRes = await getTodaysPuzzle()
     if(!dailyPuzzleRes.success) {
-      errorMessage = 'An unknown error occurred. Please refresh the page.'
-      puzzles = { loading: false, data: undefined }
+      puzzles = { 
+        loading: false, 
+        data: undefined, 
+        error: 'An unknown error occurred. Please refresh the page.' 
+      }
       return
     }
 
-    puzzles = { loading: false, data: {
-      daily: dailyPuzzleRes.data.puzzle,
-      past: allPuzzlesRes.data.puzzles
-    } }
+    puzzles = { 
+      loading: false, 
+      data: {
+        daily: dailyPuzzleRes.data.puzzle,
+        past: allPuzzlesRes.data.puzzles
+      }
+    }
   })
 </script>
 
 <div class="container" id="wrapper">
   {#if !puzzles.loading && !puzzles.data }
-    <p class="error" role="alert">{errorMessage}</p>
+    <p class="error" role="alert">{puzzles.error}</p>
   {:else}
     <section>
       <h1 class="title">Today's Puzzle</h1>
