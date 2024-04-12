@@ -56,76 +56,79 @@
   })
 </script>
 
-<div class="container" id="wrapper">
-  {#if !puzzles.loading && !puzzles.data }
-    <p class="error" role="alert">{puzzles.error}</p>
-  {:else}
-    <section>
-      <h1 class="title">Today's Puzzle</h1>
-      {#if puzzles.loading || !puzzles.data }
-        <div class="puzzles-wrapper">
-          <Skeleton
-            classes="preview-skeleton"
-          />
-        </div>
-      {:else}
-        <div class="puzzles-wrapper">
-          <PuzzlePreviewComponent puzzle={puzzles.data.daily} />
-        </div>
-      {/if}
-    </section>
-    <section>
-      <h1 class="title">Past Puzzles</h1>
-      {#if puzzles.loading || !puzzles.data }
-        <div class="puzzles-wrapper">
-          <Skeleton
-            classes="preview-skeleton"
-          />
-          <Skeleton
-            classes="preview-skeleton"
-          />
-          <Skeleton
-            classes="preview-skeleton"
-          />
-          <Skeleton
-            classes="preview-skeleton"
-          />
-          <Skeleton
-            classes="preview-skeleton"
-          />
-          <Skeleton
-            classes="preview-skeleton"
-          />
-          <Skeleton
-            classes="preview-skeleton"
-          />
-          <Skeleton
-            classes="preview-skeleton"
-          />
-          <Skeleton
-            classes="preview-skeleton"
-          />
-          <Skeleton
-            classes="preview-skeleton"
-          />
-        </div>
-      {:else}
-        <div class="puzzles-wrapper">
-          {#each puzzles.data.past as puzzle}
-            <!-- Today's puzzle goes in daily puzzle section -->
-            {#if puzzle.date != getTodaysDate()}
-              <PuzzlePreviewComponent puzzle={puzzle} />
-            {/if}
-          {/each}
-        </div>
-      {/if}
-    </section>
-  {/if}
+<div class="container">
+  <div id="wrapper">
+    {#if !puzzles.loading && !puzzles.data }
+      <p class="error" role="alert">{puzzles.error}</p>
+    {:else}
+      <section>
+        <h1 class="title">Today's Puzzle</h1>
+        {#if puzzles.loading || !puzzles.data }
+          <div class="puzzles-wrapper">
+            <Skeleton
+              classes="preview-skeleton"
+            />
+          </div>
+        {:else}
+          <div class="puzzles-wrapper">
+            <PuzzlePreviewComponent puzzle={puzzles.data.daily} />
+          </div>
+        {/if}
+      </section>
+      <section>
+        <h1 class="title">Past Puzzles</h1>
+        {#if puzzles.loading || !puzzles.data }
+          <div class="puzzles-wrapper">
+            <Skeleton
+              classes="preview-skeleton"
+            />
+            <Skeleton
+              classes="preview-skeleton"
+            />
+            <Skeleton
+              classes="preview-skeleton"
+            />
+            <Skeleton
+              classes="preview-skeleton"
+            />
+            <Skeleton
+              classes="preview-skeleton"
+            />
+            <Skeleton
+              classes="preview-skeleton"
+            />
+            <Skeleton
+              classes="preview-skeleton"
+            />
+            <Skeleton
+              classes="preview-skeleton"
+            />
+            <Skeleton
+              classes="preview-skeleton"
+            />
+            <Skeleton
+              classes="preview-skeleton"
+            />
+          </div>
+        {:else}
+          <div class="puzzles-wrapper">
+            {#each puzzles.data.past as puzzle}
+              <!-- Today's puzzle goes in daily puzzle section -->
+              {#if puzzle.date != getTodaysDate()}
+                <PuzzlePreviewComponent puzzle={puzzle} />
+              {/if}
+            {/each}
+          </div>
+        {/if}
+      </section>
+    {/if}
+  </div>
 </div>
 
 <style>
   #wrapper {
     padding-top: 2rem;
+    padding-bottom: 2rem;
     display: flex;
     flex-direction: column;
     gap: 3rem;
