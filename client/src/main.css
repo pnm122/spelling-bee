@@ -72,6 +72,19 @@ body {
   /* Focus outline color */
   --focus: var(--heading);
 
+  /* Level colors */
+  --level-1: var(--primary);
+  --level-2: #C4DD2D;
+  --level-3: #56CF53;
+  --level-4: #30D0A0;
+  --level-5: #3CBCE4;
+  --level-6: #8E9FFC;
+  --level-7: #B386FD;
+  --level-8: #F18BF3;
+  --level-9: #FB6AB9;
+  --level-10: #FF6363;
+  --level-11: var(--heading);
+
   --pangram-gradient: radial-gradient(var(--accent-light), var(--bg) 75%);
 
   --font-default: "Averia Serif Libre", Georgia, Times, 'Times New Roman', Cambria, serif, system-ui;
@@ -136,8 +149,6 @@ body[data-theme="light"] {
   --darkgray: oklch(73.31% 0.026 96.68);
   --heading: oklch(25.89% 0.042 92.08);
   --text: var(--heading);
-  /* Used for levels 4, 5, and 6 */
-  --level-middle: oklch(66.93% 0.126 237.95);
   --bg: oklch(99.01% 0.012 96.42);
   --bg-secondary: oklch(98.12% 0.02 94.52);
   --primary: oklch(82.91% 0.17 80.90);
@@ -157,7 +168,6 @@ body[data-theme="dark"] {
   --darkgray: oklch(52.52% 0.019 88.06);
   --heading: oklch(99.01% 0.012 96.42);
   --text: var(--heading);
-  --level-middle: oklch(60.37% 0.119 238.59);
   --bg: oklch(27.99% 0.011 99.28);
   --bg-secondary: oklch(25.01% 0.009 107.04);
   --primary: oklch(88.72% 0.16 92.49);

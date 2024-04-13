@@ -1,22 +1,62 @@
 import type { LevelColors, LevelColorsWithMinLevel, LevelProgress } from "$lib/types/levels";
 
-export const minPointsPerLevel = [0, 100, 250, 400, 600, 900, 1300, 2000, 3000, 5000]
+export const minPointsPerLevel = [
+  0, 100, 250, 
+  400, 650, 900, 
+  1150, 1400, 1700, 
+  2000, 2300, 2600, 
+  3000, 3400, 3800, 
+  4200, 4600, 5000,
+  5500, 6000, 6500,
+  7100, 7700, 8300,
+  9000, 9700, 10400,
+  11200, 12000, 12800,
+  14000, 17500, 20000
+]
 
 export const colors: LevelColorsWithMinLevel[] = [{
   minLevel: -1,
-  bgColor: "var(--primary)",
+  bgColor: "var(--level-1)",
   textColor: "var(--dark)"
 }, {
   minLevel: 4,
-  bgColor: "var(--level-middle)",
-  textColor: "var(--light)"
+  bgColor: "var(--level-2)",
+  textColor: "var(--dark)"
 }, {
   minLevel: 7,
-  bgColor: "var(--accent)",
-  textColor: "var(--light)"
+  bgColor: "var(--level-3)",
+  textColor: "var(--dark)"
 }, {
   minLevel: 10,
-  bgColor: "var(--heading)",
+  bgColor: "var(--level-4)",
+  textColor: "var(--dark)"
+}, {
+  minLevel: 13,
+  bgColor: "var(--level-5)",
+  textColor: "var(--dark)"
+}, {
+  minLevel: 16,
+  bgColor: "var(--level-6)",
+  textColor: "var(--bg)"
+}, {
+  minLevel: 19,
+  bgColor: "var(--level-7)",
+  textColor: "var(--bg)"
+}, {
+  minLevel: 22,
+  bgColor: "var(--level-8)",
+  textColor: "var(--dark)"
+}, {
+  minLevel: 25,
+  bgColor: "var(--level-9)",
+  textColor: "var(--bg)"
+}, {
+  minLevel: 28,
+  bgColor: "var(--level-10)",
+  textColor: "var(--bg)"
+}, {
+  minLevel: 31,
+  bgColor: "var(--level-11)",
   textColor: "var(--bg)"
 }]
 
