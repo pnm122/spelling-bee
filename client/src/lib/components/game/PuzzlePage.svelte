@@ -121,7 +121,7 @@
           <h1>Today's Puzzle</h1>
           <h2>{convertDate($gameData.puzzle.date)}</h2>
         </div>
-        <button 
+        <!-- <button 
           on:click={toggleLeaderboardDrawer}
           title="Toggle puzzle leaderboard"
           aria-label="Toggle puzzle leaderboard"
@@ -129,7 +129,7 @@
           id="leaderboard-toggle"
           class="icon-button drawer-toggle">
           <PhTrophy />
-        </button>
+        </button> -->
       </div>
     </div>
     <div id="game-wrapper">
@@ -140,9 +140,9 @@
     </div>
   {/if}
 
-  <GameDrawer side="right" open={$gameDrawerStates.leaderboard}>
+  <!-- <GameDrawer side="right" open={$gameDrawerStates.leaderboard}>
     <h1>Test</h1>
-  </GameDrawer>
+  </GameDrawer> -->
 </div>
 
 <style>

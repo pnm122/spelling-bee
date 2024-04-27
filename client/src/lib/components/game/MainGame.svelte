@@ -147,7 +147,6 @@
     } else if(key == 'BACKSPACE') {
       removeLetter()
     } else if(key == 'ENTER') {
-      console.log('ENTER')
       // Don't override functionality of other buttons
       if(document.activeElement != document.body) return
       submitWord()
