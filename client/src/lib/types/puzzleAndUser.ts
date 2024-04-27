@@ -1,5 +1,5 @@
-import type Puzzle from "$backend_interfaces/Puzzle";
-import type User from "$backend_interfaces/User";
+import type Puzzle from "$shared/interfaces/Puzzle";
+import type User from "$shared/interfaces/User";
 import type Loadable from "./loadable";
 
 export default interface PuzzleAndUser {

@@ -1,0 +1,1 @@
+export type GetPuzzleParams = { id: string }

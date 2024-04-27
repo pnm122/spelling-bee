@@ -72,6 +72,19 @@ body {
   /* Focus outline color */
   --focus: var(--heading);
 
+  /* Level colors */
+  --level-1: var(--primary);
+  --level-2: #C4DD2D;
+  --level-3: #56CF53;
+  --level-4: #30D0A0;
+  --level-5: #3CBCE4;
+  --level-6: #8E9FFC;
+  --level-7: #B386FD;
+  --level-8: #F18BF3;
+  --level-9: #FB6AB9;
+  --level-10: #FF6363;
+  --level-11: var(--heading);
+
   --pangram-gradient: radial-gradient(var(--accent-light), var(--bg) 75%);
 
   --font-default: "Averia Serif Libre", Georgia, Times, 'Times New Roman', Cambria, serif, system-ui;
@@ -108,10 +121,19 @@ body {
   --transition-1: var(--timing-function) .3s;
   --transition-2: var(--timing-function) .5s;
 
+  --z-puzzle-complete: 5;
+  --z-under-header: 9;
   --z-header: 10;
   --z-drawer: 20;
   --z-alert: 30;
   --z-max: 99;
+
+  --game-max-width: 600px;
+  --game-header-height: 4rem;
+
+  @media screen and (width > 768px) {
+    --game-header-height: 5rem;
+  }
 
   margin: 0;
   font: var(--body);
@@ -127,8 +149,6 @@ body[data-theme="light"] {
   --darkgray: oklch(73.31% 0.026 96.68);
   --heading: oklch(25.89% 0.042 92.08);
   --text: var(--heading);
-  /* Used for levels 4, 5, and 6 */
-  --level-middle: oklch(66.93% 0.126 237.95);
   --bg: oklch(99.01% 0.012 96.42);
   --bg-secondary: oklch(98.12% 0.02 94.52);
   --primary: oklch(82.91% 0.17 80.90);
@@ -148,7 +168,6 @@ body[data-theme="dark"] {
   --darkgray: oklch(52.52% 0.019 88.06);
   --heading: oklch(99.01% 0.012 96.42);
   --text: var(--heading);
-  --level-middle: oklch(60.37% 0.119 238.59);
   --bg: oklch(27.99% 0.011 99.28);
   --bg-secondary: oklch(25.01% 0.009 107.04);
   --primary: oklch(88.72% 0.16 92.49);
@@ -211,6 +230,16 @@ hr {
   border: none;
   height: 1px;
   background-color: var(--gray);
+}
+
+#page-wrapper {
+  display: grid;
+  grid-template-rows: var(--header-height) calc(100vh - var(--header-height));
+}
+
+.container {
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 .btn {
@@ -392,4 +421,38 @@ body[data-theme="light"] .btn.accent:hover {
 
 .no-overflow {
   overflow: hidden;
+}
+
+.letter-button {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+}
+
+.center-letter-hexagon {
+  transform: translate(-50%, -50%);
+}
+
+.top-middle-letter {
+  transform: translate(-50%, -150%);
+}
+
+.bottom-middle-letter {
+  transform: translate(-50%, 50%);
+}
+
+.top-left-letter {
+  transform: translate(-125%, -100%);
+}
+
+.bottom-left-letter {
+  transform: translate(-125%, 0%);
+}
+
+.top-right-letter {
+  transform: translate(25%, -100%);
+}
+
+.bottom-right-letter {
+  transform: translate(25%, 0%);
 }

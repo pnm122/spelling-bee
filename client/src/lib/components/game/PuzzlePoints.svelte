@@ -1,6 +1,7 @@
 <script lang="ts">
-  import currentScore from "$lib/stores/currentScore";
-  import currentPuzzle from "$lib/stores/currentPuzzle";
+  import gameData from "$lib/stores/gameData";
+
+  export let isGameComplete = false
 
   interface SkillLevel {
     name: string,
@@ -30,22 +31,23 @@
   }]
 
   $: puzzleProgressPct = 
-    ($currentScore.data && $currentPuzzle.data) 
-      ? $currentScore.data!.points * 100 / $currentPuzzle.data!.maxPoints
+    $gameData.exists
+      ? $gameData.score.points * 100 / $gameData.puzzle.maxPoints
       : 0
   $: currentLevel = skillLevels.findLast(s => puzzleProgressPct >= s.percent)!
 </script>
 
-{#if $currentScore.loading || $currentPuzzle.loading}
+{#if $gameData.loading}
   <div></div>
-{:else if !$currentScore.data || !$currentPuzzle.data}
+{:else if !$gameData.exists}
   <div></div>
 {:else}
   <div id="progress-outer-wrapper">
     <div 
       id="progress-inner-wrapper"
       style="transform: translate(-{Math.min(currentLevel.percent, skillLevels[skillLevels.length - 3].percent)}%)"
-      data-puzzle-solved={puzzleProgressPct == 100}>
+      data-perfect-score={puzzleProgressPct == 100}
+      data-game-complete={isGameComplete}>
       <!-- ^ Moves the progress bar on mobile depending on which skill level the user has achieved -->
       <!-- Using this idea since the whole bar can't fit on mobile -->
       <!-- TODO: Accessibility? -->
@@ -63,8 +65,8 @@
         id="progress"
         role="progressbar"
         aria-valuenow={puzzleProgressPct}
-        aria-valuemin={$currentScore.data.points}
-        aria-valuemax={$currentPuzzle.data.maxPoints}
+        aria-valuemin={$gameData.score.points}
+        aria-valuemax={$gameData.puzzle.maxPoints}
         aria-label="Points earned from today's puzzle">
         <div 
           id="progress-bar"
@@ -73,11 +75,11 @@
         <div
           id="points"
           style="left: {puzzleProgressPct}%;">
-          <span>{$currentScore.data.points} points</span>
+          <span>{$gameData.score.points} points</span>
           <!-- Force points from last word to rerender every time points changes, causing the animation -->
-          {#key $currentScore.data.points}
-            {#if $currentScore.data.wordsFound[0] && $currentScore.data.wordsFound[0].points > 0}
-              <span id="points-from-last-word">+{$currentScore.data.wordsFound[0].points}</span>
+          {#key $gameData.score.points}
+            {#if $gameData.score.wordsFound[0] && $gameData.score.wordsFound[0].points > 0}
+              <span id="points-from-last-word">+{$gameData.score.wordsFound[0].points}</span>
             {/if}
           {/key}
         </div>
@@ -97,15 +99,26 @@
   #progress-inner-wrapper {
     --highlight-color: var(--primary);
     --on-highlight: var(--dark);
+    --bar-color: var(--gray);
+    --default-text-color: var(--mediumgray);
+    --highlight-text-color: var(--heading);
 
     position: relative;
     min-width: 450px;
     transition: transform var(--transition-2);
   }
 
-  #progress-inner-wrapper[data-puzzle-solved="true"] {
+  #progress-inner-wrapper[data-perfect-score="true"] {
     --highlight-color: var(--accent);
     --on-highlight: var(--light);
+  }
+
+  #progress-inner-wrapper[data-game-complete="true"] {
+    --highlight-color: var(--dark);
+    --on-highlight: var(--primary);
+    --bar-color: color-mix(in oklch, var(--dark) 50%, var(--primary));
+    --default-text-color: color-mix(in oklch, var(--dark) 75%, var(--primary));
+    --highlight-text-color: var(--dark);
   }
 
   @media screen and (width > 550px) {
@@ -117,7 +130,7 @@
   #progress {
     width: 100%;
     height: var(--bar-height);
-    background-color: var(--gray);
+    background-color: var(--bar-color);
   }
 
   #progress-bar {
@@ -138,7 +151,7 @@
 
   .skill-level {
     width: fit-content;
-    color: var(--mediumgray);
+    color: var(--default-text-color);
     position: absolute;
     transform: translateX(-50%);
     font: var(--label-xs);
@@ -157,12 +170,12 @@
     width: var(--dot-size);
     aspect-ratio: 1;
     border-radius: 999px;
-    background-color: var(--gray);
+    background-color: var(--bar-color);
     transition: background-color var(--transition-2);
   }
 
   .skill-level[data-passed="true"] {
-    color: var(--heading);
+    color: var(--highlight-text-color);
   }
 
   .skill-level[data-passed="true"]::after {

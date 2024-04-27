@@ -229,7 +229,7 @@ export async function addWordToUser({
     const { wordList } = puzzle.data.puzzle
     const { wordsFound } = score
 
-    console.log(wordList, wordsFound, wordList.length, wordsFound.length)
+    // console.log(wordList, wordsFound, wordList.length, wordsFound.length)
 
     let newLongestWord = longestWord.stats.longest_word
     if(word.word.length > newLongestWord.length) newLongestWord = word.word

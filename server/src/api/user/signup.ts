@@ -3,6 +3,7 @@ import { ErrorResponse, SignUpData, SignUpErrors, SuccessResponse } from '../../
 import { SignupRequest } from '../../shared/interfaces/User';
 import { createUser } from '../../db/utils/users';
 import { createSession } from '../../db/utils/sessions';
+import { isValidPassword, isValidUsername } from '../../shared/utils/validation';
 
 const router = express.Router();
 
@@ -12,6 +13,20 @@ router.post<SignupRequest, ErrorResponse<SignUpErrors> | SuccessResponse<SignUpD
     return res.status(400).json({
       success: false,
       message: 'user-info-not-provided'
+    })
+  }
+
+  if(!isValidUsername(username.trim())) {
+    return res.status(400).json({
+      success: false,
+      message: 'invalid-username'
+    })
+  }
+
+  if(!isValidPassword(password.trim())) {
+    return res.status(400).json({
+      success: false,
+      message: 'invalid-password'
     })
   }
 

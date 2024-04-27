@@ -1,14 +1,12 @@
-import type { ErrorResponse, GetUserData, GetUserErrors, SuccessResponse } from "$backend_interfaces/Response";
+import type { ErrorResponse, GetUserData, GetUserErrors, SuccessResponse } from "$shared/interfaces/Response";
 import request from "../request";
 import Cookies from "js-cookie";
 
-export default async function getUser(): Promise<GetUserData | undefined> {
+export default async function getUser(): Promise<SuccessResponse<GetUserData> | ErrorResponse<GetUserErrors>> {
   const session = Cookies.get('session')
-  if(!session) return undefined
+  if(!session) return { success: false, message: 'no-session' }
 
   const res = await request<{}, SuccessResponse<GetUserData> | ErrorResponse<GetUserErrors>>('user/get_user')
 
-  if(!res.success) return undefined
-
-  return res.data
+  return res
 }

@@ -2,7 +2,7 @@ import { WithoutId } from "mongodb"
 import DBPuzzle, { OutsideLetters } from "../db/interfaces/Puzzle"
 import { getTotalPoints, getUniqueLetters, isPangram } from "../shared/utils/points"
 import getMatchingWords from "./getMatchingWords"
-import getTodaysDate from "./getTodaysDate"
+import getTodaysDate from "../shared/utils/getTodaysDate"
 import { readFile } from "fs"
 import shuffle from "./shuffle"
 

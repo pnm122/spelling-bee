@@ -45,7 +45,7 @@
 <style>
 	main {
 		width: 100%;
-		min-height: 100vh;
+		min-height: calc(100vh - var(--header-height));
 		background-color: var(--bg-secondary);
 		display: flex;
 		justify-content: center;
@@ -54,7 +54,7 @@
 
 	#card {
 		flex: 1;
-		min-height: 100vh;
+    min-height: calc(100vh - var(--header-height));
 		background-color: var(--bg);
 		padding: 2rem;
 		overflow: hidden;

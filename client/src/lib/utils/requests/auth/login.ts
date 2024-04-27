@@ -1,5 +1,5 @@
-import type { SuccessResponse, ErrorResponse, LoginErrors, LogInData } from '$backend_interfaces/Response'
-import type { LoginRequest } from '$backend_interfaces/User'
+import type { SuccessResponse, ErrorResponse, LoginErrors, LogInData } from '$shared/interfaces/Response'
+import type { LoginRequest } from '$shared/interfaces/User'
 import { setUser } from '$lib/stores/user'
 import request from '../request'
 

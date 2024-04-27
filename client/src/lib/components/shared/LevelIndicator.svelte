@@ -11,7 +11,7 @@
 
 <div>
   <Hexagon 
-    width={24} 
+    width={26} 
     fill={colors.bgColor}
   />
   <span style="color: {colors.textColor}">{level?.level}</span>
@@ -21,8 +21,8 @@
 
 <style>
   div {
-    width: 24px;
-    height: 24px;
+    width: 26px;
+    height: 26px;
     display: flex;
     justify-content: center;
     align-items: center;

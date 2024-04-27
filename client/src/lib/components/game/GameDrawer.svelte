@@ -15,10 +15,7 @@
 <style>
   .drawer {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 0;
     background-color: var(--bg-secondary);
     z-index: var(--z-drawer);
     transition: transform var(--transition-2),
@@ -43,8 +40,8 @@
 
     @media screen and (width > 1140px) {
       width: 100%;
-      position: static;
-      z-index: unset;
+      position: relative;
+      z-index: var(--z-under-header);
       
       &.left {
         grid-area: header / left / left / left;

@@ -9,11 +9,8 @@
   }
 
   const handleKeyDown = (e: KeyboardEvent) => {
-    console.log(e.key)
     if(e.key == 'ESCAPE') closePopup()
   }
-
-  $: console.log($popup.open)
 </script>
 
 <div 

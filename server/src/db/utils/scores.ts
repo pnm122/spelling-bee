@@ -181,7 +181,7 @@ export async function addWord({
       }
     }
   } catch(e) {
-    console.log(e)
+    // console.log(e)
     return {
       success: false,
       message: 'unknown-error'

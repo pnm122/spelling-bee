@@ -3,6 +3,7 @@ import { LoginRequest } from "../../shared/interfaces/User";
 import { ErrorResponse, LogInData, LoginErrors, SuccessResponse } from "../../shared/interfaces/Response";
 import { validateUserCredentials } from "../../db/utils/users";
 import { createSession } from "../../db/utils/sessions";
+import { isValidPassword, isValidUsername } from "../../shared/utils/validation";
 
 const router = express.Router()
 
@@ -10,11 +11,24 @@ router.post<LoginRequest, ErrorResponse<LoginErrors> | SuccessResponse<LogInData
   const username = req.body.username
   const password = req.body.password
   if(!username || !password) {
-    res.status(400).json({
+    return res.status(400).json({
       success: false,
       message: 'user-info-not-provided'
     })
-    return
+  }
+
+  if(!isValidUsername(username.trim())) {
+    return res.status(400).json({
+      success: false,
+      message: 'invalid-username'
+    })
+  }
+
+  if(!isValidPassword(password.trim())) {
+    return res.status(400).json({
+      success: false,
+      message: 'invalid-password'
+    })
   }
 
   const validCredentials = await validateUserCredentials({ username, password })

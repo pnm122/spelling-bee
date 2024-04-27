@@ -1,19 +1,19 @@
 import { writable } from "svelte/store";
-import type User from "$backend_interfaces/User";
+import type User from "$shared/interfaces/User";
 import getUser from "$lib/utils/requests/auth/getUser";
 import type Loadable from "$lib/types/loadable";
-import type { UserWordFound } from "$backend_interfaces/Score";
+import type { UserWordFound } from "$shared/interfaces/Score";
 import { isPangram } from "$lib/utils/points";
+import type { AuthenticatedErrors, GetUserErrors } from "$shared/interfaces/Response";
 
-let user = writable<Loadable<User>>({ loading: true, data: undefined })
-
-user.subscribe(u => {
-  console.log(u)
-})
+type GameUserErrors = GetUserErrors | AuthenticatedErrors
+export type GameUser = Loadable<User, GameUserErrors>
+let user = writable<GameUser>({ loading: true, data: undefined })
 
 const init = async () => {
   const userRes = await getUser()
-  user.set({ loading: false, data: userRes?.user })
+  if(userRes.success) user.set({ loading: false, data: userRes.data.user })
+  else user.set({ loading: false, data: undefined, error: userRes.message })
 }
 
 export const setUser = (u: User) => {
@@ -21,7 +21,7 @@ export const setUser = (u: User) => {
 }
 
 export const removeUser = () => {
-  user.set({ loading: false, data: undefined })
+  user.set({ loading: false, data: undefined, error: undefined })
 }
 
 export const addWordToUser = (word: UserWordFound) => {

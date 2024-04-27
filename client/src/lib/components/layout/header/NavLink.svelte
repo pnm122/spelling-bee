@@ -4,13 +4,15 @@
   export let style: string = ""
   let classes: string = ""
 
-  const selected = $page.url.pathname.includes(href)
+  $: selected = ($page.url.pathname == '/' && href == "/") || 
+                (href != "/" && $page.url.pathname.includes(href))
 
   export {classes as class}
 </script>
 
 <a 
   href={href}
+  data-sveltekit-preload-data={false}
   aria-current={selected ? "page" : undefined}
   style={style}
   class={classes}>
@@ -25,6 +27,7 @@
     padding: 0.5rem var(--side-padding);
     position: relative;
     width: fit-content;
+    white-space: nowrap;
   }
 
   a::after {

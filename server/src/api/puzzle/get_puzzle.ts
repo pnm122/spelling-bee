@@ -1,29 +1,30 @@
-import express from 'express'
-import { ErrorResponse, GetPuzzleData, GetPuzzleErrors, SuccessResponse } from '../../shared/interfaces/Response'
-import Puzzle from '../../shared/interfaces/Puzzle'
+import express, { Request, Response } from 'express'
+import { GetPuzzleResponse } from '../../shared/interfaces/Response'
+import { getPuzzleById } from '../../db/utils/puzzles'
+import { authenticated } from '../../middlewares'
+import { GetPuzzleParams } from '../../shared/interfaces/Params'
 
 const router = express.Router()
 
-router.get<{}, SuccessResponse<GetPuzzleData> | ErrorResponse<GetPuzzleErrors>>('/', (req, res) => {
-  // const tempPuzzle: Puzzle = {
-  //   id: 'abcdef',
-  //   centerLetter: 'N',
-  //   outsideLetters: ['D', 'M', 'E', 'U', 'I', 'R'],
-  //   wordList: ['DENIED', 'DENIER', 'DENUDE', 'DINE', 'DINED', 'DINER', 'DINNER', 'DUNE', 'ENDED', 'ENDER', 'ENDURE', 'ENDURED', 'ENNUI', 'ERMINE', 'IMMUNE', 'INDEED', 'INNER', 'MEND', 'MENDED', 'MENDER', 'MENU', 'MIEN', 'MIND', 'MINDED', 'MINE', 'MINED', 'MINER', 'MINI', 'MINIMUM', 'MINUEND', 'NEED', 'NEEDED', 'NINE', 'NUDE', 'REDDEN', 'REDDENED', 'REIN', 'REINDEER', 'REINED', 'REMIND', 'REMINDED', 'REMINDER', 'REND', 'RENDER', 'RENDERED', 'RERUN', 'RIDDEN', 'RIND', 'RUIN', 'RUINED', 'RUMEN', 'RUNNER', 'UNDER', 'UNDERMINE', 'UNDERMINED', 'UNDID', 'UNDUE', 'UNNEEDED', 'URINE'],
-  //   date: '04/03/2024',
-  //   maxPoints: 1000
-  // }
+router.use(authenticated)
+router.get('/', async (req: Request<{}, {}, {}, GetPuzzleParams>, res: Response<GetPuzzleResponse>) => {
+  const puzzleRes = await getPuzzleById(req.query.id)
 
-  // res.json({
-  //   success: true,
-  //   data: {
-  //     puzzle: tempPuzzle
-  //   }
-  // })
+  if(!puzzleRes.success) {
+    if(puzzleRes.message == 'no-puzzle') return res.status(404).json(puzzleRes)
+    else return res.status(500).json(puzzleRes)
+  }
+
+  const { _id, ...puzzle } = puzzleRes.data.puzzle
 
   res.json({
-    success: false,
-    message: 'no-puzzle'
+    success: true,
+    data: {
+      puzzle: {
+        id: _id.toString(),
+        ...puzzle
+      }
+    }
   })
 })
 

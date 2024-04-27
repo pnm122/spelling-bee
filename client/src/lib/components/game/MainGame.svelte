@@ -5,18 +5,13 @@
   import PhLightbulb from '~icons/ph/lightbulb'
   import PhShuffle from '~icons/ph/shuffle'
   import { isPangram } from '$lib/utils/points'
-  import currentPuzzle from "$lib/stores/currentPuzzle";
-  import currentScore, { getHint, tryWord } from "$lib/stores/currentScore";
-	import type Puzzle from "$backend_interfaces/Puzzle";
-	import type Score from "$backend_interfaces/Score";
+  import gameData from "$lib/stores/gameData";
+	import type Puzzle from "$shared/interfaces/Puzzle";
+	import type Score from "$shared/interfaces/Score";
+	import { getHint, tryWord } from "$lib/stores/currentScore";
 
-  $: loading = $currentScore.loading || $currentPuzzle.loading
-  $: dataExists = $currentScore.data && $currentPuzzle.data
-  $: puzzle = !loading && dataExists ? $currentPuzzle.data as Puzzle : undefined
-  $: score = !loading && dataExists ? $currentScore.data as Score : undefined
-
-  $: outsideLetters = puzzle
-                        ? puzzle.outsideLetters
+  $: outsideLetters = $gameData.exists
+                        ? $gameData.puzzle.outsideLetters
                         : ['', '', '', '', '', ''] 
   let word = ""
   let pressedKeys: string[] = []
@@ -24,7 +19,7 @@
   let wordIsPangram = false
   let wordIsClearing = false
   let animating = false
-  let screenWidth = innerWidth
+  let screenWidth = -1
   $: hexagonSize = screenWidth >= 768 ? 100 : 80
 
   type NotificationType = "default" | "congrats" | "pangram"
@@ -80,7 +75,7 @@
     }
 
     let hexIndex = 0
-    for(let letter of document.getElementsByClassName('letter-button') as HTMLCollectionOf<SVGElement>) {
+    for(let letter of document.getElementById('main-game')!.getElementsByClassName('letter-button') as HTMLCollectionOf<SVGElement>) {
       letter.childNodes.forEach(n => {
         (n as HTMLElement).style.animationDelay = `${HEXAGON_ANIMATION_DELAY_MS * hexIndex}ms`;
         // Maximum animation duration such that each hexagon can animate the whole way through before the word disappears
@@ -142,8 +137,8 @@
   }
 
   const handleKeyDown = (e: KeyboardEvent) => {
-    if(!puzzle || animating) return
-    const { centerLetter } = puzzle
+    if(!$gameData.exists || animating) return
+    const { centerLetter } = $gameData.puzzle
 
     const key = e.key.toUpperCase()
 
@@ -152,7 +147,6 @@
     } else if(key == 'BACKSPACE') {
       removeLetter()
     } else if(key == 'ENTER') {
-      console.log('ENTER')
       // Don't override functionality of other buttons
       if(document.activeElement != document.body) return
       submitWord()
@@ -211,6 +205,8 @@
   }
 
   onMount(() => {
+    screenWidth = innerWidth
+
     document.addEventListener('keydown', handleKeyDown)
     document.addEventListener('keypress', handleKeyPress)
     document.addEventListener('keyup', handleKeyUp)
@@ -241,9 +237,9 @@
   onDestroy(() => isComponentDestroyed = true)
 </script>
 
-{#if loading || !puzzle || !score}
+{#if $gameData.loading}
   <div></div>
-{:else if !dataExists}
+{:else if !$gameData.exists}
   <div></div>
 {:else}
   <div id="wrapper">
@@ -264,7 +260,7 @@
           id="word">
           {#each word as char}
             <span
-              data-center-letter={char.toUpperCase() == puzzle.centerLetter.toUpperCase()}>
+              data-center-letter={char.toUpperCase() == $gameData.puzzle.centerLetter.toUpperCase()}>
               {char}
             </span>
           {/each}
@@ -277,18 +273,19 @@
         width={hexagonSize} 
         fill='var(--primary)' 
         textColor='var(--dark)'
-        class="letter-button {wordIsPangram ? 'pangram' : ''}"
-        id="center"
+        class="center-letter-hexagon letter-button {wordIsPangram ? 'pangram' : ''}"
         disabled={animating}
-        pressed={pressedKeys.includes(puzzle.centerLetter)}
-        clickHandler={() => addLetter(puzzle?.centerLetter)}
-        letter="{puzzle.centerLetter}"
+        pressed={pressedKeys.includes($gameData.puzzle.centerLetter)}
+        clickHandler={() => {
+          if(!$gameData.exists) return
+          addLetter($gameData.puzzle.centerLetter)
+        }}
+        letter="{$gameData.puzzle.centerLetter}"
       />
       <Hexagon 
         width={hexagonSize} 
         fill='var(--gray)' 
-        class="letter-button outside {wordIsPangram ? 'pangram' : ''}"
-        id="top-middle"
+        class="top-middle-letter letter-button outside {wordIsPangram ? 'pangram' : ''}"
         disabled={animating}
         pressed={pressedKeys.includes(outsideLetters[0])}
         clickHandler={() => addLetter(outsideLetters[0])}
@@ -297,8 +294,7 @@
       <Hexagon 
         width={hexagonSize} 
         fill='var(--gray)' 
-        class="letter-button outside {wordIsPangram ? 'pangram' : ''}"
-        id="top-right"
+        class="top-right-letter letter-button outside {wordIsPangram ? 'pangram' : ''}"
         disabled={animating}
         pressed={pressedKeys.includes(outsideLetters[1])}
         clickHandler={() => addLetter(outsideLetters[1])}
@@ -307,8 +303,7 @@
       <Hexagon 
         width={hexagonSize} 
         fill='var(--gray)' 
-        class="letter-button outside {wordIsPangram ? 'pangram' : ''}"
-        id="bottom-right"
+        class="bottom-right-letter letter-button outside {wordIsPangram ? 'pangram' : ''}"
         disabled={animating}
         pressed={pressedKeys.includes(outsideLetters[2])}
         clickHandler={() => addLetter(outsideLetters[2])}
@@ -317,8 +312,7 @@
       <Hexagon 
         width={hexagonSize} 
         fill='var(--gray)' 
-        class="letter-button outside {wordIsPangram ? 'pangram' : ''}"
-        id="bottom-middle"
+        class="bottom-middle-letter letter-button outside {wordIsPangram ? 'pangram' : ''}"
         disabled={animating}
         pressed={pressedKeys.includes(outsideLetters[3])}
         clickHandler={() => addLetter(outsideLetters[3])}
@@ -327,8 +321,7 @@
       <Hexagon 
         width={hexagonSize} 
         fill='var(--gray)' 
-        class="letter-button outside {wordIsPangram ? 'pangram' : ''}"
-        id="bottom-left"
+        class="bottom-left-letter letter-button outside {wordIsPangram ? 'pangram' : ''}"
         disabled={animating}
         pressed={pressedKeys.includes(outsideLetters[4])}
         clickHandler={() => addLetter(outsideLetters[4])}
@@ -337,8 +330,7 @@
       <Hexagon 
         width={hexagonSize} 
         fill='var(--gray)' 
-        class="letter-button outside {wordIsPangram ? 'pangram' : ''}"
-        id="top-left"
+        class="top-left-letter letter-button outside {wordIsPangram ? 'pangram' : ''}"
         disabled={animating}
         pressed={pressedKeys.includes(outsideLetters[5])}
         clickHandler={() => addLetter(outsideLetters[5])}
@@ -400,37 +392,6 @@
     }
   }
 
-  :global(.letter-button) {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-  }
-  
-  :global(#top-middle) {
-    transform: translate(-50%, -150%);
-  }
-
-  :global(#bottom-middle) {
-    transform: translate(-50%, 50%);
-  }
-
-  :global(#top-left) {
-    transform: translate(-125%, -100%);
-  }
-
-  :global(#bottom-left) {
-    transform: translate(-125%, 0%);
-  }
-
-  :global(#top-right) {
-    transform: translate(25%, -100%);
-  }
-
-  :global(#bottom-right) {
-    transform: translate(25%, 0%);
-  }
-
   :global(.outside.pangram polygon) {
     animation: outsideLetterPangram forwards;
   }
@@ -444,7 +405,7 @@
     }
   }
 
-  :global(#center.pangram polygon) {
+  :global(.center-letter-hexagon.pangram polygon) {
     animation: centerLetterPangram forwards;
   }
 
@@ -470,7 +431,7 @@
     }
   }
 
-  :global(#center.pangram text) {
+  :global(.center-letter-hexagon.pangram text) {
     animation: centerLetterTextPangram forwards;
   }
 

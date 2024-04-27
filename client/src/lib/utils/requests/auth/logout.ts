@@ -1,4 +1,4 @@
-import type { SuccessResponse, ErrorResponse, LoginErrors, LogInData, LogoutErrors } from '$backend_interfaces/Response'
+import type { SuccessResponse, ErrorResponse, LoginErrors, LogInData, LogoutErrors } from '$shared/interfaces/Response'
 import { removeUser } from '$lib/stores/user'
 import request from '../request'
 import Cookies from 'js-cookie'

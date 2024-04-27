@@ -1,15 +1,15 @@
 <script lang="ts">
-  import currentScore, { activateWordPreviews } from "$lib/stores/currentScore";
-  import currentPuzzle from "$lib/stores/currentPuzzle";
+  import { activateWordPreviews } from "$lib/stores/currentScore";
+  import gameData from "$lib/stores/gameData";
 	import { openPopup } from "$lib/stores/popup";
 	import { isPangram } from "$lib/utils/points";
   import PhInfo from '~icons/ph/info'
 
-  $: wordPreviewsOn = (!$currentScore.loading && $currentScore.data) ? $currentScore.data.wordPreviewsOn : false
+  $: wordPreviewsOn = $gameData.exists ? $gameData.score.wordPreviewsOn : false
 </script>
 
 <div id="word-list">
-  {#if !$currentScore.loading && $currentScore.data && !$currentPuzzle.loading && $currentPuzzle.data}
+  {#if $gameData.exists}
     <div id="word-previews-wrapper">
       <button 
         disabled={wordPreviewsOn}
@@ -45,13 +45,13 @@
             How are my points calculated?
           </span>
         </button>
-        {#if $currentScore.data.wordsFound.length > 0}
+        {#if $gameData.score.wordsFound.length > 0}
           <!-- Must key the items because the words shift place in the array -->
-          {#each $currentScore.data.wordsFound as data (data.word)}
+          {#each $gameData.score.wordsFound as data (data.word)}
             <div class="found-word-wrapper">
               <p class="found-word {isPangram(data.word) ? 'pangram' : ''}">
                 {#each data.word as letter}
-                  <span class={letter == $currentPuzzle.data.centerLetter ? 'center-letter' : ''}>{letter}</span>
+                  <span class={letter == $gameData.puzzle.centerLetter ? 'center-letter' : ''}>{letter}</span>
                 {/each}
               </p>
               <span class="points-from-word">{data.points} points</span>
@@ -64,13 +64,13 @@
       {#if wordPreviewsOn}
         <div id="word-previews">
           <h3 id="word-previews-title">Words to find</h3>
-          {#each $currentPuzzle.data.wordList as word}
+          {#each $gameData.puzzle.wordList as word}
             <div class="word-preview {isPangram(word) ? 'pangram' : ''}">
-              {#if $currentScore.data.wordsFound.find(w => w.word == word)}
+              {#if $gameData.score.wordsFound.find(w => w.word == word)}
                 <h4 class="crossed-off {isPangram(word) ? 'pangram' : ''}">{word}</h4>
               {:else}
                 {#each word as letter}
-                  <div class="word-preview-letter {letter == $currentPuzzle.data.centerLetter ? 'center-letter' : ''}"></div>
+                  <div class="word-preview-letter {letter == $gameData.puzzle.centerLetter ? 'center-letter' : ''}"></div>
                 {/each}
               {/if}
             </div>
