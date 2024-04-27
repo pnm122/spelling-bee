@@ -99,13 +99,6 @@
     font: var(--h-xl);
   }
 
-  .state {
-    color: var(--mediumgray);
-    font: var(--body);
-    font-style: italic;
-    line-height: 1;
-  }
-
   .puzzle-letters {
     position: relative;
     width: 100%;
