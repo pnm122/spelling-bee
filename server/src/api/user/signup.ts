@@ -39,7 +39,7 @@ router.post<SignupRequest, ErrorResponse<SignUpErrors> | SuccessResponse<SignUpD
   const sessionRes = await createSession(createUserRes.data!.user.id)
   if(!sessionRes.success) return res.status(500).json(sessionRes)
 
-  res.cookie('session', sessionRes.data!.sessionId, { maxAge: parseInt(process.env.SESSION_EXPIRE_TIME!) * 1000 })
+  res.cookie('session', sessionRes.data!.sessionId, { secure: true, maxAge: parseInt(process.env.SESSION_EXPIRE_TIME!) * 1000 })
   return res.json({
     success: true,
     data: {

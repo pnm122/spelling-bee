@@ -39,7 +39,7 @@ router.post<LoginRequest, ErrorResponse<LoginErrors> | SuccessResponse<LogInData
 
   if(sessionRes.success) {
     // * 1000 because maxAge is in ms, but SESSION_EXPIRE_TIME is in seconds
-    res.cookie('session', sessionRes.data!.sessionId, { maxAge: parseInt(process.env.SESSION_EXPIRE_TIME!) * 1000 })
+    res.cookie('session', sessionRes.data!.sessionId, { secure: true, maxAge: parseInt(process.env.SESSION_EXPIRE_TIME!) * 1000 })
     return res.json({
       success: true,
       data: {
