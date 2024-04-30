@@ -18,7 +18,7 @@ router.post<{}, ErrorResponse<LogoutErrors> | SuccessResponse>('/', async (req, 
 
   if(deleteRes.success) {
     // Delete client's session cookie since the session was successfully removed from the database
-    res.clearCookie('session', { secure: true })
+    res.clearCookie('session', { secure: true, sameSite: "none" })
 
     return res.json({
       success: true,

@@ -44,7 +44,7 @@ export async function authenticated(req: Request, res: Response<AuthenticatedRes
 
   // Refresh the expiration time for the session cookie
   // * 1000 because maxAge is in ms, but SESSION_EXPIRE_TIME is in seconds
-  res.cookie('session', sessionId, { secure: true, maxAge: parseInt(process.env.SESSION_EXPIRE_TIME!) * 1000 })
+  res.cookie('session', sessionId, { secure: true, sameSite: "none", maxAge: parseInt(process.env.SESSION_EXPIRE_TIME!) * 1000 })
   // Store session information for later use
   req.body.session = updateRes.data.session as Session
   next()
