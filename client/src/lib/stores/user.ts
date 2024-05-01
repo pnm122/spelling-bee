@@ -11,7 +11,9 @@ export type GameUser = Loadable<User, GameUserErrors>
 let user = writable<GameUser>({ loading: true, data: undefined })
 
 export const initUser = async () => {
+  console.log('Inside initUser')
   const userRes = await getUser()
+  console.log('User result:', userRes)
   if(userRes.success) user.set({ loading: false, data: userRes.data.user })
   else user.set({ loading: false, data: undefined, error: userRes.message })
 }

@@ -16,6 +16,7 @@
 	import { onMount } from "svelte";
 
   onMount(() => {
+    console.log("Init user in layout")
     initUser()
   })
 </script>
