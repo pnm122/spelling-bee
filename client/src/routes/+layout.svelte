@@ -3,6 +3,7 @@
 </style>
 
 <script lang="ts">
+	import { initUser } from './../lib/stores/user';
 	import Notification from "$lib/components/layout/Notification.svelte";
 	import Popup from "$lib/components/layout/Popup.svelte";
 	import Header from "$lib/components/layout/header/Header.svelte";
@@ -12,6 +13,11 @@
   import currentPuzzle from "$lib/stores/currentPuzzle"
   import puzzleAndUser from "$lib/stores/puzzleAndUser";
   import currentScore from "$lib/stores/currentScore";  
+	import { onMount } from "svelte";
+
+  onMount(() => {
+    initUser()
+  })
 </script>
 
 <Popup />
