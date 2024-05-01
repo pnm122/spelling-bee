@@ -3,6 +3,7 @@
 </style>
 
 <script lang="ts">
+	import Cookies from 'js-cookie';
 	import { initUser } from './../lib/stores/user';
 	import Notification from "$lib/components/layout/Notification.svelte";
 	import Popup from "$lib/components/layout/Popup.svelte";
@@ -16,8 +17,16 @@
 	import { onMount } from "svelte";
 
   onMount(() => {
+    const i = setInterval(() => {
+      console.log(Cookies.get('session'))
+    }, 2000)
+
     console.log("Init user in layout")
     initUser()
+
+    return () => {
+      clearInterval(i)
+    }
   })
 </script>
 
