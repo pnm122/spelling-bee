@@ -10,7 +10,7 @@ type GameUserErrors = GetUserErrors | AuthenticatedErrors
 export type GameUser = Loadable<User, GameUserErrors>
 let user = writable<GameUser>({ loading: true, data: undefined })
 
-const init = async () => {
+export const initUser = async () => {
   const userRes = await getUser()
   if(userRes.success) user.set({ loading: false, data: userRes.data.user })
   else user.set({ loading: false, data: undefined, error: userRes.message })
@@ -44,7 +44,5 @@ export const addWordToUser = (word: UserWordFound) => {
     }
   })
 }
-
-init()
 
 export default user
