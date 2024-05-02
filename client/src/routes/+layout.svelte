@@ -17,16 +17,7 @@
 	import { onMount } from "svelte";
 
   onMount(() => {
-    const i = setInterval(() => {
-      console.log(Cookies.get('session'))
-    }, 2000)
-
-    console.log("Init user in layout")
     initUser()
-
-    return () => {
-      clearInterval(i)
-    }
   })
 </script>
 
