@@ -6,7 +6,7 @@
 	import Cookies from 'js-cookie';
 	import { initUser } from './../lib/stores/user';
 	import Notification from "$lib/components/layout/Notification.svelte";
-	import Popup from "$lib/components/layout/Popup.svelte";
+	import Popup from "$lib/components/layout/popup/Popup.svelte";
 	import Header from "$lib/components/layout/header/Header.svelte";
   // Import here so that the code runs no matter which page you're on
   // @ts-ignore

@@ -21,3 +21,5 @@
   ```
   to app.d.ts.
 - Fetch user in user store file using the session cookie, then subscribe to changes in the user in the login/signup store to redirect if the user exists
+- To use Svelte components as a variable, the type is `ConstructorOfATypedSvelteComponent`
+  - I use this to pass Svelte components as the inner content of the popup

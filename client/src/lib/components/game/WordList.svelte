@@ -4,8 +4,21 @@
 	import { openPopup } from "$lib/stores/popup";
 	import { isPangram } from "$lib/utils/points";
   import PhInfo from '~icons/ph/info'
+	import WordPreviewsAlert from "../layout/popup/content/WordPreviewsAlert.svelte";
+	import PointsCalculation from "../layout/popup/content/PointsCalculation.svelte";
+	import { onMount } from "svelte";
+	import WordPreviewsInfo from "../layout/popup/content/WordPreviewsInfo.svelte";
 
   $: wordPreviewsOn = $gameData.exists ? $gameData.score.wordPreviewsOn : false
+
+  let showWordPreviewsAlert = true
+
+  onMount(() => {
+    const showWordPreviewsAlertString = window.localStorage.getItem("show-word-previews-alert")
+    if(!showWordPreviewsAlertString) return
+
+    showWordPreviewsAlert = showWordPreviewsAlertString === "true"
+  })
 </script>
 
 <div id="word-list">
@@ -13,15 +26,19 @@
     <div id="word-previews-wrapper">
       <button 
         disabled={wordPreviewsOn}
-        on:click={activateWordPreviews}
+        on:click={() => {
+          if(showWordPreviewsAlert) {
+            openPopup(WordPreviewsAlert)
+          } else {
+            activateWordPreviews()
+          }
+        }}
         class="btn secondary small">
         {wordPreviewsOn ? 'Word previews on' : 'Turn on word previews'}
       </button>
+      <!-- Keep this here so that users can perform the same action without being scared of activating it before they're ready -->
       <button
-        on:click={() => openPopup(`
-          Turning on word previews shows a list of all words you haven't found yet, with their letters hidden. 
-          The center letter is marked with a yellow background. Any words found after turning on word previews will have their points reduced by 20%.
-        `)}
+        on:click={() => openPopup(WordPreviewsInfo)}
         title="Word preview information"
         aria-label="Word preview information"
         class="icon-button"
@@ -32,12 +49,7 @@
     <div id="words-wrapper">
       <div id="words-found">
         <button
-          on:click={() => openPopup(`
-            By default, the number of points you earn from a word is equal to the length of the word. For example,
-            finding the word "HELLO" will earn you 5 points. If you use a hint to find a word, you earn 1 point for each
-            letter the hint had not already given you. Finally, if you turn on word previews, all subsequent points are
-            reduced by 20%.
-          `)}
+          on:click={() => openPopup(PointsCalculation)}
           id="points-calculated-button"
           aria-label="How are my points calculated?">
           <PhInfo />

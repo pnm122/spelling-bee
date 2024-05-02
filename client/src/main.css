@@ -365,6 +365,11 @@ body[data-theme="light"] .btn.accent:hover {
   border-radius: 0.25rem;
 }
 
+.btn.rectangle, .btn.rectangle::before, .btn.rectangle::after {
+  border-radius: 0.25rem !important;
+  padding: 0 0.75rem;
+}
+
 .icon-button {
   width: 2.5rem;
   height: 2.5rem;

@@ -31,7 +31,7 @@
       on:click={closePopup}>
       <PhX />
     </button>
-    <p>{$popup.message}</p>
+    <svelte:component this={$popup.content} />
   </div>
 </div>
 
@@ -55,7 +55,7 @@
     display: flex;
     width: 100%;
     max-width: 400px;
-    padding: 1rem 3rem 1rem 1rem;
+    padding: 3rem 1rem 1rem 1rem;
     border-radius: 0.5rem;
     background-color: var(--gray);
     box-shadow: var(--shadow);

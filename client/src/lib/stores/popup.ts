@@ -1,21 +1,22 @@
+import type { PopupContent } from "$lib/types/popup";
 import type Popup from "$lib/types/popup";
 import { writable } from "svelte/store";
 
 const popup = writable<Popup>({
   open: false,
-  message: ''
+  content: undefined
 })
 
-export function openPopup(message: string) {
+export function openPopup(content: PopupContent) {
   popup.set({
     open: true,
-    message
+    content
   })
 }
 
 export function closePopup() {
   popup.update(p => {
-    return { open: false, message: p.message }
+    return { ...p, open: false }
   })
 }
 

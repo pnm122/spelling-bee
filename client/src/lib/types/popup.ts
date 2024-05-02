@@ -1,4 +1,8 @@
+import type { SvelteComponent } from "svelte"
+
 export default interface Popup {
   open: boolean
-  message: string
+  content: PopupContent
 }
+
+export type PopupContent = ConstructorOfATypedSvelteComponent | undefined
