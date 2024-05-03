@@ -283,7 +283,7 @@
               {$gameData.score.hint.word.slice(0, $gameData.score.hint.lettersGiven)}
             </span>
           {/if}
-          <div id="cursor" />
+          <div id="cursor" data-at-start={$gameData.score.hint && word.length == 0} />
         </h2>
       </div>
     </div>
@@ -532,6 +532,12 @@
     top: 50%;
     transform: translateY(-50%);
     animation: blink 1.25s infinite;
+  }
+
+  /* Put the cursor at the start of the word when showing hint ghost letters */
+  #cursor[data-at-start="true"] {
+    right: 100%;
+    left: unset;
   }
 
   #word[data-is-pangram="true"] #cursor,
