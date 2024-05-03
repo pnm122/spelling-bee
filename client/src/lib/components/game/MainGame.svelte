@@ -153,6 +153,7 @@
     } else if(key == 'TAB') {
       const hint = $gameData.score.hint
       if(hint && word.length == 0) {
+        e.preventDefault()
         word = hint.word.slice(0, hint.lettersGiven)
       }
     }
