@@ -169,6 +169,7 @@
       </label>
       <input 
         id="confirmPassword" 
+        autocomplete="new-password"
         class="input" 
         data-input-invalid={passwordError != ''}
         aria-invalid={passwordError != ''}
