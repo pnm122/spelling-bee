@@ -6,19 +6,23 @@
   import PhInfo from '~icons/ph/info'
 	import WordPreviewsAlert from "../layout/popup/content/WordPreviewsAlert.svelte";
 	import PointsCalculation from "../layout/popup/content/PointsCalculation.svelte";
-	import { onMount } from "svelte";
 	import WordPreviewsInfo from "../layout/popup/content/WordPreviewsInfo.svelte";
 
   $: wordPreviewsOn = $gameData.exists ? $gameData.score.wordPreviewsOn : false
 
-  let showWordPreviewsAlert = true
-
-  onMount(() => {
+  const handleClickWordPreviews = () => {
     const showWordPreviewsAlertString = window.localStorage.getItem("show-word-previews-alert")
     if(!showWordPreviewsAlertString) return
 
-    showWordPreviewsAlert = showWordPreviewsAlertString === "true"
-  })
+    const showWordPreviewsAlert = showWordPreviewsAlertString === "true"
+
+    if(showWordPreviewsAlert) {
+      openPopup(WordPreviewsAlert)
+    } else {
+      activateWordPreviews()
+    }
+
+  }
 </script>
 
 <div id="word-list">
@@ -26,13 +30,7 @@
     <div id="word-previews-wrapper">
       <button 
         disabled={wordPreviewsOn}
-        on:click={() => {
-          if(showWordPreviewsAlert) {
-            openPopup(WordPreviewsAlert)
-          } else {
-            activateWordPreviews()
-          }
-        }}
+        on:click={() => handleClickWordPreviews()}
         class="btn secondary small">
         {wordPreviewsOn ? 'Word previews on' : 'Turn on word previews'}
       </button>
