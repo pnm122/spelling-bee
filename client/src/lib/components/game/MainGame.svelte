@@ -156,6 +156,9 @@
         e.preventDefault()
         word = hint.word.slice(0, hint.lettersGiven)
       }
+    } else if(key == 'ALT') {
+      e.preventDefault()
+      shuffleLetters()
     }
   }
 
