@@ -1,30 +1,31 @@
 <script lang="ts">
-	import gameData from '$lib/stores/gameData';
-	import { activateWordPreviews } from './../../../../stores/currentScore';
-  import { closePopup } from '$lib/stores/popup';
-	import WordPreviewsInfo from './WordPreviewsInfo.svelte';
-	import { onMount } from 'svelte';
+	import { closePopup } from "$lib/stores/popup";
+  import gameData from "$lib/stores/gameData";
+	import { onMount } from "svelte";
+	import { getHint } from "$lib/stores/currentScore";
 
   let dontShowAlertAgain = false
 
   onMount(() => {
-    let showAlertAgainString = window.localStorage.getItem("show-word-previews-alert")
+    let showAlertAgainString = window.localStorage.getItem("show-hint-alert")
     if(showAlertAgainString == null) return
 
     dontShowAlertAgain = showAlertAgainString !== "true"
   })
-
-  // Only set local storage when the user confirms they want to enable word previews
-  // Hopefully should protect against accidentally clicking the button
-  const handleEnable = () => {
-    window.localStorage.setItem("show-word-previews-alert", (!dontShowAlertAgain).toString())
+  
+  const handleUseHint = () => {
+    window.localStorage.setItem("show-hint-alert", (!dontShowAlertAgain).toString())
     closePopup()
-    activateWordPreviews()
+    getHint()
   }
+
 </script>
 
 <div id="popup-inner-wrapper">
-  <WordPreviewsInfo />
+  <p>
+    Using a hint will give you 3 letters of a word you haven't found yet, at the cost of losing one point once you find the word.
+    The hint will stay until you find a word beginning with the given letters.
+  </p>
   <div id="popup-buttons">
     <div class="checkbox-wrapper">
       <button
@@ -48,9 +49,9 @@
       </button>
       <button
         class="btn primary"
-        disabled={$gameData.exists ? $gameData.score.wordPreviewsOn : true}
-        on:click={() => handleEnable() }>
-        Enable
+        disabled={$gameData.exists ? $gameData.score.hint != undefined : true}
+        on:click={() => handleUseHint() }>
+        Use Hint
       </button>
     </div>
   </div>

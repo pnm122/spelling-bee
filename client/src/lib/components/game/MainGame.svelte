@@ -6,9 +6,9 @@
   import PhShuffle from '~icons/ph/shuffle'
   import { isPangram } from '$lib/utils/points'
   import gameData from "$lib/stores/gameData";
-	import type Puzzle from "$shared/interfaces/Puzzle";
-	import type Score from "$shared/interfaces/Score";
 	import { getHint, tryWord } from "$lib/stores/currentScore";
+	import { openPopup } from "$lib/stores/popup";
+	import HintAlert from "../layout/popup/content/HintAlert.svelte";
 
   $: outsideLetters = $gameData.exists
                         ? $gameData.puzzle.outsideLetters
@@ -180,6 +180,18 @@
     screenWidth = innerWidth
   }
 
+  const handleClickHint = async () => { 
+    const showHintAlertString = window.localStorage.getItem("show-hint-alert")
+
+    const showHintAlert = (showHintAlertString == null) || (showHintAlertString === "true")
+
+    if(showHintAlert) {
+      openPopup(HintAlert)
+    } else {
+      getHint()
+    }
+  }
+
   // Shuffle letters by moving them in a closed loop
   // Guarantees that no letter will be in the same spot after shuffling
   // i.e. given A, B, C, D, E, F, the shuffle might look like:
@@ -204,18 +216,6 @@
     } 
 
     outsideLetters[startIndex] = currLetter
-  }
-
-  const handleClickHint = () => { 
-    getHint(setHintWord);
-    (document.activeElement as HTMLElement).blur()
-  }
-
-  // Callback function for getHint, so the screen always updates when the user tries to get a hint
-  const setHintWord = (hint: string) => {
-    if(animating) return
-
-    word = hint
   }
 
   onMount(() => {
@@ -375,6 +375,7 @@
           Delete
         </button>
         <button
+          disabled={$gameData.score.hint != undefined}
           on:click={() => handleClickHint()}
           class="btn secondary"
           title="Hint"

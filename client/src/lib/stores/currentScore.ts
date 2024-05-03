@@ -172,7 +172,7 @@ export const activateWordPreviews = async () => {
 // Pick an unfound word as the user's hint
 // Hint is first 3 letters of the word
 // If they've already asked for a hint and not found that word, just give them the same hint again
-export const getHint = async (callback: (hint: string) => void) => {
+export const getHint = async () => {
   const score = get(currentScore)
   const puzzle = get(currentPuzzle)
   const u = get(user)
@@ -188,7 +188,7 @@ export const getHint = async (callback: (hint: string) => void) => {
   const { wordList } = puzzle.data
   const { wordsFound, hint } = score.data
 
-  if(hint) return callback(hint.word.slice(0, hint.lettersGiven))
+  if(hint) return
 
   // User has found all the words
   if(wordList.length == wordsFound.length) return
@@ -205,8 +205,6 @@ export const getHint = async (callback: (hint: string) => void) => {
     word: hintWord,
     lettersGiven: 3
   }
-
-  callback(hintWord.slice(0, 3))
 
   currentScore.update(c => {
     // Shouldn't be possible from checks above, but it stops TS from yelling at me

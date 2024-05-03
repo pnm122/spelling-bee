@@ -54,7 +54,7 @@
   #popup {
     display: flex;
     width: 100%;
-    max-width: 400px;
+    max-width: 425px;
     padding: 3rem 1rem 1rem 1rem;
     border-radius: 0.5rem;
     background-color: var(--gray);
@@ -70,5 +70,28 @@
 
   #close-popup:hover {
     background-color: var(--mediumgray);
+  }
+
+  :global(#popup-inner-wrapper) {
+    display: flex;
+    flex-direction: column;
+  }
+
+  :global(#popup-buttons) {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.5rem;
+  }
+
+  :global(#popup-buttons-right) {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+  }
+
+  :global(#popup-buttons button) {
+    font-size: 1rem;
+    white-space: nowrap;
   }
 </style>
