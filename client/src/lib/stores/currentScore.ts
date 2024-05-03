@@ -7,7 +7,7 @@ import { notifyNeedAccount, setNotification } from "./notification";
 import request from "$lib/utils/requests/request";
 import type { ActivateWordPreviewsResponse, AddWordResponse, AuthenticatedErrors, GetCurrentUserScoreErrors, SetHintResponse } from "$shared/interfaces/Response";
 import { type AddWordRequest, type ActivateWordPreviewsRequest, type SetHintRequest } from "$shared/interfaces/Request"
-import user, { addWordToUser } from "./user";
+import user, { addWordToUser, removeUser } from "./user";
 import type { Hint, UserWordFound } from "$shared/interfaces/Score";
 
 export type CurrentScoreErrors = GetCurrentUserScoreErrors | AuthenticatedErrors
@@ -107,6 +107,7 @@ const updateScoreWithWord = async (word: string): Promise<UserWordFound | undefi
 
   if(!res.success) {
     if((res.message == 'no-session' || res.message == 'invalid-session') && u.data) {
+      removeUser()
       setNotification(
         'Session expired',
         'Your session has expired, please log in again to save your data!',

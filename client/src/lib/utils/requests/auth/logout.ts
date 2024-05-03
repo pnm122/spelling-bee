@@ -5,6 +5,7 @@ import Cookies from 'js-cookie'
 
 export default async function logout(): Promise<false | SuccessResponse | ErrorResponse<LogoutErrors>> {
   if(!Cookies.get('session')) {
+    removeUser()
     return {
       success: false,
       message: 'no-session'
