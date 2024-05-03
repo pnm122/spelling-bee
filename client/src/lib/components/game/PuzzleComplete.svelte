@@ -81,11 +81,11 @@
   #wrapper {
     position: absolute;
     inset: 0;
-    top: var(--game-header-height);
+    height: 100%;
     z-index: var(--z-puzzle-complete);
     overflow: hidden;
     visibility: hidden;
-    transition: var(--transition-2);
+    transition: var(--transition-3);
   }
 
   #wrapper[data-game-complete="true"] {
@@ -93,7 +93,8 @@
   }
 
   #puzzle-complete {
-    background-color: var(--primary);
+    background-color: color-mix(in oklch, var(--primary) 75%, transparent);
+    backdrop-filter: blur(4px);
     color: var(--dark);
     padding: 1rem 0;
     display: flex;
@@ -104,12 +105,13 @@
     gap: 1rem;
     position: absolute;
     inset: 0;
-    transform: translateY(-100%);
-    transition: var(--transition-2);
+    opacity: 0;
+    transition-delay: 1s;
+    transition: opacity var(--transition-3);
   }
 
   #wrapper[data-game-complete="true"] #puzzle-complete {
-    transform: none;
+    opacity: 1;
   }
 
   #puzzle-letters {

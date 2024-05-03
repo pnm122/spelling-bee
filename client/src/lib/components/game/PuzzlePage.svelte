@@ -212,6 +212,7 @@
 
   #game-wrapper {
     grid-area: game;
+    position: relative;
 
     @media screen and (width > 1140px) {
       overflow: auto;

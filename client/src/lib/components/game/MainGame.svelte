@@ -21,7 +21,9 @@
   let animating = false
   let screenWidth = -1
   $: hexagonSize = screenWidth >= 768 ? 100 : 80
+  $: isGameComplete = $gameData.exists && $gameData.puzzle.wordList.length == $gameData.score.wordsFound.length
 
+  
   type NotificationType = "default" | "congrats" | "pangram"
   type Notification = { type: NotificationType, message: string }
   let notification: Notification = {
@@ -137,7 +139,7 @@
   }
 
   const handleKeyDown = (e: KeyboardEvent) => {
-    if(!$gameData.exists || animating) return
+    if(isGameComplete || !$gameData.exists || animating) return
     const { centerLetter } = $gameData.puzzle
 
     const key = e.key.toUpperCase()
