@@ -12,9 +12,8 @@
 
   const handleClickWordPreviews = () => {
     const showWordPreviewsAlertString = window.localStorage.getItem("show-word-previews-alert")
-    if(!showWordPreviewsAlertString) return
 
-    const showWordPreviewsAlert = showWordPreviewsAlertString === "true"
+    const showWordPreviewsAlert = (showWordPreviewsAlertString == null) || (showWordPreviewsAlertString === "true")
 
     if(showWordPreviewsAlert) {
       openPopup(WordPreviewsAlert)
