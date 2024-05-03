@@ -140,6 +140,7 @@
     <div class="input" data-input-invalid={passwordError != ''}>
       <input 
         id="password" 
+        autocomplete={type == 'signup' ? "new-password" : "current-password"}
         aria-invalid={passwordError != ''}
         aria-describedby={passwordError ? 'passwordError' : undefined}
         required
