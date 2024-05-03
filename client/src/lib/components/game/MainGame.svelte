@@ -150,6 +150,11 @@
       // Don't override functionality of other buttons
       if(document.activeElement != document.body) return
       submitWord()
+    } else if(key == 'TAB') {
+      const hint = $gameData.score.hint
+      if(hint && word.length == 0) {
+        word = hint.word.slice(0, hint.lettersGiven)
+      }
     }
   }
 
@@ -195,6 +200,11 @@
     } 
 
     outsideLetters[startIndex] = currLetter
+  }
+
+  const handleClickHint = () => { 
+    getHint(setHintWord);
+    (document.activeElement as HTMLElement).blur()
   }
 
   // Callback function for getHint, so the screen always updates when the user tries to get a hint
@@ -264,6 +274,11 @@
               {char}
             </span>
           {/each}
+          {#if $gameData.score.hint && word.length == 0}
+            <span id="hint-ghost">
+              {$gameData.score.hint.word.slice(0, $gameData.score.hint.lettersGiven)}
+            </span>
+          {/if}
           <div id="cursor" />
         </h2>
       </div>
@@ -356,7 +371,7 @@
           Delete
         </button>
         <button
-          on:click={() => getHint(setHintWord)}
+          on:click={() => handleClickHint()}
           class="btn secondary"
           title="Hint"
           aria-label="Hint">
@@ -528,6 +543,10 @@
     50%, 100% {
       opacity: 0;
     }
+  }
+
+  #hint-ghost {
+    color: var(--mediumgray);
   }
 
   #game-controls {
