@@ -6,6 +6,7 @@
 	import Skeleton from '../shared/Skeleton.svelte';
 	import user from '$lib/stores/user';
 	import gameData from '$lib/stores/gameData';
+	import { onMount } from 'svelte';
 
   $: leaderboard = $currentLeaderboard.data
 
@@ -14,7 +15,6 @@
     if(!d.exists || !leaderboard) return
 
     const currentUserScoreIndex = leaderboard.findIndex(s => s.userId == $user.data?.id)
-    console.log(currentUserScoreIndex)
     if(currentUserScoreIndex == -1) return
 
     const currentUserPoints = d.score.points
@@ -31,9 +31,15 @@
     }
   })
 
-  // Load the leaderboard when the drawer opens
-  gameDrawerStates.subscribe(s => {
-    if(s.leaderboard) refreshLeaderboard()
+  onMount(() => {
+    // Load the leaderboard when the drawer opens
+    const unsubscribe = gameDrawerStates.subscribe(s => {
+      if(s.leaderboard) refreshLeaderboard()
+    })
+
+    return () => {
+      unsubscribe()
+    }
   })
 
 </script>

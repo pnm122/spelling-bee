@@ -5,8 +5,9 @@ import type { LeaderboardScore } from "$shared/interfaces/Score";
 import { get, writable } from "svelte/store";
 import currentPuzzle from "./currentPuzzle";
 import { setNotification } from "./notification";
+import gameDrawerStates from "./gameDrawerStates";
 
-// One minute between leaderboard refreshes
+// One minute minimum between leaderboard refreshes
 const TIME_BETWEEN_REFRESHES = 1000 * 60
 
 let leaderboardLastRefreshed = -1
@@ -18,24 +19,37 @@ const currentLeaderboard = writable<CurrentLeaderboard>({
   data: undefined 
 })
 
-// Load leaderboard every time the puzzle changes
+// Load leaderboard every time the puzzle changes, only if the leaderboard drawer is open
+// Otherwise, we can wait until the user opens the drawer
 currentPuzzle.subscribe(p => {
   if(p.loading || !p.data) {
-    currentLeaderboard.set({
+    return currentLeaderboard.set({
       loading: true,
       data: undefined
     })
   }
 
-  refreshLeaderboard()
+  const g = get(gameDrawerStates)
+  if(!g.leaderboard) {
+    return currentLeaderboard.set({
+      loading: true,
+      data: undefined
+    })
+  }
+
+  // Refresh leaderboard and override min time between refreshes 
+  refreshLeaderboard(true)
 })
 
-export async function refreshLeaderboard() {
+export async function refreshLeaderboard(override = false) {
   const refreshTime = Date.now()
   const puzzle = get(currentPuzzle)
   if(puzzle.loading || !puzzle.data) return
 
-  if(puzzle.data.id == lastRefreshPuzzleId && leaderboardLastRefreshed + TIME_BETWEEN_REFRESHES > refreshTime) {
+  if(
+    !override &&
+    puzzle.data.id == lastRefreshPuzzleId &&
+    leaderboardLastRefreshed + TIME_BETWEEN_REFRESHES > refreshTime) {
     return
   }
   
