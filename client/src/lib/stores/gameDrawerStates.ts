@@ -2,7 +2,9 @@ import { writable } from "svelte/store";
 
 const gameDrawerStates = writable({
   wordList: true,
-  leaderboard: true
+  // Disable by default so it isn't open on mobile
+  // Maybe a better approach in the future
+  leaderboard: false
 })
 
 export function toggleWordListDrawer() {
