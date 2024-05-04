@@ -1,7 +1,7 @@
 import Session from "../../db/interfaces/Session"
 import UserResponse from "./User"
 import Puzzle, { PuzzlePreview } from "./Puzzle"
-import ClientScore from "./Score"
+import ClientScore, { LeaderboardScore } from "./Score"
 import DBPuzzle, { DBPuzzlePreview } from "../../db/interfaces/Puzzle"
 import Score from "../../db/interfaces/Score"
 
@@ -32,7 +32,7 @@ export interface ErrorResponse<T extends ErrorTypes> extends Response {
 
 export type ErrorTypes = 
   | 'unknown-error' // A catch-all for non-specific errors
-  | 'no-puzzle' // Attempted to fetch a puzzle that doesn't exist
+  | 'no-puzzle' // Attempted to fetch a puzzle/data relating to a puzzle that doesn't exist
   | 'user-info-not-provided' // Attempted to login without providing username/password/both
   | 'invalid-username' // User tried to login/signup with an invalid username
   | 'invalid-password' // User tried to login/signup with an invalid password
@@ -84,6 +84,7 @@ export type GetOrCreateScoreErrors = WithUnknown<'no-puzzle'> | GetPuzzleUtility
 export type GetCurrentUserScoreErrors = GetOrCreateScoreErrors
 export type UpdateScoreUtilityErrors = WithUnknown<'no-score'>
 export type AddWordUtilityErrors = WithUnknown<'no-score'>
+export type PuzzleLeaderboardErrors = PuzzleLeaderboardUtilityErrors
 
 export type GetPuzzleUtilityErrors = WithUnknown<'no-puzzle'>
 export type InsertPuzzleErrors = WithUnknown<'invalid-puzzle'>
@@ -94,6 +95,7 @@ export type SetHintUtilityErrors = UpdateScoreUtilityErrors
 export type SetHintErrors = AsErrorType<'invalid-hint'>
 export type AllPuzzlesUtilityErrors = AsErrorType<'unknown-error'>
 export type AllPuzzlesErrors = AllPuzzlesUtilityErrors
+export type PuzzleLeaderboardUtilityErrors = WithUnknown<'no-puzzle'>
 
 // ============================================================
 
@@ -118,12 +120,14 @@ export type DailyPuzzleData = { puzzle: Puzzle }
 export type GetCurrentUserScoreData = { score: ClientScore }
 export type GetOrCreateScoreData = { score: Score, created: boolean }
 export type AddWordUtilityData = { score: Score }
+export type PuzzleLeaderboardData = PuzzleLeaderboardUtilityData
 
 export type GetPuzzleUtilityData = { puzzle: DBPuzzle }
 export type GetPuzzleData = { puzzle: Puzzle }
 export type InsertPuzzleData = { puzzle: DBPuzzle }
 export type AllPuzzlesUtilityData = { puzzles: DBPuzzlePreview[] }
 export type AllPuzzlesData = { puzzles: PuzzlePreview[] }
+export type PuzzleLeaderboardUtilityData = { scores: LeaderboardScore[] }
 
 // ============================================================
 
@@ -136,6 +140,8 @@ export type GetCurrentUserScoreResponse = SuccessResponse<GetCurrentUserScoreDat
 export type GetOrCreateScoreResponse = SuccessResponse<GetOrCreateScoreData> | ErrorResponse<GetOrCreateScoreErrors>
 export type UpdateScoreUtilityResponse = SuccessResponse | ErrorResponse<UpdateScoreUtilityErrors>
 export type AddWordUtilityResponse = SuccessResponse<AddWordUtilityData> | ErrorResponse<AddWordUtilityErrors>
+export type PuzzleLeaderboardUtilityResponse = SuccessResponse<PuzzleLeaderboardUtilityData> | ErrorResponse<PuzzleLeaderboardUtilityErrors>
+export type PuzzleLeaderboardResponse = PuzzleLeaderboardUtilityResponse
 
 export type AddWordResponse = AddWordUtilityResponse | AddWordToUserResponse | AuthenticatedResponse
 

@@ -1,11 +1,12 @@
 // Utility functions for the Scores collection
 
 import { ObjectId, WithoutId } from "mongodb";
-import { ActivateWordPreviewsUtilityResponse, AddWordUtilityResponse, GetOrCreateScoreResponse, SetHintUtilityResponse, UpdateScoreUtilityResponse } from "../../shared/interfaces/Response";
+import { ActivateWordPreviewsUtilityResponse, AddWordUtilityResponse, GetOrCreateScoreResponse, PuzzleLeaderboardUtilityResponse, SetHintUtilityResponse, UpdateScoreUtilityResponse } from "../../shared/interfaces/Response";
 import getDb from "../conn";
 import Score from "../interfaces/Score";
 import { getPuzzleById } from "./puzzles";
 import ClientScore, { Hint, UserWordFound } from "../../shared/interfaces/Score";
+import debug from "../../utils/debug";
 /** 
 * Get a user's score on a given puzzle, creating one if it doesn't already exist. If the puzzle does not exist, return a no-puzzle error.
 * @param {Object} params
@@ -248,6 +249,57 @@ export async function setHint({
       success: true
     }
   } catch(e) {
+    return {
+      success: false,
+      message: 'unknown-error'
+    }
+  }
+}
+/** 
+* Get the top 25 scores of a puzzle
+* @param {string} puzzleId - Puzzle to get leaderboard of
+* @return {ReturnValueDataTypeHere} Brief description of the returning value here.
+*/
+export async function getPuzzleLeaderboard(
+  puzzleId: string
+): Promise<PuzzleLeaderboardUtilityResponse> {
+  try {
+    if(puzzleId.length != 24) {
+      return {
+        success: false,
+        message: 'no-puzzle'
+      }
+    }
+
+    const db = await getDb()
+
+    const res = await db.collection('Scores').find<Score>({
+      puzzleId: new ObjectId(puzzleId)
+    }, {
+      projection: {
+        _id: 1,
+        points: 1,
+        userId: 1,
+      },
+      sort: {
+        points: -1
+      }
+    }).limit(25).toArray()
+
+    return {
+      success: true,
+      data: {
+        scores: res.map(v => ({
+          id: v._id.toString(),
+          points: v.points,
+          userId: v.userId.toString(),
+          username: 'UNKNOWN'
+        }))
+      }
+    }
+
+  } catch(e) {
+    debug(e, 'error')
     return {
       success: false,
       message: 'unknown-error'
