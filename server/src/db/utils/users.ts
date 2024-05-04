@@ -4,7 +4,7 @@ import { LoginRequest, SignupRequest } from "../../shared/interfaces/User";
 import bcrypt from 'bcrypt'
 import getDb from "../conn";
 import User from "../interfaces/User";
-import { CreateUserData, CreateUserErrors, ErrorResponse, GetUserErrors, GetUserUtilityData, GetUserUtilityErrors, SuccessResponse, ValidateUtilityData, ValidateUserCredentialsErrors, AddWordToUserResponse, IncrementPuzzlesPlayedResponse } from "../../shared/interfaces/Response";
+import { CreateUserData, CreateUserErrors, ErrorResponse, SuccessResponse, ValidateUtilityData, ValidateUserCredentialsErrors, AddWordToUserResponse, IncrementPuzzlesPlayedResponse, GetUserUtilityResponse } from "../../shared/interfaces/Response";
 import { ObjectId, WithoutId } from "mongodb";
 import { UserWordFound } from "../../shared/interfaces/Score";
 import { isPangram } from "../../shared/utils/points";
@@ -88,9 +88,7 @@ export async function createUser({
 */
 export async function getUser(
   userId: string
-): Promise<
-  SuccessResponse<GetUserUtilityData> | 
-  ErrorResponse<GetUserUtilityErrors>> {
+): Promise<GetUserUtilityResponse> {
   try {
     const db = await getDb()
 

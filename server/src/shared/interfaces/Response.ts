@@ -136,7 +136,8 @@ export type PuzzleLeaderboardUtilityData = { scores: LeaderboardScore[] }
 
 export type AuthenticatedResponse = ErrorResponse<AuthenticatedErrors>
 
-export type GetCurrentUserScoreResponse = SuccessResponse<GetCurrentUserScoreData> | ErrorResponse<GetCurrentUserScoreErrors>
+export type GetUserUtilityResponse = SuccessResponse<GetUserUtilityData> | ErrorResponse<GetUserUtilityErrors>
+export type GetCurrentUserScoreResponse = GetUserUtilityResponse | SuccessResponse<GetCurrentUserScoreData> | ErrorResponse<GetCurrentUserScoreErrors>
 export type GetOrCreateScoreResponse = SuccessResponse<GetOrCreateScoreData> | ErrorResponse<GetOrCreateScoreErrors>
 export type UpdateScoreUtilityResponse = SuccessResponse | ErrorResponse<UpdateScoreUtilityErrors>
 export type AddWordUtilityResponse = SuccessResponse<AddWordUtilityData> | ErrorResponse<AddWordUtilityErrors>

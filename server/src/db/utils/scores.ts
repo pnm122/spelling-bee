@@ -16,8 +16,13 @@ import debug from "../../utils/debug";
 */
 export async function getOrCreateScore({
   userId,
+  username,
   puzzleId
-} : { userId: string, puzzleId: string }): Promise<GetOrCreateScoreResponse> {
+} : { 
+  userId: string, 
+  username: string,
+  puzzleId: string
+}): Promise<GetOrCreateScoreResponse> {
   try {
     // Object IDs must be 24 characters long
     if(!(userId.length == 24 && puzzleId.length == 24)) {
@@ -50,6 +55,7 @@ export async function getOrCreateScore({
     const newScore: WithoutId<Score> = {
       puzzleId: new ObjectId(puzzleId),
       userId: new ObjectId(userId),
+      username,
       wordsFound: [],
       wordPreviewsOn: false,
       points: 0
@@ -280,6 +286,7 @@ export async function getPuzzleLeaderboard(
         _id: 1,
         points: 1,
         userId: 1,
+        username: 1
       },
       sort: {
         points: -1
@@ -293,7 +300,7 @@ export async function getPuzzleLeaderboard(
           id: v._id.toString(),
           points: v.points,
           userId: v.userId.toString(),
-          username: 'UNKNOWN'
+          username: v.username ?? 'UNKNOWN'
         }))
       }
     }
