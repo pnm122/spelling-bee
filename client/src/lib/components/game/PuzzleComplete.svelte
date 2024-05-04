@@ -93,8 +93,7 @@
   }
 
   #puzzle-complete {
-    background-color: color-mix(in oklch, var(--primary) 75%, transparent);
-    backdrop-filter: blur(4px);
+    background-color: var(--primary);
     color: var(--dark);
     padding: 1rem 0;
     display: flex;
@@ -106,7 +105,7 @@
     position: absolute;
     inset: 0;
     opacity: 0;
-    transition-delay: 1s;
+    transition-delay: 1.5s;
     transition: opacity var(--transition-3);
   }
 
