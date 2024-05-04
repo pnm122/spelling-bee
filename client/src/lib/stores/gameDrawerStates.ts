@@ -2,7 +2,7 @@ import { writable } from "svelte/store";
 
 const gameDrawerStates = writable({
   wordList: true,
-  leaderboard: false
+  leaderboard: true
 })
 
 export function toggleWordListDrawer() {
