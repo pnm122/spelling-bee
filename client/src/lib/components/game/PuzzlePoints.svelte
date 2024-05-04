@@ -109,8 +109,8 @@
   }
 
   #progress-inner-wrapper[data-perfect-score="true"] {
-    --highlight-color: var(--accent);
-    --on-highlight: var(--light);
+    --highlight-color: var(--accent) !important;
+    --on-highlight: var(--light) !important;
   }
 
   #progress-inner-wrapper[data-game-complete="true"] {

@@ -6,9 +6,9 @@
   import PhShuffle from '~icons/ph/shuffle'
   import { isPangram } from '$lib/utils/points'
   import gameData from "$lib/stores/gameData";
-	import type Puzzle from "$shared/interfaces/Puzzle";
-	import type Score from "$shared/interfaces/Score";
 	import { getHint, tryWord } from "$lib/stores/currentScore";
+	import { openPopup } from "$lib/stores/popup";
+	import HintAlert from "../layout/popup/content/HintAlert.svelte";
 
   $: outsideLetters = $gameData.exists
                         ? $gameData.puzzle.outsideLetters
@@ -21,7 +21,9 @@
   let animating = false
   let screenWidth = -1
   $: hexagonSize = screenWidth >= 768 ? 100 : 80
+  $: isGameComplete = $gameData.exists && $gameData.puzzle.wordList.length == $gameData.score.wordsFound.length
 
+  
   type NotificationType = "default" | "congrats" | "pangram"
   type Notification = { type: NotificationType, message: string }
   let notification: Notification = {
@@ -137,7 +139,7 @@
   }
 
   const handleKeyDown = (e: KeyboardEvent) => {
-    if(!$gameData.exists || animating) return
+    if(isGameComplete || !$gameData.exists || animating) return
     const { centerLetter } = $gameData.puzzle
 
     const key = e.key.toUpperCase()
@@ -150,6 +152,15 @@
       // Don't override functionality of other buttons
       if(document.activeElement != document.body) return
       submitWord()
+    } else if(key == 'TAB') {
+      const hint = $gameData.score.hint
+      if(hint && word.length == 0) {
+        e.preventDefault()
+        word = hint.word.slice(0, hint.lettersGiven)
+      }
+    } else if(key == 'ALT') {
+      e.preventDefault()
+      shuffleLetters()
     }
   }
 
@@ -169,6 +180,18 @@
 
   const handleResize = () => {
     screenWidth = innerWidth
+  }
+
+  const handleClickHint = async () => { 
+    const showHintAlertString = window.localStorage.getItem("show-hint-alert")
+
+    const showHintAlert = (showHintAlertString == null) || (showHintAlertString === "true")
+
+    if(showHintAlert) {
+      openPopup(HintAlert)
+    } else {
+      getHint()
+    }
   }
 
   // Shuffle letters by moving them in a closed loop
@@ -195,13 +218,6 @@
     } 
 
     outsideLetters[startIndex] = currLetter
-  }
-
-  // Callback function for getHint, so the screen always updates when the user tries to get a hint
-  const setHintWord = (hint: string) => {
-    if(animating) return
-
-    word = hint
   }
 
   onMount(() => {
@@ -264,7 +280,12 @@
               {char}
             </span>
           {/each}
-          <div id="cursor" />
+          {#if $gameData.score.hint && word.length == 0}
+            <span id="hint-ghost">
+              {$gameData.score.hint.word.slice(0, $gameData.score.hint.lettersGiven)}
+            </span>
+          {/if}
+          <div id="cursor" data-at-start={$gameData.score.hint && word.length == 0} />
         </h2>
       </div>
     </div>
@@ -356,7 +377,8 @@
           Delete
         </button>
         <button
-          on:click={() => getHint(setHintWord)}
+          disabled={$gameData.score.hint != undefined}
+          on:click={() => handleClickHint()}
           class="btn secondary"
           title="Hint"
           aria-label="Hint">
@@ -515,6 +537,12 @@
     animation: blink 1.25s infinite;
   }
 
+  /* Put the cursor at the start of the word when showing hint ghost letters */
+  #cursor[data-at-start="true"] {
+    right: 100%;
+    left: unset;
+  }
+
   #word[data-is-pangram="true"] #cursor,
   #word[data-is-clearing="true"] #cursor {
     animation: none;
@@ -528,6 +556,10 @@
     50%, 100% {
       opacity: 0;
     }
+  }
+
+  #hint-ghost {
+    color: var(--mediumgray);
   }
 
   #game-controls {

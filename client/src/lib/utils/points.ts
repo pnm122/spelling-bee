@@ -11,10 +11,9 @@ export const WORD_PREVIEWS_FACTOR = 0.8
 */
 export function getPointsFromWord(word: string, hint: Hint | undefined, wordPreviewsOn: boolean): number {
   let points = 0
-  // If the hint letters shown to the user match the start of the word, only give the user points for the difference
-  // i.e. displayed hint = 'upp' and word = 'upper', the user gets 2 points
+  // If the hint letters shown to the user match the start of the word, subtract 1 point
   if(wordMatchesHint(word, hint)) {
-    points = word.length - hint!.lettersGiven
+    points = word.length - 1
   // By default, the number of points you get is equal to the length of the word
   } else {
     points = word.length

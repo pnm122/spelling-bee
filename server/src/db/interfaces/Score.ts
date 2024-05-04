@@ -15,6 +15,8 @@ export default interface Score {
   puzzleId: ObjectId
   // Id of the user this data refers to
   userId: ObjectId
+  // Username of the user this data refers to
+  username: string
 }
 
 export interface UserWordFound {

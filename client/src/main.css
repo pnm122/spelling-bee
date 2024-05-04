@@ -120,6 +120,7 @@ body {
   --transition-0: var(--timing-function) .15s;
   --transition-1: var(--timing-function) .3s;
   --transition-2: var(--timing-function) .5s;
+  --transition-3: var(--timing-function) 1.75s;
 
   --z-puzzle-complete: 5;
   --z-under-header: 9;
@@ -365,6 +366,11 @@ body[data-theme="light"] .btn.accent:hover {
   border-radius: 0.25rem;
 }
 
+.btn.rectangle, .btn.rectangle::before, .btn.rectangle::after {
+  border-radius: 0.25rem !important;
+  padding: 0 0.75rem;
+}
+
 .icon-button {
   width: 2.5rem;
   height: 2.5rem;
@@ -455,4 +461,45 @@ body[data-theme="light"] .btn.accent:hover {
 
 .bottom-right-letter {
   transform: translate(25%, 0%);
+}
+
+.checkbox-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.checkbox {
+  min-width: 1rem;
+  min-height: 1rem;
+  border-radius: 0.125rem;
+  background-color: var(--mediumgray);
+  border: 1px solid var(--darkgray);
+}
+
+.checkbox[aria-checked="true"] {
+  background-color: var(--primary);
+  border-color: var(--primary);
+  position: relative;
+}
+
+.checkbox[aria-checked="true"]::after {
+  content: "";
+  border-color: var(--dark);
+  border-style: solid;
+  border-width: 0 0.125rem 0.125rem 0;
+  width: 0.3rem;
+  height: 0.575rem;
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, calc(-50% - 0.05rem)) rotate(45deg);
+}
+
+.checkbox-label {
+  cursor: pointer;
+  font: var(--body-sm);
+  line-height: 1.2;
+  color: color-mix(in oklch, var(--heading), var(--darkgray));
 }

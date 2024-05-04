@@ -12,6 +12,7 @@
 	import PuzzleComplete from "$lib/components/game/PuzzleComplete.svelte";
 	import MainGame from "$lib/components/game/MainGame.svelte";
 	import Hexagon from "../shared/Hexagon.svelte";
+	import PuzzleLeaderboard from "./PuzzleLeaderboard.svelte";
 
   let hexagonSize = 80
 </script>
@@ -23,9 +24,9 @@
       <WordList />
     </GameDrawer>
   </div>
-  <!-- <GameDrawer side="right" open={$gameDrawerStates.wordList}>
-    <h1>Test</h1>
-  </GameDrawer> -->
+  <GameDrawer side="right" open={$gameDrawerStates.leaderboard}>
+    <PuzzleLeaderboard />
+  </GameDrawer>
   {#if $gameData.loading}
     <div id="puzzle-header">
       <div id="puzzle-header-inner">
@@ -118,10 +119,10 @@
           <PhListChecks />
         </button>
         <div id="puzzle-title">
-          <h1>Today's Puzzle</h1>
+          <h1>Daily Puzzle</h1>
           <h2>{convertDate($gameData.puzzle.date)}</h2>
         </div>
-        <!-- <button 
+        <button 
           on:click={toggleLeaderboardDrawer}
           title="Toggle puzzle leaderboard"
           aria-label="Toggle puzzle leaderboard"
@@ -129,7 +130,7 @@
           id="leaderboard-toggle"
           class="icon-button drawer-toggle">
           <PhTrophy />
-        </button> -->
+        </button>
       </div>
     </div>
     <div id="game-wrapper">
@@ -212,6 +213,7 @@
 
   #game-wrapper {
     grid-area: game;
+    position: relative;
 
     @media screen and (width > 1140px) {
       overflow: auto;
@@ -240,13 +242,18 @@
     background-color: var(--primary-light);
   }
 
-  .drawer-title {
+  :global(.drawer-title) {
     min-height: var(--game-header-height);
     padding: 0 1.5rem;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     border-bottom: 1px solid var(--gray);
     font: var(--h-xl);
+  }
+
+  :global(.drawer-title h2) {
+    font: inherit;
   }
 
   #word-list-drawer {
