@@ -3,6 +3,11 @@
 * Hint button gives an additional letter every time you click it until it gives you the full word
   * Has a warning if it's about to give you the last letter
   * Points you earn = number of words you come up with
+* Max points tracker
+  * Show max points possible if turning on word previews
+* Profile page with badges (i.e. 100 words found, 10 letter word found, found a word with a hint, etc.)
+* Leaderboard for total points, pangrams, longest word, etc.
+* Change loading animation for leaderboard to bar moving across top to reduce shifting layout
 
 ## Solutions
 
